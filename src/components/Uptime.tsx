@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
-/** Site launch date — set this to your real go-live date. */
-const LAUNCH = new Date('2026-07-03T00:00:00Z')
+/** Site launch date — set this to your real go-live date (must be in the past, UTC). */
+const LAUNCH = new Date('2026-07-03T00:00:00+01:00')
 const UPTIME_PERCENT = '100'
 
 interface Elapsed {
