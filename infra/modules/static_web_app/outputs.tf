@@ -3,8 +3,4 @@ output "default_host_name" {
   value       = azurerm_static_web_app.main.default_host_name
 }
 
-output "api_key" {
-  description = "Deployment token for the Static Web App."
-  value       = azurerm_static_web_app.main.api_key
-  sensitive   = true
-}
+
