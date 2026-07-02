@@ -11,5 +11,6 @@ output "swa_default_host_name" {
 output "custom_domain_validation_tokens" {
   description = "Domain => TXT validation token for apex (dns-txt-token) domains. Add each as a TXT record, then re-apply."
   value       = module.static_web_app.custom_domain_validation_tokens
+  sensitive   = true
 }
 
