@@ -1,4 +1,3 @@
-const { app } = require('@azure/functions')
 const { TableClient } = require('@azure/data-tables')
 
 // Single-row counter: one entity holds the running total.
@@ -59,25 +58,21 @@ async function incrementCount(client) {
   throw new Error('Exceeded retry limit updating visitor count')
 }
 
-app.http('visitors', {
-  methods: ['GET'],
-  authLevel: 'anonymous',
-  route: 'visitors',
-  handler: async (request, context) => {
-    try {
-      const client = getTableClient()
-      const count = await incrementCount(client)
-      return {
-        status: 200,
-        jsonBody: { count },
-        headers: { 'Cache-Control': 'no-store' },
-      }
-    } catch (err) {
-      context.error('visitor counter failed:', err)
-      return {
-        status: 500,
-        jsonBody: { error: 'counter_unavailable' },
-      }
+module.exports = async function (context, req) {
+  try {
+    const client = getTableClient()
+    const count = await incrementCount(client)
+    context.res = {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      body: { count },
     }
-  },
-})
+  } catch (err) {
+    context.log.error('visitor counter failed:', err)
+    context.res = {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: { error: 'counter_unavailable' },
+    }
+  }
+}

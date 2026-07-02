@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Managed Azure Functions API for the portfolio (visitor counter).",
   "private": true,
-  "main": "src/functions/*.js",
   "engines": {
     "node": ">=20"
   },
@@ -11,7 +10,6 @@
     "start": "func start"
   },
   "dependencies": {
-    "@azure/data-tables": "^13.3.0",
-    "@azure/functions": "^4.5.0"
+    "@azure/data-tables": "^13.3.0"
   }
 }
