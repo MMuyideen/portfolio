@@ -1,0 +1,38 @@
+@import '@fontsource-variable/geist-mono';
+@import '@fontsource-variable/dm-sans';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: #0a0e14;
+  color: #c9d1d9;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+/* cmdk palette heading */
+[cmdk-group-heading] {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6e7681;
+  padding: 6px 16px 4px;
+  user-select: none;
+}
