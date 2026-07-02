@@ -7,3 +7,11 @@ resource "azurerm_static_web_app" "main" {
   app_settings        = var.app_settings
   tags                = var.tags
 }
+
+resource "azurerm_static_web_app_custom_domain" "custom" {
+  for_each = var.custom_domains
+
+  static_web_app_id = azurerm_static_web_app.main.id
+  domain_name       = each.key
+  validation_type   = each.value
+}

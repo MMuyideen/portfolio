@@ -36,3 +36,20 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "custom_domains" {
+  description = <<-EOT
+    Map of custom domain name => validation type. Use "dns-txt-token" for apex/root
+    domains (e.g. "muyideen.dev") and "cname-delegation" for subdomains (e.g.
+    "www.muyideen.dev"). Empty by default so applies work before DNS is ready.
+  EOT
+  type        = map(string)
+  default     = {}
+
+  validation {
+    condition = alltrue([
+      for t in values(var.custom_domains) : contains(["dns-txt-token", "cname-delegation"], t)
+    ])
+    error_message = "Each validation type must be either \"dns-txt-token\" or \"cname-delegation\"."
+  }
+}

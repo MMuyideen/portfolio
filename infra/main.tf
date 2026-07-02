@@ -24,6 +24,7 @@ module "static_web_app" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   tags                = var.tags
+  custom_domains      = var.custom_domains
 
   app_settings = {
     AZURE_STORAGE_CONNECTION_STRING = module.visitor_counter.connection_string

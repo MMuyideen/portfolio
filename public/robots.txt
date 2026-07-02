@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://muyideen.dev/sitemap.xml
+Sitemap: https://portfolio.muyideen.dev/sitemap.xml

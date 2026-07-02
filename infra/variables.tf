@@ -23,3 +23,11 @@ variable "tags" {
     managed_by = "terraform"
   }
 }
+
+variable "custom_domains" {
+  description = "Map of custom domain name => validation type (\"dns-txt-token\" for apex, \"cname-delegation\" for subdomains)."
+  type        = map(string)
+  default = {
+    "portfolio.muyideen.dev" = "cname-delegation"
+  }
+}
