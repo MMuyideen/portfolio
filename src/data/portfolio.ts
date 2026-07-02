@@ -73,7 +73,7 @@ export const portfolio: PortfolioData = {
       links: [
         {
           label: 'GitHub',
-          href: 'https://github.com/mmuyideen/AKS-terraform-argocd',
+          href: 'https://github.com/MMuyideen/AKS-terraform-argocd/blob/main/Architecturediagram.png',
           external: true,
         },
       ],
