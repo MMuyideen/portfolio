@@ -129,11 +129,11 @@ export function Hero() {
             />
 
             {/* Card */}
-            <div className="bg-surface border rounded p-6 w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center overflow-hidden">
+            <div className="bg-surface border rounded w-72 h-72 sm:w-80 sm:h-80 overflow-hidden">
               <img
-                src="/logo-terminal-mark.svg"
+                src="/selfie.png"
                 alt="Muyideen Morenigbade"
-                className="w-56 h-56 sm:w-64 sm:h-64 select-none"
+                className="w-full h-full object-cover select-none"
                 draggable={false}
               />
             </div>
