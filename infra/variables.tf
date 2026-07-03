@@ -15,17 +15,6 @@ variable "subscription_id" {
   type        = string
 }
 
-variable "repository_url" {
-  description = "URL of the GitHub repository to deploy from."
-  type        = string
-}
-
-variable "repository_branch" {
-  description = "Branch of the GitHub repository to deploy from."
-  type        = string
-  default     = "main"
-}
-
 variable "tags" {
   description = "Tags applied to all taggable resources."
   type        = map(string)
