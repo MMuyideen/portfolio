@@ -53,10 +53,10 @@ export interface PortfolioData {
 export const portfolio: PortfolioData = {
   name: 'Muyideen Morenigbade',
   role: 'DevOps & Cloud Engineer',
-  email: 'morenigbademuyideen@gmail.com',
+  email: 'contact@muyideen.dev',
   github: 'https://github.com/mmuyideen',
   linkedin: 'https://linkedin.com/in/muyideenmorenigbade',
-  blog: 'https://blog.mmuyideen.tech', // Replace with your Hashnode URL
+  blog: 'https://blog.muyideen.dev', // Replace with your Hashnode URL
 
   projects: [
     // Add the projects here
