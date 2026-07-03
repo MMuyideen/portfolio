@@ -73,12 +73,12 @@ export const portfolio: PortfolioData = {
       links: [
         {
           label: 'GitHub',
-          href: 'https://github.com/MMuyideen/AKS-terraform-argocd/blob/689f2438344271aca17201fb68082e9beef32566/Architecturediagram.png?raw=true',
+          href: 'https://github.com/mmuyideen/AKS-terraform-argocd',
           external: true,
         },
       ],
       // diagram: '/diagrams/aks-gitops.png',
-      diagram: '/public/assets/images/projects/aks-gitops.png',
+      diagram: 'https://github.com/MMuyideen/AKS-terraform-argocd/blob/689f2438344271aca17201fb68082e9beef32566/Architecturediagram.png?raw=true',
     },
     // EKS GitOps Pipeline
     {
