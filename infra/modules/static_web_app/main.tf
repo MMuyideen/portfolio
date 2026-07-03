@@ -6,6 +6,8 @@ resource "azurerm_static_web_app" "main" {
   sku_size            = var.sku_size
   app_settings        = var.app_settings
   tags                = var.tags
+  repository_url      = var.repository_url
+  repository_branch   = var.repository_branch
 }
 
 resource "azurerm_static_web_app_custom_domain" "custom" {

@@ -37,6 +37,17 @@ variable "tags" {
   default     = {}
 }
 
+variable "repository_url" {
+  description = "URL of the GitHub repository to deploy from."
+  type        = string
+}
+
+variable "repository_branch" {
+  description = "Branch of the GitHub repository to deploy from."
+  type        = string
+  default     = "main"
+}
+
 variable "custom_domains" {
   description = <<-EOT
     Map of custom domain name => validation type. Use "dns-txt-token" for apex/root

@@ -25,6 +25,8 @@ module "static_web_app" {
   location            = azurerm_resource_group.main.location
   tags                = var.tags
   custom_domains      = var.custom_domains
+  repository_url      = "https://github.com/MMuyideen/portfolio"
+  repository_branch   = "main"
 
   app_settings = {
     AZURE_STORAGE_CONNECTION_STRING = module.visitor_counter.connection_string
