@@ -28,7 +28,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
           <p className="font-mono text-xs text-muted mb-2">$ contact --reach-out</p>
           <h2 className="font-mono text-xl font-semibold mb-2">Get in touch</h2>
           <p className="font-sans text-sm text-muted leading-relaxed mb-8 max-w-md">
-            Open to senior DevOps and platform engineering roles. Reach out via
+            Open to DevOps and platform engineering roles. Reach out via
             email or connect on LinkedIn.
           </p>
 

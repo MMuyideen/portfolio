@@ -102,7 +102,7 @@ export const portfolio: PortfolioData = {
     },
     // AWS Three Tier App
     {
-      id: 'AWS Three tier app',
+      id: 'AWS Three Tier app',
       title: 'AWS Three Tier App',
       command: 'run aws-three-tier',
       description: [
@@ -121,7 +121,7 @@ export const portfolio: PortfolioData = {
     },
     // Azure Three Tier App
     {
-      id: 'Azure Three tier app',
+      id: 'Azure Three Tier app',
       title: 'Azure Three Tier App',
       command: 'run azure-three-tier',
       description: [
@@ -140,7 +140,7 @@ export const portfolio: PortfolioData = {
     },
     // AWS Two Tier App
     {
-      id: 'AWS two tier app',
+      id: 'AWS two Tier app',
       title: 'AWS Two Tier App',
       command: 'run aws-two-tier',
       description: [
@@ -159,7 +159,7 @@ export const portfolio: PortfolioData = {
     },
     // Azure Two Tier App
     {
-      id: 'Azure two tier app',
+      id: 'Azure two Tier app',
       title: 'Azure Two Tier App',
       command: 'run azure-two-tier',
       description: [
@@ -343,7 +343,7 @@ export const portfolio: PortfolioData = {
 
   experience: [
     {
-      role: 'Senior DevOps Engineer',
+      role: 'Cloud/DevOps Engineer',
       company: 'Perizer',
       period: '2025 – present',
       bullets: [
