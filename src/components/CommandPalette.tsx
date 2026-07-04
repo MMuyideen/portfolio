@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { Command } from 'cmdk'
 import { ArrowRight, BookOpen, Linkedin, Mail, Search } from 'lucide-react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { GitHubIcon } from './GitHubIcon'
 import { portfolio } from '../data/portfolio'
 
@@ -20,10 +21,20 @@ const NAV_ITEMS = [
 ]
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+
   function select(href: string) {
     onOpenChange(false)
     if (href.startsWith('#')) {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      const id = href.slice(1)
+      if (pathname === '/') {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        navigate(`/#${id}`)
+      }
+    } else if (href.startsWith('/')) {
+      navigate(href)
     } else {
       window.open(href, '_blank', 'noopener,noreferrer')
     }
@@ -73,7 +84,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               <Command.Group heading="Links">
                 <Command.Item
                   value="Blog"
-                  onSelect={() => select(portfolio.blog)}
+                  onSelect={() => select('/blog')}
                   className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
                 >
                   <BookOpen size={11} className="shrink-0" aria-hidden="true" />

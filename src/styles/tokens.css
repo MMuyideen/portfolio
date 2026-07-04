@@ -26,6 +26,95 @@ html {
   outline-offset: 2px;
 }
 
+/* ── Blog post prose ─────────────────────────────────────────────────────────
+   Body copy in DM Sans (the locked body font) at line-height 1.6; headings and
+   code in Geist Mono. One accent (#4ade80). Code token colors come from
+   highlight.js github-dark, imported alongside the markdown renderer. */
+.post-prose {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #c9d1d9;
+  max-width: 68ch;
+}
+
+.post-prose > * + * { margin-top: 1.25em; }
+
+.post-prose h2,
+.post-prose h3,
+.post-prose h4 {
+  font-family: 'Geist Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  scroll-margin-top: 5rem;
+}
+
+.post-prose h2 { font-size: 1.4rem; margin-top: 2.25em; }
+.post-prose h3 { font-size: 1.15rem; margin-top: 1.75em; }
+.post-prose h4 { font-size: 1rem; margin-top: 1.5em; }
+
+.post-prose p { color: #c9d1d9; }
+
+.post-prose a {
+  color: #4ade80;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.post-prose a:hover { text-decoration-thickness: 2px; }
+
+.post-prose strong { color: #fff; font-weight: 600; }
+
+.post-prose ul,
+.post-prose ol { padding-left: 1.4em; }
+.post-prose ul { list-style: disc; }
+.post-prose ol { list-style: decimal; }
+.post-prose li + li { margin-top: 0.4em; }
+.post-prose li::marker { color: #6e7681; }
+
+.post-prose blockquote {
+  border-left: 2px solid rgba(74, 222, 128, 0.4);
+  padding-left: 1em;
+  color: #6e7681;
+  font-style: italic;
+}
+
+.post-prose hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 2.5em 0;
+}
+
+/* Inline code */
+.post-prose :not(pre) > code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.85em;
+  background: #161c26;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  color: #c9d1d9;
+}
+
+/* Code blocks (github-dark provides token colors; we own the container) */
+.post-prose pre.hljs {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  background: #0d1219;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+}
+.post-prose pre.hljs code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+  border: 0;
+}
+
 /* cmdk palette heading */
 [cmdk-group-heading] {
   font-family: 'Geist Mono', monospace;

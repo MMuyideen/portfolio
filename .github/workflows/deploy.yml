@@ -2,7 +2,11 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
+    paths:
+      - 'infra/**'
+      - 'src/**'
   
   workflow_dispatch:
 

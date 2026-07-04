@@ -1,53 +1,56 @@
 import { Terminal, BookOpen } from 'lucide-react'
-import { portfolio } from '../data/portfolio'
+import { Link, useLocation } from 'react-router-dom'
 
 interface NavProps {
   onOpenPalette: () => void
 }
 
 const NAV_LINKS = [
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Education', href: '#education' },
-  { label: 'Tech Stack', href: '#tech-stack' },
-  { label: 'Certifications', href: '#certifications' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'Experience', id: 'experience' },
+  { label: 'Education', id: 'education' },
+  { label: 'Tech Stack', id: 'tech-stack' },
+  { label: 'Certifications', id: 'certifications' },
+  { label: 'Contact', id: 'contact' },
 ]
 
 export function Nav({ onOpenPalette }: NavProps) {
+  const { pathname } = useLocation()
+  const onHome = pathname === '/'
+  // On the home route these are in-page anchors; elsewhere they route home first.
+  const sectionHref = (id: string) => (onHome ? `#${id}` : `/#${id}`)
+
   return (
     <header className="sticky top-0 z-40 border-b bg-bg/95 backdrop-blur-sm">
       <div className="max-w-content mx-auto px-6 h-14 flex items-center gap-6">
         {/* Logo */}
-        <a
-          href="#main-content"
+        <Link
+          to="/"
           className="font-mono text-sm font-semibold text-accent flex items-center gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
-          aria-label="Muyideen Morenigbade — back to top"
+          aria-label="Muyideen Morenigbade — home"
         >
           <Terminal size={15} aria-hidden="true" />
           <span>MM</span>
-        </a>
+        </Link>
 
         {/* Section links */}
         <nav className="hidden lg:flex items-center gap-0.5 flex-1" aria-label="Page sections">
           {NAV_LINKS.map(link => (
             <a
-              key={link.href}
-              href={link.href}
+              key={link.id}
+              href={sectionHref(link.id)}
               className="font-mono text-xs text-muted hover:text-white transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               {link.label}
             </a>
           ))}
-          <a
-            href={portfolio.blog}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/blog"
             className="inline-flex items-center gap-1.5 font-mono text-xs text-accent hover:text-accent/80 transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent ml-1"
           >
             <BookOpen size={11} aria-hidden="true" />
             Blog
-          </a>
+          </Link>
         </nav>
 
         {/* ⌘K */}
