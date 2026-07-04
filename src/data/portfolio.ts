@@ -356,7 +356,7 @@ export const portfolio: PortfolioData = {
     },
     {
       role: 'Azure Cloud Support Engineer',
-      company: 'Microsoft',
+      company: 'Teknowledge',
       period: '2023 – 2026',
       bullets: [
         'Designed and deployed scalable cloud environments using Terraform IaC, reducing manual provisioning time by 40%.',
@@ -364,17 +364,6 @@ export const portfolio: PortfolioData = {
         'Built and maintained Azure DevOps YAML pipelines for automated CI/CD, enabling daily production deployments with zero downtime.',
         'Implemented Azure Monitor and Log Analytics with custom dashboards and proactive alerting, achieving 99.99% uptime.',
         'Reduced monthly cloud spend by 30% through Azure Advisor recommendations, Reserved Instances, and automated shutdown schedules.',
-      ],
-    },
-    {
-      role: 'Azure Cloud Engineer Intern',
-      company: 'The Opad Hub Limited',
-      period: '2021 – 2022',
-      bullets: [
-        'Installed, configured, and managed Windows and Linux VMs on Azure within virtual networks.',
-        'Implemented Azure governance using policies, management groups, and RBAC through Microsoft Entra.',
-        'Monitored Azure resource performance with logging and alerting tools, improving incident response times.',
-        'Contributed to the design and deployment of high-availability IaaS and PaaS solutions for enterprise applications.',
       ],
     },
   ],
