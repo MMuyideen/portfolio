@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Clock } from 'lucide-react'
 import { getPostBySlug, formatPostDate } from '../lib/posts'
 
-const SITE_URL = 'https://portfolio.muyideen.dev'
+const SITE_URL = 'https://www.muyideen.dev'
 
 /** Render the post body to HTML lazily, so markdown-it + highlight.js code-split. */
 function useRenderedBody(body: string | undefined): string | null {

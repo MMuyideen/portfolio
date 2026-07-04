@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://portfolio.muyideen.dev/</loc>
+    <loc>https://www.muyideen.dev/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://portfolio.muyideen.dev/blog</loc>
+    <loc>https://www.muyideen.dev/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio.muyideen.dev/blog/aro-entra-id-group-rbac</loc>
-    <lastmod>2026-03-21</lastmod>
+    <loc>https://www.muyideen.dev/blog/apim-stv2-migration</loc>
+    <lastmod>2024-02-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://portfolio.muyideen.dev/blog/oidc-federation-github-actions-azure</loc>
-    <lastmod>2026-06-18</lastmod>
+    <loc>https://www.muyideen.dev/blog/create-a-linux-ubuntu-virtual-machine-in-azure</loc>
+    <lastmod>2022-09-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://portfolio.muyideen.dev/blog/terraform-arm-eventual-consistency-race</loc>
-    <lastmod>2026-05-02</lastmod>
+    <loc>https://www.muyideen.dev/blog/deploy-container-image-in-azure</loc>
+    <lastmod>2022-12-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.muyideen.dev/blog/user-and-group-management-linux</loc>
+    <lastmod>2024-07-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>

@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
 
-const SITE_URL = 'https://portfolio.muyideen.dev'
+const SITE_URL = 'https://www.muyideen.dev'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const postsDir = join(root, 'src', 'content', 'posts')

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Clock } from 'lucide-react'
 import { getAllPosts, formatPostDate } from '../lib/posts'
 
-const SITE_URL = 'https://portfolio.muyideen.dev'
+const SITE_URL = 'https://www.muyideen.dev'
 
 export function BlogIndex() {
   const posts = getAllPosts()

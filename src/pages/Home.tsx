@@ -9,7 +9,7 @@ import { LatestPosts } from '../components/LatestPosts'
 import { Contact } from '../components/Contact'
 import { portfolio } from '../data/portfolio'
 
-const SITE_URL = 'https://portfolio.muyideen.dev'
+const SITE_URL = 'https://www.muyideen.dev'
 
 export function Home() {
   return (

@@ -56,7 +56,7 @@ export const portfolio: PortfolioData = {
   email: 'contact@muyideen.dev',
   github: 'https://github.com/mmuyideen',
   linkedin: 'https://linkedin.com/in/muyideenmorenigbade',
-  blog: 'https://blog.muyideen.dev', // Replace with your Hashnode URL
+  blog: 'https://www.muyideen.dev/blog', // Self-hosted blog (/blog route)
 
   projects: [
     // Add the projects here
