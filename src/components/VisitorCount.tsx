@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 /** Sample value used until /api/visitors returns a real count. */
-const SAMPLE_COUNT = 12847
+const SAMPLE_COUNT = 0
 /** Serverless endpoint backing the counter (Azure Table Storage). */
 const VISITORS_ENDPOINT = '/api/visitors'
 

@@ -26,8 +26,8 @@ export function Home() {
       </Helmet>
 
       <Hero />
-      <Projects projects={portfolio.projects} />
       <Experience experience={portfolio.experience} />
+      <Projects projects={portfolio.projects} />
       <Education education={portfolio.education} />
       <TechStack skills={portfolio.skills} />
       <Certifications certifications={portfolio.certifications} />
