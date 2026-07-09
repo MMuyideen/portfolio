@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { MotionConfig } from 'framer-motion'
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { EASE } from './lib/motion'
 import { Nav } from './components/Nav'
 import { Footer } from './components/Footer'
 import { CommandPalette } from './components/CommandPalette'
@@ -48,6 +49,7 @@ function ScrollToTop() {
 
 export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -64,6 +66,12 @@ export default function App() {
     // The CSS reduced-motion kill-switch doesn't reach Framer Motion's
     // JS-driven transforms, so honor the OS preference here as well.
     <MotionConfig reducedMotion="user">
+      {/* Ambient phosphor light source at the top of the page. First in the
+          DOM so every sibling paints above it; pointer-events off. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 top-0 h-[480px] bg-[radial-gradient(640px_320px_at_50%_-100px,rgba(74,222,128,0.09),transparent_70%)]"
+      />
       <ScrollToTop />
       <a
         href="#main-content"
@@ -74,14 +82,26 @@ export default function App() {
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <main id="main-content">
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<BlogIndex />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        {/* Route transitions: quick crossfade + drift so page changes feel
+            engineered rather than hard-cut. */}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: EASE }}
+          >
+            <Suspense fallback={<RouteFallback />}>
+              <Routes location={location}>
+                <Route path="/" element={<Home />} />
+                <Route path="/blog" element={<BlogIndex />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer name={portfolio.name} />
     </MotionConfig>

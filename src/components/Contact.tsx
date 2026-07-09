@@ -55,7 +55,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT}
           transition={{ duration: 0.55, ease: EASE }}
-          className="overflow-hidden rounded-lg border bg-surface"
+          className="overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
         >
           {/* Window chrome */}
           <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.07)] px-4 py-3">
@@ -70,7 +70,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
             <span className="ml-auto inline-flex items-center gap-2 font-mono text-sm text-accent">
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(74,222,128,0.7)]" />
               </span>
               open to work
             </span>
@@ -96,7 +96,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
             <div className="flex flex-col gap-3 lg:w-56">
               <a
                 href={`mailto:${email}`}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded font-mono text-sm font-semibold bg-accent text-bg hover:bg-accent/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded font-mono text-sm font-semibold bg-accent text-bg hover:bg-accent/90 hover:shadow-[0_0_28px_rgba(74,222,128,0.28)] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               >
                 <Mail size={14} aria-hidden="true" />
                 Email me

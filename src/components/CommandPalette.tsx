@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { Command } from 'cmdk'
-import { ArrowRight, BookOpen, FileText, Linkedin, Mail, Search } from 'lucide-react'
+import { ArrowRight, BookOpen, Copy, Download, FileText, Linkedin, Mail, Search } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { GitHubIcon } from './GitHubIcon'
 import { getAllPosts } from '../lib/posts'
@@ -96,6 +96,34 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     <span className="truncate">{post.title}</span>
                   </Command.Item>
                 ))}
+              </Command.Group>
+
+              <Command.Group heading="Actions">
+                <Command.Item
+                  value="Copy email address"
+                  onSelect={() => {
+                    navigator.clipboard.writeText(portfolio.email)
+                    onOpenChange(false)
+                  }}
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                >
+                  <Copy size={11} className="shrink-0" aria-hidden="true" />
+                  Copy email address
+                </Command.Item>
+                <Command.Item
+                  value="Download resume"
+                  onSelect={() => {
+                    const link = document.createElement('a')
+                    link.href = '/resume.pdf'
+                    link.download = ''
+                    link.click()
+                    onOpenChange(false)
+                  }}
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                >
+                  <Download size={11} className="shrink-0" aria-hidden="true" />
+                  Download resume
+                </Command.Item>
               </Command.Group>
 
               <Command.Group heading="Links">

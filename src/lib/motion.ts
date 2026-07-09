@@ -7,6 +7,9 @@
 /** Exponential ease-out (quint): fast start, soft landing. */
 export const EASE = [0.16, 1, 0.3, 1] as const
 
+/** Snappy, overshoot-free spring for hover/press micro-interactions. */
+export const SPRING = { type: 'spring', stiffness: 320, damping: 26 } as const
+
 /** Scroll-reveal trigger config shared by every whileInView animation. */
 export const VIEWPORT = { once: true, margin: '-80px' } as const
 

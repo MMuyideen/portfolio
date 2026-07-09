@@ -20,8 +20,13 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="flex flex-col gap-12 px-6 pt-28 pb-20"
+      className="relative flex flex-col gap-12 px-6 pt-28 pb-20"
     >
+      {/* Graticule: faint dot grid fading out below the fold. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(201,209,217,0.05)_1px,transparent_1px)] [background-size:26px_26px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]"
+      />
       <div className="w-full max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
         {/* Left: text content */}
@@ -76,7 +81,7 @@ export function Hero() {
             <a
               href="/resume.pdf"
               download
-              className="inline-flex items-center gap-2 px-4 py-2 rounded font-mono text-sm font-semibold bg-accent text-bg hover:bg-accent/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded font-mono text-sm font-semibold bg-accent text-bg hover:bg-accent/90 hover:shadow-[0_0_28px_rgba(74,222,128,0.28)] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
               <Download size={14} aria-hidden="true" />
               Download Resume

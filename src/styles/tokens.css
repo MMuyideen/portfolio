@@ -31,6 +31,33 @@ section[id] {
   scroll-margin-top: 4rem;
 }
 
+/* Text selection carries the accent */
+::selection {
+  background: rgba(74, 222, 128, 0.28);
+  color: #ffffff;
+}
+
+/* Thin machined scrollbars that match the surface system */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #232b3a transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #232b3a;
+  border-radius: 8px;
+  border: 2px solid #0a0e14;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2f3a4e;
+}
+
 /* Even line lengths on headings; fewer orphans in long prose. */
 h1, h2, h3 {
   text-wrap: balance;

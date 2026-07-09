@@ -74,7 +74,7 @@ export function VisitorCount() {
     <motion.div
       id="visitors"
       ref={ref}
-      className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface"
+      className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
       aria-label="Visitor count"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}

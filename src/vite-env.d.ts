@@ -1,5 +1,8 @@
 /// <reference types="vite/client" />
 
+/** Short git commit hash injected at build time (see vite.config.ts). */
+declare const __COMMIT_HASH__: string
+
 declare module 'virtual:post-image-dims' {
   export const imageDims: Record<string, [number, number]>
 }
