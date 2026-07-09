@@ -10,7 +10,7 @@ Personal portfolio and blog for a DevOps & Cloud Engineer, live at [muyideen.dev
 | Blog | Markdown posts compiled at build time (folder per post, images co-located) |
 | API | Azure Functions (SWA managed) + Table Storage visitor counter |
 | Hosting | Azure Static Web Apps (Free tier) |
-| IaC | Terraform ≥ 1.7, `azurerm 4.79.0`, remote state in Azure Storage |
+| IaC | Terraform ≥ 1.7, `azurerm 4.80.0`, remote state in Azure Storage |
 | CI/CD | GitHub Actions — CI on every branch/PR, deploy on `main` via OIDC |
 
 ## Repository layout
