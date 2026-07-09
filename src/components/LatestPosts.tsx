@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ArrowUpRight, Clock } from 'lucide-react'
 import { getAllPosts, formatPostDate } from '../lib/posts'
+import { EASE, VIEWPORT } from '../lib/motion'
 
 /** Home-page preview: the three newest non-draft posts as cards. */
 export function LatestPosts() {
@@ -13,10 +14,10 @@ export function LatestPosts() {
       <div className="max-w-content mx-auto">
         <motion.div
           className="flex items-end justify-between gap-4"
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          viewport={VIEWPORT}
+          transition={{ duration: 0.55, ease: EASE }}
         >
           <div>
             <p className="font-mono text-xs text-accent tracking-widest mb-1">
@@ -43,10 +44,10 @@ export function LatestPosts() {
           {posts.map((post, i) => (
             <motion.li
               key={post.slug}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.25, ease: 'easeOut', delay: i * 0.06 }}
+              transition={{ duration: 0.5, ease: EASE, delay: i * 0.08 }}
             >
               <Link
                 to={`/blog/${post.slug}`}

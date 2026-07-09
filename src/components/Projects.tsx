@@ -1,6 +1,13 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
+import { SectionHeader } from './SectionHeader'
+import { EASE, VIEWPORT, slideIn } from '../lib/motion'
 import type { Project } from '../data/portfolio'
+
+/** How many projects are visible before the "show all" expander. */
+const INITIAL_VISIBLE = 4
 
 function StackDiagram({ stack, id }: { stack: string[]; id: string }) {
   const mid = Math.ceil(stack.length / 2)
@@ -55,6 +62,8 @@ function DiagramPanel({ project }: { project: Project }) {
           src={project.diagram}
           alt={`${project.title} architecture diagram`}
           className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       </div>
     )
@@ -80,15 +89,8 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
   const githubLink = project.links.find(l => l.label === 'GitHub')
   const description = project.description.map(d => d.replace(/^# /, '')).join(' ')
 
-  const slide = (fromLeft: boolean) => ({
-    initial: { opacity: 0, x: fromLeft ? -16 : 16 },
-    whileInView: { opacity: 1, x: 0 },
-    viewport: { once: true, margin: '-80px' as const },
-    transition: { duration: 0.25, ease: 'easeOut' as const },
-  })
-
   const textPanel = (
-    <motion.div className="flex flex-col justify-center" {...slide(!diagramLeft)}>
+    <motion.div className="flex flex-col justify-center" {...slideIn(!diagramLeft)}>
       <p className="font-mono text-xs text-accent tracking-widest mb-2">
         {'// '}Project {String(index + 1).padStart(2, '0')}
       </p>
@@ -99,13 +101,17 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
         <p className="text-muted leading-relaxed text-sm">{description}</p>
       </div>
       <div className="flex flex-wrap gap-2 mb-5">
-        {project.stack.map(tag => (
-          <span
+        {project.stack.map((tag, i) => (
+          <motion.span
             key={tag}
             className="font-mono text-[11px] border border-accent/40 text-accent px-2.5 py-1 rounded"
+            initial={{ opacity: 0, y: 6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VIEWPORT}
+            transition={{ duration: 0.35, ease: EASE, delay: 0.2 + i * 0.04 }}
           >
             {tag}
-          </span>
+          </motion.span>
         ))}
       </div>
       {githubLink && (
@@ -125,7 +131,8 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
   const diagramPanel = (
     <motion.div
       className="h-full min-h-[300px] sm:min-h-[360px]"
-      {...slide(diagramLeft)}
+      whileHover={{ y: -4 }}
+      {...slideIn(diagramLeft)}
     >
       <DiagramPanel project={project} />
     </motion.div>
@@ -149,25 +156,46 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 }
 
 export function Projects({ projects }: { projects: Project[] }) {
+  const [expanded, setExpanded] = useState(false)
+  const collapsible = projects.length > INITIAL_VISIBLE
+  const visible =
+    collapsible && !expanded ? projects.slice(0, INITIAL_VISIBLE) : projects
+  const hiddenCount = projects.length - INITIAL_VISIBLE
+
   return (
     <section id="projects" className="py-24 px-6">
       <div className="max-w-content mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
-          <p className="font-mono text-xs text-muted mb-1">$ ls -la projects/</p>
-          <h2 className="font-mono text-xl font-semibold">Featured Architecture</h2>
-          <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
-        </motion.div>
+        <SectionHeader command="ls -la projects/" title="Featured Architecture" />
 
         <div className="mt-16 space-y-20 lg:space-y-28">
-          {projects.map((project, i) => (
+          {visible.map((project, i) => (
             <ProjectRow key={project.id} project={project} index={i} />
           ))}
         </div>
+
+        {collapsible && (
+          <div className="mt-16 flex justify-center">
+            <button
+              type="button"
+              aria-expanded={expanded}
+              onClick={() => setExpanded(prev => !prev)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded border font-mono text-sm text-muted hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp size={14} aria-hidden="true" />
+                  show fewer projects
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={14} aria-hidden="true" />
+                  show all projects
+                  <span className="text-accent">+{hiddenCount}</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

@@ -1,36 +1,44 @@
 import { motion } from 'framer-motion'
+import { SectionHeader } from './SectionHeader'
+import { EASE, VIEWPORT } from '../lib/motion'
 import type { ExperienceEntry } from '../data/portfolio'
 
 export function Experience({ experience }: { experience: ExperienceEntry[] }) {
   return (
     <section id="experience" className="py-24 px-6">
       <div className="max-w-content mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
-          <p className="font-mono text-xs text-muted mb-1">$ git log --oneline</p>
-          <h2 className="font-mono text-xl font-semibold">Experience</h2>
-          <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
-        </motion.div>
+        <SectionHeader command="git log --oneline" title="Experience" />
 
         <div className="mt-10 space-y-10">
           {experience.map((entry, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.2, ease: 'easeOut', delay: i * 0.06 }}
+              viewport={VIEWPORT}
+              transition={{ duration: 0.55, ease: EASE, delay: i * 0.08 }}
               className="flex gap-4"
             >
               {/* Commit glyph + connector */}
               <div className="flex flex-col items-center shrink-0 pt-0.5">
-                <span className="text-accent text-base leading-none">●</span>
+                <motion.span
+                  className="text-accent text-base leading-none"
+                  initial={{ scale: 0, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={VIEWPORT}
+                  transition={{ duration: 0.4, ease: EASE, delay: i * 0.08 + 0.1 }}
+                >
+                  ●
+                </motion.span>
                 {i < experience.length - 1 && (
-                  <div className="mt-2 w-px flex-1 bg-[rgba(255,255,255,0.07)]" />
+                  <motion.div
+                    className="mt-2 w-px flex-1 bg-[rgba(255,255,255,0.07)] origin-top"
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    viewport={VIEWPORT}
+                    transition={{ duration: 0.7, ease: EASE, delay: i * 0.08 + 0.2 }}
+                    aria-hidden="true"
+                  />
                 )}
               </div>
 

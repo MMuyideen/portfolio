@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { EASE } from '../lib/motion'
 
-/** Sample value used until /api/visitors returns a real count. */
-const SAMPLE_COUNT = 0
 /** Serverless endpoint backing the counter (Azure Table Storage). */
 const VISITORS_ENDPOINT = '/api/visitors'
 
@@ -13,9 +12,9 @@ function prefersReducedMotion(): boolean {
   )
 }
 
-/** Fetch the shared server-side count, falling back to the sample value. */
-function useVisitorCount(): number {
-  const [count, setCount] = useState(SAMPLE_COUNT)
+/** Fetch the shared server-side count; null means unavailable (show a dash). */
+function useVisitorCount(): number | null {
+  const [count, setCount] = useState<number | null>(null)
 
   useEffect(() => {
     let active = true
@@ -25,7 +24,7 @@ function useVisitorCount(): number {
         if (active && typeof data.count === 'number') setCount(data.count)
       })
       .catch(() => {
-        /* keep the sample value */
+        /* endpoint unavailable — keep null and render a dash */
       })
     return () => {
       active = false
@@ -69,7 +68,7 @@ export function VisitorCount() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const target = useVisitorCount()
-  const display = useCountUp(target, inView)
+  const display = useCountUp(target ?? 0, inView && target !== null)
 
   return (
     <motion.div
@@ -77,10 +76,10 @@ export function VisitorCount() {
       ref={ref}
       className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface"
       aria-label="Visitor count"
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
+      transition={{ duration: 0.55, ease: EASE }}
     >
       {/* Window chrome */}
       <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.07)] px-4 py-3">
@@ -90,7 +89,7 @@ export function VisitorCount() {
           <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
         </div>
         <span className="ml-2 font-mono text-sm text-muted">
-          ~/muyideen · 
+          ~/muyideen · visitors
         </span>
       </div>
 
@@ -104,7 +103,7 @@ export function VisitorCount() {
 
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <span className="font-mono text-5xl sm:text-6xl font-bold tabular-nums leading-none text-accent">
-            {display.toLocaleString('en-US')}
+            {target === null ? '—' : display.toLocaleString('en-US')}
           </span>
           <span className="font-mono text-sm text-muted">
             total visits since launch

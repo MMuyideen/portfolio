@@ -5,7 +5,7 @@ export function Footer({ name }: { name: string }) {
         <span>© {new Date().getFullYear()} {name}</span>
         <span aria-hidden="true" className="select-none">
           {'$ '}
-          <span className="inline-block w-[0.5ch] h-[0.85em] bg-muted/30 align-text-bottom" />
+          <span className="inline-block w-[0.5ch] h-[0.85em] bg-muted/30 align-text-bottom animate-blink motion-reduce:animate-none" />
         </span>
       </div>
     </footer>

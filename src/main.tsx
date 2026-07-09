@@ -1,5 +1,3 @@
-// Must be first: installs the Buffer global before any post-parsing module loads.
-import './lib/buffer-polyfill'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Linkedin, Mail } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
+import { EASE, VIEWPORT } from '../lib/motion'
 
 interface ContactProps {
   email: string
@@ -19,10 +20,10 @@ export function Contact({ email, github, linkedin }: ContactProps) {
     <section id="contact" className="py-24 px-6">
       <div className="max-w-content mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          viewport={VIEWPORT}
+          transition={{ duration: 0.55, ease: EASE }}
           className="bg-surface border rounded p-8 sm:p-10"
         >
           <p className="font-mono text-xs text-muted mb-2">$ contact --reach-out</p>

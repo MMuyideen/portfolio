@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
+import { SectionHeader } from './SectionHeader'
+import { EASE, VIEWPORT } from '../lib/motion'
 import type { Certification } from '../data/portfolio'
 
 function getCredlyImage(verifyUrl: string): string | null {
@@ -46,16 +48,7 @@ export function Certifications({ certifications }: { certifications: Certificati
   return (
     <section id="certifications" className="py-24 px-6">
       <div className="max-w-content mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
-          <p className="font-mono text-xs text-muted mb-1">$ ls -la certs/</p>
-          <h2 className="font-mono text-xl font-semibold">Certifications</h2>
-          <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
-        </motion.div>
+        <SectionHeader command="ls -la certs/" title="Certifications" />
 
         <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {certifications.map((cert, i) => (
@@ -64,10 +57,11 @@ export function Certifications({ certifications }: { certifications: Certificati
               href={cert.verifyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.2, ease: 'easeOut', delay: i * 0.05 }}
+              viewport={VIEWPORT}
+              transition={{ duration: 0.5, ease: EASE, delay: (i % 4) * 0.06 }}
+              whileHover={{ y: -4 }}
               className="group bg-surface border rounded p-4 flex flex-col items-center gap-3 hover:border-[rgba(255,255,255,0.18)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label={`${cert.title} — verify credential`}
             >

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Muyideen Morenigbade — DevOps &amp; Cloud Engineer</title>
+    <link>https://www.muyideen.dev/blog</link>
+    <atom:link href="https://www.muyideen.dev/rss.xml" rel="self" type="application/rss+xml" />
+    <description>Field notes on Azure, Terraform, OpenShift and CI/CD from building and running cloud platforms.</description>
+    <language>en</language>
+    <lastBuildDate>Thu, 09 Jul 2026 08:57:09 GMT</lastBuildDate>
+    <item>
+      <title>How this site works: Azure Static Web Apps, Terraform and OIDC</title>
+      <link>https://www.muyideen.dev/blog/how-this-site-works</link>
+      <guid isPermaLink="true">https://www.muyideen.dev/blog/how-this-site-works</guid>
+      <pubDate>Thu, 09 Jul 2026 00:00:00 GMT</pubDate>
+      <description>The portfolio you are reading is its own case study — static frontend on Azure Static Web Apps, infrastructure in Terraform, keyless deploys via GitHub Actions OIDC, and a serverless visitor counter on Table Storage.</description>
+    </item>
+    <item>
+      <title>Automate User and Group management in Linux using Bash script</title>
+      <link>https://www.muyideen.dev/blog/user-and-group-management-linux</link>
+      <guid isPermaLink="true">https://www.muyideen.dev/blog/user-and-group-management-linux</guid>
+      <pubDate>Tue, 02 Jul 2024 00:00:00 GMT</pubDate>
+      <description>Streamline User Creation, Group Creation and Assignment, and Password Management in a Linux Environment..</description>
+    </item>
+    <item>
+      <title>How to Migrate Azure API Management Instance to Stv2 Platform</title>
+      <link>https://www.muyideen.dev/blog/apim-stv2-migration</link>
+      <guid isPermaLink="true">https://www.muyideen.dev/blog/apim-stv2-migration</guid>
+      <pubDate>Mon, 05 Feb 2024 00:00:00 GMT</pubDate>
+      <description>How to migrate APIM instance injected in a virtual network..</description>
+    </item>
+    <item>
+      <title>How to build and deploy container images in Azure</title>
+      <link>https://www.muyideen.dev/blog/deploy-container-image-in-azure</link>
+      <guid isPermaLink="true">https://www.muyideen.dev/blog/deploy-container-image-in-azure</guid>
+      <pubDate>Tue, 27 Dec 2022 00:00:00 GMT</pubDate>
+      <description>Build and deploy container images in the cloud with Azure Container Registry Tasks</description>
+    </item>
+    <item>
+      <title>How to create a Linux (Ubuntu) Virtual Machine in Azure</title>
+      <link>https://www.muyideen.dev/blog/create-a-linux-ubuntu-virtual-machine-in-azure</link>
+      <guid isPermaLink="true">https://www.muyideen.dev/blog/create-a-linux-ubuntu-virtual-machine-in-azure</guid>
+      <pubDate>Fri, 02 Sep 2022 00:00:00 GMT</pubDate>
+      <description>Creating an Ubuntu Virtual Machine on Azure and connecting to it.</description>
+    </item>
+  </channel>
+</rss>

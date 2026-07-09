@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { EASE, VIEWPORT } from '../lib/motion'
 
 /** Site launch date — set this to your real go-live date (must be in the past, UTC). */
 const LAUNCH = new Date('2026-07-03T00:00:00+01:00')
@@ -63,7 +64,7 @@ function StatCell({ stat, index }: { stat: Stat; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.2, ease: 'easeOut', delay: 0.1 + index * 0.05 }}
+      transition={{ duration: 0.45, ease: EASE, delay: 0.15 + index * 0.06 }}
     >
       <span
         className={
@@ -96,10 +97,10 @@ export function Uptime() {
       id="uptime"
       className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface"
       aria-label="Site uptime"
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.55, ease: EASE }}
     >
       {/* Window chrome */}
       <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.07)] px-4 py-3">

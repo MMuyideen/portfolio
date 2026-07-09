@@ -13,6 +13,7 @@ import {
   siPython, siGnubash, siAnsible, siVmware,
   type SimpleIcon,
 } from 'simple-icons'
+import { EASE, VIEWPORT } from '../lib/motion'
 import type { SkillCategory } from '../data/portfolio'
 
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -78,13 +79,20 @@ function SkillCard({ category, index }: { category: SkillCategory; index: number
 
   return (
     <motion.div
-      className="bg-surface border rounded overflow-hidden flex flex-col"
-      initial={{ opacity: 0, y: 16 }}
+      className="bg-surface border rounded overflow-hidden flex flex-col hover:border-[rgba(255,255,255,0.18)] transition-colors"
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.2, ease: 'easeOut', delay: index * 0.05 }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.5, ease: EASE, delay: (index % 4) * 0.06 }}
     >
-      <div className="h-0.5 bg-accent w-full shrink-0" />
+      <motion.div
+        className="h-0.5 bg-accent w-full shrink-0 origin-left"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={VIEWPORT}
+        transition={{ duration: 0.6, ease: EASE, delay: (index % 4) * 0.06 + 0.15 }}
+        aria-hidden="true"
+      />
       <div className="p-5">
         <div className="flex items-center gap-2 mb-4">
           <span className="font-mono text-xs text-accent select-none">/&gt;</span>
@@ -107,10 +115,10 @@ export function TechStack({ skills }: { skills: SkillCategory[] }) {
       <div className="max-w-content mx-auto">
         <motion.div
           className="text-center mb-14"
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          viewport={VIEWPORT}
+          transition={{ duration: 0.55, ease: EASE }}
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
             Technical Arsenal

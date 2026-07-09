@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
-import { Linkedin, Download, BookOpen } from 'lucide-react'
+import { Linkedin, Download } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
 import { useTerminalSequence, type TerminalStep } from '../hooks/useTerminalSequence'
+import { EASE } from '../lib/motion'
 import { portfolio } from '../data/portfolio'
 import { Uptime } from './Uptime'
 import { VisitorCount } from './VisitorCount'
@@ -44,9 +45,9 @@ export function Hero() {
           {/* Name */}
           <motion.h1
             className="text-5xl sm:text-6xl font-bold text-white leading-tight mb-6"
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.3, ease: 'easeOut' }}
+            transition={{ delay: 0.9, duration: 0.55, ease: EASE }}
           >
             {portfolio.name.split(' ').map((word, i) => (
               <span key={i} className="block">{word}</span>
@@ -56,11 +57,11 @@ export function Hero() {
           {/* Bio */}
           <motion.p
             className="text-muted leading-relaxed mb-8 max-w-[52ch]"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.25, ease: 'easeOut' }}
+            transition={{ delay: 1.05, duration: 0.5, ease: EASE }}
           >
-            Senior DevOps Engineer building production-grade cloud infrastructure on
+            {portfolio.role} building production-grade cloud infrastructure on
             AWS, Azure, and GCP. Specialising in Kubernetes, GitOps, and Terraform IaC
             to deliver high-availability systems with zero-downtime releases.
           </motion.p>
@@ -68,9 +69,9 @@ export function Hero() {
           {/* Buttons */}
           <motion.div
             className="flex flex-wrap gap-3"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.2, ease: 'easeOut' }}
+            transition={{ delay: 1.2, duration: 0.5, ease: EASE }}
           >
             <a
               href="/resume.pdf"
@@ -98,34 +99,31 @@ export function Hero() {
               <Linkedin size={14} aria-hidden="true" />
               LinkedIn
             </a>
-            <a
-              href={portfolio.blog}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded font-mono text-sm text-muted border hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-            >
-              <BookOpen size={14} aria-hidden="true" />
-              Blog
-            </a>
           </motion.div>
         </div>
 
         {/* Right: avatar card */}
         <motion.div
           className="flex justify-center lg:justify-end"
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.35, ease: 'easeOut' }}
+          transition={{ delay: 0.3, duration: 0.6, ease: EASE }}
         >
           <div className="relative">
-            {/* Corner accent marks */}
-            <span
-              className="absolute -top-3 -right-3 block w-10 h-10 border-t-2 border-r-2 border-accent"
+            {/* Corner accent marks, drawn in after the card settles */}
+            <motion.span
+              className="absolute -top-3 -right-3 block w-10 h-10 border-t-2 border-r-2 border-accent origin-top-right"
               aria-hidden="true"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.75, duration: 0.45, ease: EASE }}
             />
-            <span
-              className="absolute -bottom-3 -left-3 block w-10 h-10 border-b-2 border-l-2 border-accent"
+            <motion.span
+              className="absolute -bottom-3 -left-3 block w-10 h-10 border-b-2 border-l-2 border-accent origin-bottom-left"
               aria-hidden="true"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.85, duration: 0.45, ease: EASE }}
             />
 
             {/* Card */}

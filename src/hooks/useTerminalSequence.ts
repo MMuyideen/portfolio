@@ -68,7 +68,10 @@ export function useTerminalSequence(
 
     run()
     return () => { cancelled = true }
-  }, []) // animation fires once on mount
+    // The boot sequence is deliberately once-per-mount; re-running on prop
+    // changes would restart the typing animation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return state
 }

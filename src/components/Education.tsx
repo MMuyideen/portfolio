@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { GraduationCap, Code2 } from 'lucide-react'
+import { SectionHeader } from './SectionHeader'
+import { EASE, VIEWPORT } from '../lib/motion'
 import type { EducationEntry } from '../data/portfolio'
 
 function EducationCard({ entry, index }: { entry: EducationEntry; index: number }) {
@@ -32,10 +34,11 @@ function EducationCard({ entry, index }: { entry: EducationEntry; index: number 
         target="_blank"
         rel="noopener noreferrer"
         className="block h-full rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-        initial={{ opacity: 0, y: 16 }}
+        whileHover={{ y: -4 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.2, ease: 'easeOut', delay: index * 0.07 }}
+        viewport={VIEWPORT}
+        transition={{ duration: 0.55, ease: EASE, delay: index * 0.08 }}
       >
         {inner}
       </motion.a>
@@ -45,10 +48,10 @@ function EducationCard({ entry, index }: { entry: EducationEntry; index: number 
   return (
     <motion.div
       className="h-full"
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.2, ease: 'easeOut', delay: index * 0.07 }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.55, ease: EASE, delay: index * 0.08 }}
     >
       {inner}
     </motion.div>
@@ -59,16 +62,7 @@ export function Education({ education }: { education: EducationEntry[] }) {
   return (
     <section id="education" className="py-24 px-6">
       <div className="max-w-content mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
-          <p className="font-mono text-xs text-muted mb-1">$ cat education/</p>
-          <h2 className="font-mono text-xl font-semibold">Education</h2>
-          <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
-        </motion.div>
+        <SectionHeader command="cat education/" title="Education" />
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {education.map((entry, i) => (

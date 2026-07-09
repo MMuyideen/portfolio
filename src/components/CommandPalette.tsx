@@ -1,8 +1,9 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { Command } from 'cmdk'
-import { ArrowRight, BookOpen, Linkedin, Mail, Search } from 'lucide-react'
+import { ArrowRight, BookOpen, FileText, Linkedin, Mail, Search } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { GitHubIcon } from './GitHubIcon'
+import { getAllPosts } from '../lib/posts'
 import { portfolio } from '../data/portfolio'
 
 interface CommandPaletteProps {
@@ -77,6 +78,20 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   >
                     <ArrowRight size={11} className="text-accent shrink-0" aria-hidden="true" />
                     {item.label}
+                  </Command.Item>
+                ))}
+              </Command.Group>
+
+              <Command.Group heading="Posts">
+                {getAllPosts().map(post => (
+                  <Command.Item
+                    key={post.slug}
+                    value={`post ${post.title}`}
+                    onSelect={() => select(`/blog/${post.slug}`)}
+                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  >
+                    <FileText size={11} className="shrink-0" aria-hidden="true" />
+                    <span className="truncate">{post.title}</span>
                   </Command.Item>
                 ))}
               </Command.Group>

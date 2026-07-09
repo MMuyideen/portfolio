@@ -1,12 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
+import { MotionConfig } from 'framer-motion'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Nav } from './components/Nav'
 import { Footer } from './components/Footer'
 import { CommandPalette } from './components/CommandPalette'
 import { Home } from './pages/Home'
-import { BlogIndex } from './pages/BlogIndex'
-import { BlogPost } from './pages/BlogPost'
+import { NotFound } from './pages/NotFound'
 import { portfolio } from './data/portfolio'
+
+// Blog routes are code-split so the home route ships without them.
+const BlogIndex = lazy(() =>
+  import('./pages/BlogIndex').then(m => ({ default: m.BlogIndex })),
+)
+const BlogPost = lazy(() =>
+  import('./pages/BlogPost').then(m => ({ default: m.BlogPost })),
+)
+
+function RouteFallback() {
+  return (
+    <div className="max-w-content mx-auto px-6 pt-32 pb-24">
+      <p className="font-mono text-sm text-muted" aria-live="polite">
+        Loading…
+      </p>
+    </div>
+  )
+}
 
 /**
  * On route change, scroll to the top. If the URL carries a hash (e.g. arriving
@@ -43,7 +61,9 @@ export default function App() {
   }, [])
 
   return (
-    <>
+    // The CSS reduced-motion kill-switch doesn't reach Framer Motion's
+    // JS-driven transforms, so honor the OS preference here as well.
+    <MotionConfig reducedMotion="user">
       <ScrollToTop />
       <a
         href="#main-content"
@@ -54,13 +74,16 @@ export default function App() {
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <main id="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<BlogIndex />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer name={portfolio.name} />
-    </>
+    </MotionConfig>
   )
 }

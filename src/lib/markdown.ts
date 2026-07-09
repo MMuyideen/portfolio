@@ -35,6 +35,33 @@ const md = new MarkdownIt({
   highlight,
 })
 
+/**
+ * Hashed asset URLs for images that live alongside a post's index.md
+ * (content/posts/<slug>/<image>). Vite emits the files and inlines the URLs;
+ * this map lets relative `![](./image.png)` references resolve after build.
+ */
+const postImages = import.meta.glob(
+  '../content/posts/*/*.{png,jpg,jpeg,gif,svg,webp,avif}',
+  { query: '?url', import: 'default', eager: true },
+) as Record<string, string>
+
+const defaultImage =
+  md.renderer.rules.image ??
+  ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+
+md.renderer.rules.image = (tokens, idx, options, env, self) => {
+  const src = tokens[idx].attrGet('src') ?? ''
+  const slug = (env as { slug?: string } | undefined)?.slug
+  if (slug && !/^(https?:)?\/\//.test(src) && !src.startsWith('data:')) {
+    const key = `../content/posts/${slug}/${src.replace(/^\.\//, '')}`
+    const resolved = postImages[key]
+    if (resolved) tokens[idx].attrSet('src', resolved)
+  }
+  tokens[idx].attrSet('loading', 'lazy')
+  tokens[idx].attrSet('decoding', 'async')
+  return defaultImage(tokens, idx, options, env, self)
+}
+
 // Open external links in a new, safe tab.
 const defaultLinkOpen =
   md.renderer.rules.link_open ??
@@ -49,7 +76,11 @@ md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
   return defaultLinkOpen(tokens, idx, options, env, self)
 }
 
-/** Render a raw markdown string to sanitized HTML (html:false disables raw HTML). */
-export function renderMarkdown(body: string): string {
-  return md.render(body)
+/**
+ * Render a raw markdown string to sanitized HTML (html:false disables raw
+ * HTML). Pass the post's slug so relative image references (./image.png)
+ * resolve to the hashed assets in its content folder.
+ */
+export function renderMarkdown(body: string, slug?: string): string {
+  return md.render(body, { slug })
 }

@@ -2,12 +2,23 @@ name: Deploy
 
 on:
   push:
-    branches: 
+    branches:
       - main
     paths:
       - 'infra/**'
       - 'src/**'
-  
+      - 'api/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'tailwind.config.ts'
+      - 'postcss.config.js'
+      - 'tsconfig.json'
+      - '.github/workflows/deploy.yml'
+
   workflow_dispatch:
 
 permissions:

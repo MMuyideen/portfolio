@@ -1,28 +1,68 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Clock } from 'lucide-react'
-import { getPostBySlug, formatPostDate } from '../lib/posts'
+import { getPostBySlug, loadPostBody, formatPostDate } from '../lib/posts'
 
 const SITE_URL = 'https://www.muyideen.dev'
 
-/** Render the post body to HTML lazily, so markdown-it + highlight.js code-split. */
-function useRenderedBody(body: string | undefined): string | null {
+/**
+ * Fetch the post body and render it to HTML lazily, so the markdown body,
+ * markdown-it and highlight.js all stay out of the initial bundle.
+ */
+function useRenderedBody(slug: string | undefined): string | null {
   const [html, setHtml] = useState<string | null>(null)
 
   useEffect(() => {
-    if (body === undefined) return
+    if (slug === undefined) return
     let active = true
-    import('../lib/markdown').then(({ renderMarkdown }) => {
-      if (active) setHtml(renderMarkdown(body))
-    })
+    setHtml(null)
+    Promise.all([loadPostBody(slug), import('../lib/markdown')])
+      .then(([body, { renderMarkdown }]) => {
+        if (active) setHtml(renderMarkdown(body, slug))
+      })
+      .catch(() => {
+        if (active) setHtml('')
+      })
     return () => {
       active = false
     }
-  }, [body])
+  }, [slug])
 
   return html
+}
+
+/** Add a copy-to-clipboard button to every rendered code block. */
+function useCodeCopyButtons(ref: React.RefObject<HTMLElement>, html: string | null) {
+  useEffect(() => {
+    const root = ref.current
+    if (!root || !html) return
+
+    const buttons: HTMLButtonElement[] = []
+    root.querySelectorAll<HTMLPreElement>('pre.hljs').forEach(pre => {
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.className = 'code-copy'
+      button.textContent = 'copy'
+      button.setAttribute('aria-label', 'Copy code to clipboard')
+      button.addEventListener('click', () => {
+        const code = pre.querySelector('code')?.textContent ?? ''
+        navigator.clipboard.writeText(code).then(() => {
+          button.textContent = 'copied'
+          button.classList.add('code-copy--done')
+          window.setTimeout(() => {
+            button.textContent = 'copy'
+            button.classList.remove('code-copy--done')
+          }, 1600)
+        })
+      })
+      pre.appendChild(button)
+      buttons.push(button)
+    })
+
+    return () => buttons.forEach(button => button.remove())
+  }, [ref, html])
 }
 
 function NotFound() {
@@ -57,7 +97,9 @@ function NotFound() {
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>()
   const post = slug ? getPostBySlug(slug) : undefined
-  const html = useRenderedBody(post?.body)
+  const html = useRenderedBody(post?.slug)
+  const proseRef = useRef<HTMLDivElement>(null)
+  useCodeCopyButtons(proseRef, html)
 
   if (!post) return <NotFound />
 
@@ -130,6 +172,7 @@ export function BlogPost() {
           </p>
         ) : (
           <motion.div
+            ref={proseRef}
             className="post-prose mt-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

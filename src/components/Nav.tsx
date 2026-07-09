@@ -1,4 +1,5 @@
 import { Terminal, BookOpen } from 'lucide-react'
+import { motion, useScroll } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 
 interface NavProps {
@@ -16,12 +17,19 @@ const NAV_LINKS = [
 
 export function Nav({ onOpenPalette }: NavProps) {
   const { pathname } = useLocation()
+  const { scrollYProgress } = useScroll()
   const onHome = pathname === '/'
   // On the home route these are in-page anchors; elsewhere they route home first.
   const sectionHref = (id: string) => (onHome ? `#${id}` : `/#${id}`)
 
   return (
     <header className="sticky top-0 z-40 border-b bg-bg/95 backdrop-blur-sm">
+      {/* Reading progress: a hairline of accent tracking scroll position. */}
+      <motion.div
+        className="absolute bottom-[-1px] left-0 right-0 h-px bg-accent origin-left"
+        style={{ scaleX: scrollYProgress }}
+        aria-hidden="true"
+      />
       <div className="max-w-content mx-auto px-6 h-14 flex items-center gap-6">
         {/* Logo */}
         <Link
