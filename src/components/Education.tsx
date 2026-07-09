@@ -1,60 +1,62 @@
 import { motion } from 'framer-motion'
-import { GraduationCap, Code2 } from 'lucide-react'
+import { GraduationCap, Code2, ArrowUpRight } from 'lucide-react'
 import { SectionHeader } from './SectionHeader'
-import { EASE, VIEWPORT } from '../lib/motion'
+import { EASE, VIEWPORT, SPRING } from '../lib/motion'
 import type { EducationEntry } from '../data/portfolio'
 
-function EducationCard({ entry, index }: { entry: EducationEntry; index: number }) {
+function EducationRow({ entry, index }: { entry: EducationEntry; index: number }) {
   const Icon = entry.type === 'degree' ? GraduationCap : Code2
 
   const inner = (
-    <div className="bg-surface border rounded overflow-hidden h-full flex flex-col hover:border-[rgba(255,255,255,0.18)] transition-colors">
-      <div className="h-0.5 bg-accent w-full shrink-0" />
-      <div className="p-6 sm:p-7 flex flex-col flex-1">
-        <div className="w-14 h-14 rounded-xl bg-surface-2 flex items-center justify-center mb-6 shrink-0">
-          <Icon size={24} className="text-accent" aria-hidden="true" />
-        </div>
-        <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 leading-snug">
+    <>
+      <Icon size={16} className="text-accent shrink-0" aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        <h3 className="font-mono text-base font-semibold text-white leading-snug">
           {entry.degree}
         </h3>
-        <p className="text-muted mb-5 leading-relaxed">{entry.institution}</p>
-        <div className="mt-auto">
-          <span className="font-mono text-sm text-accent bg-surface-2 px-3 py-1.5 rounded-full">
-            {entry.period}
-          </span>
-        </div>
+        <p className="mt-0.5 text-sm text-muted">{entry.institution}</p>
       </div>
-    </div>
+      <span className="font-mono text-xs text-muted tabular-nums shrink-0">
+        {entry.period}
+      </span>
+      {entry.url && (
+        <ArrowUpRight
+          size={14}
+          aria-hidden="true"
+          className="shrink-0 text-muted transition-all group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        />
+      )}
+    </>
   )
 
-  if (entry.url) {
-    return (
-      <motion.a
-        href={entry.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block h-full rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-        whileHover={{ y: -4 }}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={VIEWPORT}
-        transition={{ duration: 0.55, ease: EASE, delay: index * 0.08 }}
-      >
-        {inner}
-      </motion.a>
-    )
-  }
+  const rowClass =
+    'flex items-center gap-4 px-6 sm:px-8 py-5 ' +
+    (index > 0 ? 'border-t border-[rgba(255,255,255,0.06)] ' : '')
 
   return (
-    <motion.div
-      className="h-full"
-      initial={{ opacity: 0, y: 20 }}
+    <motion.li
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
-      transition={{ duration: 0.55, ease: EASE, delay: index * 0.08 }}
+      transition={{ duration: 0.45, ease: EASE, delay: index * 0.08 }}
     >
-      {inner}
-    </motion.div>
+      {entry.url ? (
+        <motion.a
+          href={entry.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ x: 3, transition: SPRING }}
+          className={
+            rowClass +
+            'group hover:bg-surface-2/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset'
+          }
+        >
+          {inner}
+        </motion.a>
+      ) : (
+        <div className={rowClass}>{inner}</div>
+      )}
+    </motion.li>
   )
 }
 
@@ -64,11 +66,11 @@ export function Education({ education }: { education: EducationEntry[] }) {
       <div className="max-w-content mx-auto">
         <SectionHeader command="cat education/" title="Education" />
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-10 rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
           {education.map((entry, i) => (
-            <EducationCard key={i} entry={entry} index={i} />
+            <EducationRow key={entry.degree} entry={entry} index={i} />
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

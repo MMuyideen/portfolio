@@ -1,10 +1,5 @@
 import { motion } from 'framer-motion'
 import {
-  Cloud, Box, FileCode2, GitBranch,
-  Activity, Terminal, Shield, Network,
-  type LucideIcon,
-} from 'lucide-react'
-import {
   siGooglecloud, siDigitalocean,
   siKubernetes, siDocker, siArgo,
   siTerraform, siOpentofu,
@@ -13,19 +8,9 @@ import {
   siPython, siGnubash, siAnsible, siVmware,
   type SimpleIcon,
 } from 'simple-icons'
+import { SectionHeader } from './SectionHeader'
 import { EASE, VIEWPORT } from '../lib/motion'
 import type { SkillCategory } from '../data/portfolio'
-
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  Cloud,
-  Containers: Box,
-  IaC: FileCode2,
-  'CI/CD': GitBranch,
-  Observability: Activity,
-  Scripting: Terminal,
-  Security: Shield,
-  Networking: Network,
-}
 
 const TOOL_ICONS: Record<string, SimpleIcon> = {
   'GCP':            siGooglecloud,
@@ -49,11 +34,16 @@ const TOOL_ICONS: Record<string, SimpleIcon> = {
   'VMware':         siVmware,
 }
 
+/** "CI/CD" → "ci_cd" — categories rendered as yaml keys. */
+function yamlKey(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
+}
+
 function ToolPill({ tool }: { tool: string }) {
   const icon = TOOL_ICONS[tool]
 
   return (
-    <span className="inline-flex items-center gap-1.5 bg-surface-2 text-muted text-xs px-2.5 py-1 rounded font-mono">
+    <span className="inline-flex items-center gap-1.5 bg-surface-2 border border-[rgba(255,255,255,0.06)] text-muted text-xs px-2.5 py-1 rounded font-mono hover:text-white hover:border-[rgba(255,255,255,0.16)] transition-colors">
       {icon ? (
         <svg
           role="img"
@@ -74,65 +64,47 @@ function ToolPill({ tool }: { tool: string }) {
   )
 }
 
-function SkillCard({ category, index }: { category: SkillCategory; index: number }) {
-  const Icon = CATEGORY_ICONS[category.name] ?? Terminal
-
-  return (
-    <motion.div
-      className="bg-surface border rounded overflow-hidden flex flex-col hover:border-[rgba(255,255,255,0.18)] transition-colors"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={VIEWPORT}
-      transition={{ duration: 0.5, ease: EASE, delay: (index % 4) * 0.06 }}
-    >
-      <motion.div
-        className="h-0.5 bg-accent w-full shrink-0 origin-left"
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={VIEWPORT}
-        transition={{ duration: 0.6, ease: EASE, delay: (index % 4) * 0.06 + 0.15 }}
-        aria-hidden="true"
-      />
-      <div className="p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="font-mono text-xs text-accent select-none">/&gt;</span>
-          <Icon size={14} className="text-accent shrink-0" aria-hidden={true} />
-          <h3 className="font-mono text-sm font-semibold text-white">{category.name}</h3>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {category.tools.map(tool => (
-            <ToolPill key={tool} tool={tool} />
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
+/**
+ * The stack as a manifest, not a card grid: one panel styled like a yaml
+ * file, categories as keys, tools as values.
+ */
 export function TechStack({ skills }: { skills: SkillCategory[] }) {
   return (
     <section id="tech-stack" className="py-24 px-6">
       <div className="max-w-content mx-auto">
+        <SectionHeader command="cat stack.yaml" title="Technical Arsenal" />
+
         <motion.div
-          className="text-center mb-14"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT}
-          transition={{ duration: 0.55, ease: EASE }}
+          transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
+          className="mt-10 rounded-lg border bg-surface p-6 sm:p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Technical Arsenal
-          </h2>
-          <p className="text-muted max-w-[52ch] mx-auto leading-relaxed">
-            A comprehensive toolkit for modern cloud-native deployment and platform engineering.
-          </p>
+          <div className="grid gap-x-12 gap-y-7 md:grid-cols-2">
+            {skills.map((category, i) => (
+              <motion.div
+                key={category.name}
+                className="flex flex-col gap-2.5"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT}
+                transition={{ duration: 0.45, ease: EASE, delay: 0.15 + (i % 4) * 0.06 }}
+              >
+                <p className="font-mono text-sm">
+                  <span className="text-accent">{yamlKey(category.name)}</span>
+                  <span className="text-muted">:</span>
+                  <span className="sr-only"> {category.name}</span>
+                </p>
+                <div className="flex flex-wrap gap-2 pl-4 border-l border-[rgba(255,255,255,0.06)]">
+                  {category.tools.map(tool => (
+                    <ToolPill key={tool} tool={tool} />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {skills.map((category, i) => (
-            <SkillCard key={category.name} category={category} index={i} />
-          ))}
-        </div>
       </div>
     </section>
   )

@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -125,8 +126,20 @@ function postMeta(): Plugin {
   }
 }
 
+/** Short commit hash baked into the bundle (footer build stamp). */
+function commitHash(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim()
+  } catch {
+    return 'dev'
+  }
+}
+
 export default defineConfig({
   plugins: [react(), postMeta()],
+  define: {
+    __COMMIT_HASH__: JSON.stringify(commitHash()),
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,

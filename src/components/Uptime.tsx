@@ -100,7 +100,7 @@ export function Uptime() {
     <motion.div
       id="uptime"
       ref={ref}
-      className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface"
+      className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
       aria-label="Site uptime"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -120,7 +120,7 @@ export function Uptime() {
         <span className="ml-auto inline-flex items-center gap-2 font-mono text-sm text-accent">
           <span className="relative flex h-2 w-2" aria-hidden="true">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(74,222,128,0.7)]" />
           </span>
           online
         </span>
