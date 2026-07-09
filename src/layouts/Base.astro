@@ -1,0 +1,77 @@
+---
+import '../styles/global.css'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import CommandPalette from '../components/CommandPalette'
+import { site } from '../lib/site'
+import { getPublishedPosts } from '../lib/posts'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description = site.description } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site)
+const posts = (await getPublishedPosts()).map(p => ({
+  slug: p.id,
+  title: p.data.title,
+}))
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0b0d10" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${site.name} — Blog`}
+      href="/rss.xml"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="bg-ink font-sans text-fg antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-panel focus:px-4 focus:py-2 focus:font-mono focus:text-sm"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <CommandPalette client:idle posts={posts} />
+
+    <script>
+      // Arm scroll reveals only when JS is available; reveal on intersection.
+      document.documentElement.classList.add('js')
+      const io = new IntersectionObserver(
+        entries => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible')
+              io.unobserve(entry.target)
+            }
+          }
+        },
+        { rootMargin: '-40px 0px' },
+      )
+      document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el))
+    </script>
+  </body>
+</html>

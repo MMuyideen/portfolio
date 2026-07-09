@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro'
+import { site } from '../lib/site'
+---
+
+<Base title={`404 — ${site.name}`} description="Page not found.">
+  <div class="mx-auto max-w-[1080px] px-6 pb-24 pt-40">
+    <p class="mb-4 font-mono text-sm text-accent">// 404</p>
+    <h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+      Nothing at this address.
+    </h1>
+    <p class="mt-4 max-w-[48ch] leading-relaxed text-muted">
+      The page you're looking for doesn't exist or has moved.
+    </p>
+    <p class="mt-8 flex gap-5 font-mono text-sm">
+      <a
+        href="/"
+        class="text-fg underline-offset-4 transition-colors hover:text-accent hover:underline"
+      >
+        ← home
+      </a>
+      <a
+        href="/blog"
+        class="text-fg underline-offset-4 transition-colors hover:text-accent hover:underline"
+      >
+        blog
+      </a>
+    </p>
+  </div>
+</Base>

@@ -10,12 +10,9 @@ on:
       - 'api/**'
       - 'public/**'
       - 'scripts/**'
-      - 'index.html'
       - 'package.json'
       - 'package-lock.json'
-      - 'vite.config.ts'
-      - 'tailwind.config.ts'
-      - 'postcss.config.js'
+      - 'astro.config.mjs'
       - 'tsconfig.json'
       - '.github/workflows/deploy.yml'
 

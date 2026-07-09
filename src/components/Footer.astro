@@ -1,0 +1,30 @@
+---
+import { site } from '../lib/site'
+import { commitHash } from '../lib/build'
+
+const year = new Date().getFullYear()
+---
+
+<footer class="border-t border-line">
+  <div
+    class="mx-auto flex max-w-[1080px] flex-col gap-3 px-6 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p>© {year} {site.name}</p>
+    <p class="flex items-center gap-2">
+      <span
+        class="live-dot inline-block h-1.5 w-1.5 rounded-full bg-accent"
+        aria-hidden="true"></span>
+      deploy {commitHash} · azure static web apps
+    </p>
+    <nav aria-label="Footer" class="flex gap-4">
+      <a href={site.github} class="transition-colors hover:text-white" rel="me">
+        github
+      </a>
+      <a href={site.linkedin} class="transition-colors hover:text-white" rel="me">
+        linkedin
+      </a>
+      <a href="/rss.xml" class="transition-colors hover:text-white">rss</a>
+      <a href="/resume.pdf" class="transition-colors hover:text-white">resume</a>
+    </nav>
+  </div>
+</footer>

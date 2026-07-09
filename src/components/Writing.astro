@@ -1,0 +1,40 @@
+---
+import Section from './Section.astro'
+import { getPublishedPosts, formatDate, readingTime } from '../lib/posts'
+
+const posts = (await getPublishedPosts()).slice(0, 4)
+---
+
+<Section id="writing" index="03" title="Writing">
+  <ul class="divide-y divide-line border-y border-line">
+    {
+      posts.map(post => (
+        <li data-reveal>
+          <a href={`/blog/${post.id}`} class="group block py-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+              <h3 class="font-medium text-white transition-colors group-hover:text-accent">
+                {post.data.title}
+              </h3>
+              <p class="font-mono text-xs text-muted">
+                {formatDate(post.data.date)} · {readingTime(post.body)} min
+              </p>
+            </div>
+            {post.data.excerpt && (
+              <p class="mt-1.5 max-w-[75ch] text-sm leading-relaxed text-muted">
+                {post.data.excerpt}
+              </p>
+            )}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="mt-6" data-reveal>
+    <a
+      href="/blog"
+      class="font-mono text-sm text-fg underline-offset-4 transition-colors hover:text-accent hover:underline"
+    >
+      all posts →
+    </a>
+  </p>
+</Section>

@@ -1,0 +1,84 @@
+---
+import { site } from '../lib/site'
+import { commitHash } from '../lib/build'
+---
+
+<section class="relative overflow-hidden">
+  <!-- Graticule: faint dot grid fading out below the fold. -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(rgb(214_218_224/0.05)_1px,transparent_1px)] [background-size:26px_26px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]"
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-[1080px] px-6 pb-20 pt-32 sm:pt-40">
+    <p class="mb-5 font-mono text-sm text-accent" data-reveal>
+      // devops &amp; cloud engineer
+    </p>
+
+    <h1
+      class="max-w-[16ch] text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-7xl"
+      data-reveal
+    >
+      Infrastructure that ships itself.
+    </h1>
+
+    <p class="mt-7 max-w-[58ch] text-lg leading-relaxed text-muted" data-reveal>
+      I'm {site.name}. I build cloud platforms on Azure and AWS —
+      provisioned with Terraform, reconciled by GitOps, and deployed by
+      pipelines instead of people. This site included:
+    </p>
+
+    <!-- Live telemetry strip: every value here is real. -->
+    <div
+      class="mt-8 inline-flex max-w-full flex-wrap items-center gap-x-5 gap-y-2 rounded-md border border-line bg-panel px-4 py-3 font-mono text-xs text-muted"
+      data-reveal
+    >
+      <span class="inline-flex items-center gap-2 text-fg">
+        <span
+          class="live-dot inline-block h-2 w-2 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        live
+      </span>
+      <span>deploy <span class="text-fg">{commitHash}</span></span>
+      <span>azure static web apps</span>
+      <span>
+        <span id="visit-count" class="text-fg tabular-nums">—</span> visits
+      </span>
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center gap-4" data-reveal>
+      <a
+        href="#contact"
+        class="rounded-md bg-accent px-5 py-2.5 font-mono text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+      >
+        Get in touch
+      </a>
+      <a
+        href="/resume.pdf"
+        class="rounded-md border border-line px-5 py-2.5 font-mono text-sm text-fg transition-colors hover:border-accent/50 hover:text-white"
+      >
+        Resume ↓
+      </a>
+      <a
+        href={site.github}
+        class="font-mono text-sm text-muted underline-offset-4 transition-colors hover:text-white hover:underline"
+      >
+        github ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Real shared counter from the managed Functions API; em-dash on failure.
+  const el = document.getElementById('visit-count')
+  fetch('/api/visitors', { headers: { accept: 'application/json' } })
+    .then(res => (res.ok ? res.json() : Promise.reject(res.status)))
+    .then((data: { count?: number }) => {
+      if (el && typeof data.count === 'number') {
+        el.textContent = data.count.toLocaleString('en-US')
+      }
+    })
+    .catch(() => {})
+</script>

@@ -1,6 +1,6 @@
 # Muyideen Morenigbade — Portfolio
 
-Personal portfolio and blog for a DevOps & Cloud Engineer, live at [muyideen.dev](https://www.muyideen.dev). React + Vite + TypeScript + Tailwind CSS, hosted on Azure Static Web Apps, managed with Terraform, deployed via GitHub Actions using OIDC (no long-lived cloud secrets). The site is its own case study: the visitor counter on the home page is a managed Azure Function backed by Table Storage, provisioned by the Terraform in this repo.
+Personal portfolio and blog for a DevOps & Cloud Engineer, live at [muyideen.dev](https://www.muyideen.dev). Astro + TypeScript + Tailwind CSS, hosted on Azure Static Web Apps, managed with Terraform, deployed via GitHub Actions using OIDC (no long-lived cloud secrets). The site is its own case study: the deploy hash and visitor counter on the home page are real — the counter is a managed Azure Function backed by Table Storage, provisioned by the Terraform in this repo.
 
 ## Architecture
 
@@ -10,8 +10,9 @@ Personal portfolio and blog for a DevOps & Cloud Engineer, live at [muyideen.dev
 
 | Layer | Choice |
 |---|---|
-| Frontend | React 18, Vite 5, TypeScript, Tailwind CSS, Framer Motion |
-| Blog | Markdown posts compiled at build time (folder per post, images co-located) |
+| Frontend | Astro 5 (static output), TypeScript, Tailwind CSS 4 |
+| Islands | One React island: the ⌘K command palette (cmdk); everything else ships zero JS |
+| Blog | Astro content collections — folder per post, images co-located and auto-optimized to WebP |
 | API | Azure Functions (SWA managed) + Table Storage visitor counter |
 | Hosting | Azure Static Web Apps (Free tier) |
 | IaC | Terraform ≥ 1.7, `azurerm 4.80.0`, remote state in Azure Storage |
@@ -21,17 +22,20 @@ Personal portfolio and blog for a DevOps & Cloud Engineer, live at [muyideen.dev
 
 ```
 src/
-├── components/        # UI (Hero, Projects, SectionHeader, …)
+├── components/        # .astro sections (Hero, Work, …) + CommandPalette.tsx island
 ├── content/posts/     # blog: one folder per post (index.md + images)
-├── data/portfolio.ts  # ALL editable site content
-├── lib/               # posts loader, markdown renderer, motion tokens
-└── pages/             # Home, BlogIndex, BlogPost, NotFound
+├── content.config.ts  # posts collection schema (zod-validated frontmatter)
+├── data/*.yaml        # ALL editable site content (projects, experience, certs, …)
+├── layouts/           # Base.astro (head, header/footer, reveal script)
+├── lib/               # site constants, YAML loaders, post helpers, build hash
+├── pages/             # index, blog/index, blog/[slug], 404, rss.xml
+└── styles/global.css  # design tokens (@theme) + prose styles
 api/visitors/          # visitor-counter Azure Function
 infra/                 # Terraform (resource group, SWA, counter storage)
 public/
 ├── diagrams/          # project architecture diagrams
 └── certifications/    # certification badge images
-scripts/               # sitemap.xml + rss.xml generation (runs pre-build)
+scripts/               # post-build CSP hashing for Astro's inline island scripts
 ```
 
 ---
@@ -40,60 +44,40 @@ scripts/               # sitemap.xml + rss.xml generation (runs pre-build)
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # sitemap + rss → typecheck → production build → dist/
-npm run typecheck  # tsc --noEmit
-npm run lint       # ESLint (warnings are errors)
-npm run sitemap    # regenerate public/sitemap.xml + public/rss.xml only
+npm run dev        # http://localhost:4321
+npm run build      # astro build → dist/, then CSP-hash inline scripts
+npm run preview    # serve the production build locally
+npm run check      # astro check (typechecks .astro + .ts)
 ```
 
 ---
 
 ## Customising content
 
-All editable site content lives in one file: **`src/data/portfolio.ts`**.
+All editable site content lives in **`src/data/*.yaml`** (plus identity in `src/lib/site.ts`).
 
-| Field | What to change |
+| File | What it holds |
 |---|---|
-| `role`, `email`, `github`, `linkedin` | Identity and contact links |
-| `projects[]` | Add/edit/remove projects |
-| `certifications[]` | Add/edit/remove certs |
-| `experience[]`, `education[]`, `skills[]` | Timeline, schools, tech stack |
+| `projects.yaml` | Projects; `featured: true` entries render as full case studies |
+| `experience.yaml` | Roles, periods, bullets |
+| `certifications.yaml` | Certs with verify URLs and badge images |
+| `education.yaml`, `skills.yaml` | Schools/bootcamps, toolbox categories |
 
 ### Adding a project
 
-Drop the architecture diagram in `public/diagrams/` and reference it:
+Drop the architecture diagram in `public/diagrams/` and add an entry:
 
-```ts
-{
-  id: 'my-project',              // kebab-case, unique
-  title: 'My Project',
-  command: 'run my-project',     // shown as: $ run my-project
-  description: [
-    '# One-line summary as a comment.',
-  ],
-  stack: ['Terraform', 'Azure'], // shown as mono tags
-  links: [
-    { label: 'GitHub', href: 'https://github.com/...', external: true },
-  ],
-  diagram: '/diagrams/my-project.png',  // optional; omit for a stack panel
-},
-```
-
-The projects section shows the first 4 entries with a "show all" expander.
-
-### Adding a certification
-
-Drop the badge in `public/certifications/` and reference it:
-
-```ts
-{
-  issuer: 'Microsoft',
-  title: 'AZ-500 Azure Security Engineer Associate',
-  date: '2025-01',
-  verifyUrl: 'https://learn.microsoft.com/api/credentials/share/YOUR_ID',
-  badgeImage: '/certifications/az-500.png',  // optional; Credly URLs fall back automatically
-},
+```yaml
+- id: my-project              # kebab-case, unique
+  title: My Project
+  tagline: One-line summary shown under the title.
+  stack: [Terraform, Azure]
+  github: https://github.com/...
+  diagram: /diagrams/my-project.png   # optional
+  featured: true                      # optional: promotes to a case study
+  detail: >-                          # required for featured entries
+    A paragraph of case-study context.
+  writeup: my-post-slug               # optional: links to a published post
 ```
 
 ---
@@ -110,7 +94,7 @@ src/content/posts/
     └── image-02.png
 ```
 
-`index.md` starts with frontmatter:
+`index.md` starts with frontmatter (zod-validated by `src/content.config.ts`):
 
 ```markdown
 ---
@@ -129,10 +113,9 @@ Body in markdown. Reference co-located images relatively:
 Notes:
 
 - **`draft: true` posts are invisible everywhere** — site, sitemap, and RSS. Flip to `false` to publish.
-- Relative image references (`./image.png`) are resolved at build time to hashed, lazy-loaded assets. Keep images in the post's own folder — no external hot-linking (the CSP blocks it).
-- Frontmatter is parsed at build time by the `post-meta` Vite plugin (`vite.config.ts`); post bodies are code-split so the home page never downloads them.
-- Reading time is estimated automatically (override with `readingTime: N` in frontmatter).
-- `sitemap.xml` and `rss.xml` regenerate on every build — nothing to hand-maintain.
+- Relative image references (`./image.png`) are optimized to hashed WebP with intrinsic dimensions at build time (zero layout shift). Keep images in the post's own folder — external hot-linking is blocked by the CSP.
+- Code blocks are highlighted by Shiki at build time and get a copy button; headings get hover anchors; posts with 3+ `##` headings get a table of contents.
+- `sitemap-index.xml` and `rss.xml` regenerate on every build — nothing to hand-maintain.
 
 ---
 
@@ -186,7 +169,7 @@ This provisions the resource group, the Static Web App (with custom domains from
 
 Two workflows:
 
-- **`ci.yml`** — lint, typecheck, and build on every pull request and every non-`main` branch push. No cloud access needed.
+- **`ci.yml`** — typecheck and build on every pull request and every non-`main` branch push. No cloud access needed.
 - **`deploy.yml`** — on push to `main`: `terraform apply`, then build and deploy to SWA. Authenticates to Azure with `azure/login` via **OIDC federated identity** — GitHub mints a short-lived token per run; the three Azure values below are identifiers, not credentials.
 
 Set these in **Settings → Secrets and variables → Actions** (all as **secrets**, matching `deploy.yml`):
@@ -206,7 +189,8 @@ Dependabot (`.github/dependabot.yml`) watches npm (root and `api/`), GitHub Acti
 
 - **OIDC-only cloud auth** in CI — no service-principal secrets stored in GitHub.
 - **Security headers** served via `public/staticwebapp.config.json`: a Content-Security-Policy locked to same-origin (plus Credly for badge fallbacks), `nosniff`, `frame-ancestors 'none'`, referrer and permissions policies.
-- **Markdown is rendered with raw HTML disabled** and code blocks escaped; external links get `rel="noopener noreferrer"`.
+- **No `unsafe-inline` scripts**: Astro's two inline island-bootstrap scripts are sha256-hashed into the CSP by `scripts/postbuild-csp.mjs` on every build.
+- Markdown renders through Astro's remark pipeline; external images are blocked by the CSP by design.
 - Visitor-counter storage enforces TLS 1.2 and is scoped to a single-purpose account.
 
 ---
@@ -246,5 +230,5 @@ Check `draft: false` in its frontmatter, and that the folder contains an `index.
 **Images in a post render as broken**
 Reference them relatively (`./image-01.png`) from inside the post's folder. External image hosts are blocked by the CSP by design.
 
-**Local build passes but CI lint fails**
-Run `npm run lint` locally before pushing — ESLint runs with `--max-warnings 0`, so warnings fail CI.
+**Browser console shows a CSP violation for an inline script**
+Rebuild with `npm run build` — the CSP hashes in `dist/staticwebapp.config.json` are regenerated from the built HTML on every build (see `scripts/postbuild-csp.mjs`).

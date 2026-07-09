@@ -1,0 +1,116 @@
+---
+import { render } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+import { getPublishedPosts, formatDate, readingTime } from '../../lib/posts'
+import { site } from '../../lib/site'
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts()
+  return posts.map(post => ({ params: { slug: post.id }, props: { post } }))
+}
+
+const { post } = Astro.props
+const { Content, headings } = await render(post)
+const toc = headings.filter(h => h.depth === 2)
+---
+
+<Base title={`${post.data.title} — ${site.name}`} description={post.data.excerpt}>
+  <div
+    class="mx-auto grid max-w-[1080px] gap-12 px-6 pb-20 pt-32 xl:grid-cols-[minmax(0,1fr)_220px]"
+  >
+    <article class="min-w-0">
+      <p class="mb-6 font-mono text-sm">
+        <a
+          href="/blog"
+          class="text-muted transition-colors hover:text-accent"
+        >
+          ← blog
+        </a>
+      </p>
+
+      <header class="mb-10">
+        <h1
+          class="max-w-[24ch] text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl"
+        >
+          {post.data.title}
+        </h1>
+        <p class="mt-4 font-mono text-sm text-muted">
+          {formatDate(post.data.date)} · {readingTime(post.body)} min read
+        </p>
+        {
+          post.data.tags.length > 0 && (
+            <ul class="mt-4 flex flex-wrap gap-2" aria-label="Tags">
+              {post.data.tags.map(tag => (
+                <li class="rounded border border-line bg-panel px-2 py-1 font-mono text-[11px] text-muted">
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <footer class="mt-14 border-t border-line pt-6">
+        <a
+          href="/blog"
+          class="font-mono text-sm text-muted transition-colors hover:text-accent"
+        >
+          ← all posts
+        </a>
+      </footer>
+    </article>
+
+    {
+      toc.length >= 3 && (
+        <aside class="hidden xl:block" aria-label="Table of contents">
+          <nav class="sticky top-24">
+            <p class="mb-3 font-mono text-xs uppercase tracking-wider text-muted">
+              On this page
+            </p>
+            <ul class="flex flex-col gap-2 border-l border-line pl-4">
+              {toc.map(heading => (
+                <li>
+                  <a
+                    href={`#${heading.slug}`}
+                    class="block text-[13px] leading-snug text-muted transition-colors hover:text-accent"
+                  >
+                    {heading.text.replace(/#$/, '')}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      )
+    }
+  </div>
+
+  <script>
+    // Copy button on every code block.
+    for (const pre of document.querySelectorAll('.prose pre.astro-code')) {
+      const btn = document.createElement('button')
+      btn.type = 'button'
+      btn.className = 'code-copy'
+      btn.textContent = 'copy'
+      btn.setAttribute('aria-label', 'Copy code to clipboard')
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.textContent ?? '')
+          btn.textContent = 'copied'
+          btn.classList.add('code-copy--done')
+          setTimeout(() => {
+            btn.textContent = 'copy'
+            btn.classList.remove('code-copy--done')
+          }, 1800)
+        } catch {
+          /* clipboard unavailable */
+        }
+      })
+      pre.appendChild(btn)
+    }
+  </script>
+</Base>

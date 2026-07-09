@@ -1,175 +1,154 @@
-import * as Dialog from '@radix-ui/react-dialog'
+import { useCallback, useEffect, useState } from 'react'
 import { Command } from 'cmdk'
-import { ArrowRight, BookOpen, Copy, Download, FileText, Linkedin, Mail, Search } from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { GitHubIcon } from './GitHubIcon'
-import { getAllPosts } from '../lib/posts'
-import { portfolio } from '../data/portfolio'
+import {
+  ArrowUpRight,
+  Copy,
+  Download,
+  FileText,
+  Home,
+  Mail,
+  Rss,
+} from 'lucide-react'
 
-interface CommandPaletteProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+const EMAIL = 'contact@muyideen.dev'
+
+interface Props {
+  posts: Array<{ slug: string; title: string }>
 }
 
-/** Order mirrors the home page sections. */
-const NAV_ITEMS = [
-  { label: 'Hero', href: '#main-content' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Tech Stack', href: '#tech-stack' },
-  { label: 'Certifications', href: '#certifications' },
-  { label: 'Education', href: '#education' },
-  { label: 'How this site works', href: '#architecture' },
-  { label: 'Contact', href: '#contact' },
+const SECTIONS = [
+  { label: 'Work', href: '/#work' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Writing', href: '/#writing' },
+  { label: 'Credentials', href: '/#credentials' },
+  { label: 'Contact', href: '/#contact' },
+  { label: 'Blog', href: '/blog' },
 ]
 
-export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
+const LINKS = [
+  { label: 'GitHub', href: 'https://github.com/mmuyideen' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/muyideenmorenigbade' },
+]
 
-  function select(href: string) {
-    onOpenChange(false)
-    if (href.startsWith('#')) {
-      const id = href.slice(1)
-      if (pathname === '/') {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        navigate(`/#${id}`)
+const ITEM_CLASS =
+  'flex cursor-pointer select-none items-center gap-3 rounded px-3 py-2 text-sm text-fg data-[selected=true]:bg-panel-2 data-[selected=true]:text-white'
+
+export default function CommandPalette({ posts }: Props) {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpen(v => !v)
       }
-    } else if (href.startsWith('/')) {
-      navigate(href)
-    } else {
-      window.open(href, '_blank', 'noopener,noreferrer')
     }
-  }
+    const onOpen = () => setOpen(true)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('palette:open', onOpen)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('palette:open', onOpen)
+    }
+  }, [])
+
+  const go = useCallback((href: string) => {
+    setOpen(false)
+    window.location.href = href
+  }, [])
+
+  const copyEmail = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL)
+    } catch {
+      /* clipboard unavailable */
+    }
+    setOpen(false)
+  }, [])
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-bg/75 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-150" />
-        <Dialog.Content
-          className="fixed left-1/2 top-[18vh] z-50 w-full max-w-md -translate-x-1/2 px-4 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-4 data-[state=closed]:slide-out-to-top-4 duration-150"
-          aria-describedby={undefined}
-        >
-          <Dialog.Title className="sr-only">Command palette</Dialog.Title>
+    <Command.Dialog
+      open={open}
+      onOpenChange={setOpen}
+      label="Command palette"
+      className="fixed left-1/2 top-[18vh] z-50 w-[min(92vw,560px)] -translate-x-1/2 overflow-hidden rounded-lg border border-white/10 bg-panel shadow-2xl"
+      overlayClassName="fixed inset-0 z-50 bg-black/60"
+    >
+      <Command.Input
+        placeholder="Type a command or search…"
+        className="w-full border-b border-line bg-transparent px-4 py-3.5 font-mono text-sm text-white outline-none placeholder:text-muted"
+      />
+      <Command.List className="max-h-[50vh] overflow-y-auto p-2 pb-3">
+        <Command.Empty className="px-4 py-8 text-center font-mono text-sm text-muted">
+          No results.
+        </Command.Empty>
 
-          <Command
-            key={String(open)}
-            className="bg-surface border rounded overflow-hidden shadow-2xl font-mono text-sm"
+        <Command.Group heading="Go to">
+          {SECTIONS.map(section => (
+            <Command.Item
+              key={section.href}
+              onSelect={() => go(section.href)}
+              className={ITEM_CLASS}
+            >
+              <Home size={14} aria-hidden="true" />
+              {section.label}
+            </Command.Item>
+          ))}
+        </Command.Group>
+
+        {posts.length > 0 && (
+          <Command.Group heading="Writing">
+            {posts.map(post => (
+              <Command.Item
+                key={post.slug}
+                onSelect={() => go(`/blog/${post.slug}`)}
+                className={ITEM_CLASS}
+              >
+                <FileText size={14} aria-hidden="true" />
+                <span className="truncate">{post.title}</span>
+              </Command.Item>
+            ))}
+          </Command.Group>
+        )}
+
+        <Command.Group heading="Actions">
+          <Command.Item onSelect={copyEmail} className={ITEM_CLASS}>
+            <Copy size={14} aria-hidden="true" />
+            Copy email address
+          </Command.Item>
+          <Command.Item
+            onSelect={() => go(`mailto:${EMAIL}`)}
+            className={ITEM_CLASS}
           >
-            <div className="flex items-center gap-2.5 px-4 border-b">
-              <Search size={13} className="text-muted shrink-0" aria-hidden="true" />
-              <Command.Input
-                placeholder="Jump to section or link..."
-                className="w-full py-3.5 bg-transparent text-sm placeholder:text-muted focus:outline-none"
-              />
-            </div>
+            <Mail size={14} aria-hidden="true" />
+            Email me
+          </Command.Item>
+          <Command.Item
+            onSelect={() => go('/resume.pdf')}
+            className={ITEM_CLASS}
+          >
+            <Download size={14} aria-hidden="true" />
+            Download resume
+          </Command.Item>
+        </Command.Group>
 
-            <Command.List className="max-h-64 overflow-y-auto py-1.5">
-              <Command.Empty className="py-8 text-center text-muted text-xs">
-                No results.
-              </Command.Empty>
-
-              <Command.Group heading="Navigate">
-                {NAV_ITEMS.map(item => (
-                  <Command.Item
-                    key={item.href}
-                    value={item.label}
-                    onSelect={() => select(item.href)}
-                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                  >
-                    <ArrowRight size={11} className="text-accent shrink-0" aria-hidden="true" />
-                    {item.label}
-                  </Command.Item>
-                ))}
-              </Command.Group>
-
-              <Command.Group heading="Posts">
-                {getAllPosts().map(post => (
-                  <Command.Item
-                    key={post.slug}
-                    value={`post ${post.title}`}
-                    onSelect={() => select(`/blog/${post.slug}`)}
-                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                  >
-                    <FileText size={11} className="shrink-0" aria-hidden="true" />
-                    <span className="truncate">{post.title}</span>
-                  </Command.Item>
-                ))}
-              </Command.Group>
-
-              <Command.Group heading="Actions">
-                <Command.Item
-                  value="Copy email address"
-                  onSelect={() => {
-                    navigator.clipboard.writeText(portfolio.email)
-                    onOpenChange(false)
-                  }}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <Copy size={11} className="shrink-0" aria-hidden="true" />
-                  Copy email address
-                </Command.Item>
-                <Command.Item
-                  value="Download resume"
-                  onSelect={() => {
-                    const link = document.createElement('a')
-                    link.href = '/resume.pdf'
-                    link.download = ''
-                    link.click()
-                    onOpenChange(false)
-                  }}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <Download size={11} className="shrink-0" aria-hidden="true" />
-                  Download resume
-                </Command.Item>
-              </Command.Group>
-
-              <Command.Group heading="Links">
-                <Command.Item
-                  value="Blog"
-                  onSelect={() => select('/blog')}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <BookOpen size={11} className="shrink-0" aria-hidden="true" />
-                  Blog
-                </Command.Item>
-                <Command.Item
-                  value="GitHub"
-                  onSelect={() => select(portfolio.github)}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <GitHubIcon size={11} className="shrink-0" aria-hidden="true" />
-                  GitHub
-                </Command.Item>
-                <Command.Item
-                  value="LinkedIn"
-                  onSelect={() => select(portfolio.linkedin)}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <Linkedin size={11} className="shrink-0" aria-hidden="true" />
-                  LinkedIn
-                </Command.Item>
-                <Command.Item
-                  value="Email"
-                  onSelect={() => select(`mailto:${portfolio.email}`)}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <Mail size={11} className="shrink-0" aria-hidden="true" />
-                  Email
-                </Command.Item>
-              </Command.Group>
-            </Command.List>
-
-            <div className="flex items-center gap-4 px-4 py-2 border-t text-[10px] text-muted select-none">
-              <span>↑↓ navigate</span>
-              <span>↵ select</span>
-              <span className="ml-auto">esc close</span>
-            </div>
-          </Command>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        <Command.Group heading="Elsewhere">
+          {LINKS.map(link => (
+            <Command.Item
+              key={link.href}
+              onSelect={() => go(link.href)}
+              className={ITEM_CLASS}
+            >
+              <ArrowUpRight size={14} aria-hidden="true" />
+              {link.label}
+            </Command.Item>
+          ))}
+          <Command.Item onSelect={() => go('/rss.xml')} className={ITEM_CLASS}>
+            <Rss size={14} aria-hidden="true" />
+            RSS feed
+          </Command.Item>
+        </Command.Group>
+      </Command.List>
+    </Command.Dialog>
   )
 }

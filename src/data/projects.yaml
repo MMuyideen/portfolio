@@ -1,0 +1,85 @@
+# Portfolio projects. Featured entries render as full case studies on the
+# homepage; the rest appear in the compact index below them.
+# writeup: slug of a published post in src/content/posts (omit if none/draft).
+
+- id: portfolio-site
+  title: muyideen.dev — this site
+  featured: true
+  tagline: The site you're reading, run like production infrastructure.
+  detail: >-
+    A statically generated Astro site on Azure Static Web Apps with a managed
+    Functions API for live telemetry — the deploy hash and visitor count in the
+    hero are real. Infrastructure is Terraform with remote state in Azure
+    Storage, and every deploy runs through GitHub Actions with OIDC federated
+    identity: no long-lived cloud credentials exist anywhere in the pipeline.
+  stack: [Astro, Azure Static Web Apps, Azure Functions, Table Storage, Terraform, GitHub Actions]
+  writeup: how-this-site-works
+  diagram: architecture
+
+- id: aks-gitops
+  title: AKS GitOps Pipeline
+  featured: true
+  tagline: Terraform-provisioned AKS reconciled by ArgoCD.
+  detail: >-
+    An AKS cluster provisioned end-to-end with Terraform and wired to ArgoCD
+    for declarative GitOps — every workload change lands by Git commit, not by
+    hand-run kubectl. GitHub Actions handles image builds; ArgoCD keeps the
+    cluster converged on the repo.
+  stack: [Terraform, Kubernetes, Azure, ArgoCD, GitHub Actions]
+  github: https://github.com/mmuyideen/AKS-terraform-argocd
+  diagram: /diagrams/aks-gitops.png
+
+- id: azure-three-tier
+  title: Azure Three-Tier App
+  featured: true
+  tagline: Classic three-tier architecture, fully Terraform-managed.
+  detail: >-
+    A three-tier web application on Azure — Application Gateway at the edge,
+    VM scale sets for the app tier, and Azure Database for MySQL reached over a
+    private endpoint — with CDN and DNS wired in. The entire environment is
+    provisioned with Terraform.
+  stack: [Azure, Terraform, VMSS, MySQL, App Gateway, Private Endpoint, CDN, DNS]
+  github: https://github.com/MMuyideen/azure-3tier-webapp
+  diagram: /diagrams/azure-three-tier.png
+
+- id: eks-gitops
+  title: EKS GitOps Pipeline
+  tagline: The AWS twin — Terraform-provisioned EKS reconciled by ArgoCD.
+  stack: [Terraform, Kubernetes, AWS, ArgoCD]
+  github: https://github.com/mmuyideen/EKS-terraform-argocd
+
+- id: aws-three-tier
+  title: AWS Three-Tier App
+  tagline: Three-tier architecture on AWS built with the CLI — VPC, EC2, RDS, load balancers.
+  stack: [AWS, EC2, RDS, VPC, Load Balancers]
+  github: https://github.com/MMuyideen/aws-3tier-webapp
+
+- id: aws-two-tier
+  title: AWS Two-Tier App
+  tagline: Terraform-managed two-tier stack with CloudFront, ACM, and DNS.
+  stack: [AWS, Terraform, EC2, RDS, CloudFront]
+  github: https://github.com/MMuyideen/aws-2tier-terraform
+
+- id: azure-serverless-api
+  title: Azure Serverless API
+  tagline: Function Apps behind API Management and Front Door, provisioned with Terraform.
+  stack: [Azure, Terraform, Function Apps, API Management, Front Door]
+  github: https://github.com/MMuyideen/azure-serverless-api
+
+- id: aws-static-website
+  title: AWS Static Website
+  tagline: S3 + CloudFront static hosting with a GitHub Actions CI/CD pipeline.
+  stack: [AWS, S3, CloudFront, GitHub Actions]
+  github: https://github.com/MMuyideen/aws-static-webapp-cicd
+
+- id: azure-static-website
+  title: Azure Static Website
+  tagline: Storage + CDN static hosting deployed by Azure DevOps pipelines.
+  stack: [Azure, Storage, CDN, Azure DevOps]
+  github: https://github.com/MMuyideen/azure-static-webapp-cicd
+
+- id: azure-aks-monitor
+  title: Azure AKS Monitor
+  tagline: AKS monitoring with Key Vault and Entra ID service principals.
+  stack: [Azure, AKS, Key Vault, Entra ID]
+  github: https://github.com/MMuyideen/azure-aks-monitor

@@ -6,13 +6,13 @@ tags: ["Azure", "Terraform", "GitHub Actions", "OIDC", "Static Web Apps"]
 draft: false
 ---
 
-This site is a static React app, but everything around it is the part I actually care about: the infrastructure is code, the deploys are keyless, and the visitor counter you see on the home page is a real serverless function hitting real storage. This post walks through how the pieces fit.
+This site is a statically generated Astro site, but everything around it is the part I actually care about: the infrastructure is code, the deploys are keyless, and the visitor counter you see on the home page is a real serverless function hitting real storage. This post walks through how the pieces fit.
 
 ## The shape of the system
 
 ![Architecture: GitHub Actions authenticates to Azure with OIDC; Terraform provisions a Static Web App and a Table Storage account; visitors reach the site over HTTPS and a managed Function increments the counter with ETag retries](./architecture.svg)
 
-The frontend is Vite + React + TypeScript, built to a `dist/` folder. Azure Static Web Apps serves it from a global edge, and also hosts the small Functions API that lives in `api/` — no separate Function App to provision or pay for.
+The frontend is Astro + TypeScript, statically built to a `dist/` folder — plain HTML with a single React island for the ⌘K command palette. Azure Static Web Apps serves it from a global edge, and also hosts the small Functions API that lives in `api/` — no separate Function App to provision or pay for.
 
 ## Terraform owns the infrastructure
 
@@ -59,7 +59,7 @@ No locks, no queues — for a counter this is exactly the level of machinery the
 ## Small hardening details
 
 - **Security headers** are declared in `staticwebapp.config.json`: a Content-Security-Policy scoped to the handful of origins the site actually uses, `nosniff`, `frame-ancestors 'none'`, a referrer policy and a permissions policy.
-- **The blog is markdown compiled at build time** — frontmatter is parsed by a Vite plugin during the build, raw HTML in markdown is disabled, and each post's body is code-split so the home page never downloads them.
+- **The blog is markdown compiled at build time** — posts live in a content collection with zod-validated frontmatter, images are optimized to WebP with intrinsic dimensions, and every post ships as pre-rendered HTML.
 - **CI runs on every branch** (lint, typecheck, build) before anything reaches `main`, and Dependabot watches npm, GitHub Actions and the Terraform providers.
 
 The whole thing costs almost nothing to run — the Static Web App is on the free tier, and the storage account bills fractions of a cent for the counter's traffic. The repo *is* the case study: if you want to see any of this in detail, it lives on [my GitHub](https://github.com/MMuyideen).

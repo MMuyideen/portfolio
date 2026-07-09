@@ -1,0 +1,124 @@
+---
+const links = [
+  { label: 'work', href: '/#work' },
+  { label: 'experience', href: '/#experience' },
+  { label: 'writing', href: '/#writing' },
+  { label: 'credentials', href: '/#credentials' },
+  { label: 'contact', href: '/#contact' },
+  { label: 'blog', href: '/blog' },
+]
+---
+
+<header
+  class="fixed inset-x-0 top-0 z-40 border-b border-line bg-ink/85 backdrop-blur"
+>
+  <div
+    class="mx-auto flex h-14 max-w-[1080px] items-center justify-between px-6"
+  >
+    <a
+      href="/"
+      class="font-mono text-sm font-semibold tracking-tight text-white"
+    >
+      muyideen<span class="text-accent">.dev</span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-6 md:flex">
+      {
+        links.map(link => (
+          <a
+            href={link.href}
+            class="font-mono text-[13px] text-muted transition-colors hover:text-white"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <button
+        type="button"
+        id="palette-trigger"
+        class="rounded border border-line px-2 py-1 font-mono text-[11px] text-muted transition-colors hover:border-accent/50 hover:text-white"
+        aria-label="Open command palette"
+      >
+        ⌘K
+      </button>
+    </nav>
+
+    <div class="flex items-center gap-3 md:hidden">
+      <button
+        type="button"
+        id="palette-trigger-mobile"
+        class="rounded border border-line px-2 py-1 font-mono text-[11px] text-muted"
+        aria-label="Open command palette"
+      >
+        ⌘K
+      </button>
+      <button
+        type="button"
+        id="menu-trigger"
+        class="rounded border border-line p-1.5 text-muted"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav
+    id="mobile-menu"
+    aria-label="Primary mobile"
+    class="hidden border-t border-line bg-ink px-6 py-4 md:hidden"
+  >
+    <ul class="flex flex-col gap-3">
+      {
+        links.map(link => (
+          <li>
+            <a
+              href={link.href}
+              class="block font-mono text-sm text-muted transition-colors hover:text-white"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const openPalette = () =>
+    window.dispatchEvent(new CustomEvent('palette:open'))
+  document.getElementById('palette-trigger')?.addEventListener('click', openPalette)
+  document
+    .getElementById('palette-trigger-mobile')
+    ?.addEventListener('click', openPalette)
+
+  const trigger = document.getElementById('menu-trigger')
+  const menu = document.getElementById('mobile-menu')
+  trigger?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false
+    trigger.setAttribute('aria-expanded', String(open))
+  })
+  // Close the menu after navigating to an anchor.
+  menu?.addEventListener('click', e => {
+    if ((e.target as HTMLElement).closest('a')) {
+      menu.classList.add('hidden')
+      trigger?.setAttribute('aria-expanded', 'false')
+    }
+  })
+</script>

@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets'
+import Section from './Section.astro'
+import { featuredProjects, otherProjects } from '../lib/data'
+import architectureSvg from '../content/posts/how-this-site-works/architecture.svg'
+---
+
+<Section id="work" index="01" title="Selected work">
+  <div class="flex flex-col gap-16">
+    {
+      featuredProjects.map((project, i) => (
+        <article
+          class="grid items-start gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
+          data-reveal
+        >
+          <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
+            <h3 class="text-xl font-semibold tracking-tight text-white">
+              {project.title}
+            </h3>
+            <p class="mt-1 font-mono text-sm text-accent">{project.tagline}</p>
+            {project.detail && (
+              <p class="mt-4 leading-relaxed text-muted">{project.detail}</p>
+            )}
+            <ul class="mt-5 flex flex-wrap gap-2" aria-label="Stack">
+              {project.stack.map(tool => (
+                <li class="rounded border border-line bg-panel px-2 py-1 font-mono text-[11px] text-muted">
+                  {tool}
+                </li>
+              ))}
+            </ul>
+            <p class="mt-5 flex gap-5 font-mono text-sm">
+              {project.github && (
+                <a
+                  href={project.github}
+                  class="text-fg underline-offset-4 transition-colors hover:text-accent hover:underline"
+                >
+                  github ↗
+                </a>
+              )}
+              {project.writeup && (
+                <a
+                  href={`/blog/${project.writeup}`}
+                  class="text-fg underline-offset-4 transition-colors hover:text-accent hover:underline"
+                >
+                  read the write-up →
+                </a>
+              )}
+            </p>
+          </div>
+
+          {project.diagram === 'architecture' ? (
+            <a
+              href={project.writeup ? `/blog/${project.writeup}` : '#'}
+              class={`block overflow-hidden rounded-lg border border-line bg-panel transition-colors hover:border-accent/40 ${i % 2 === 1 ? 'lg:order-1' : ''}`}
+              aria-label="How this site works — architecture diagram"
+            >
+              <Image
+                src={architectureSvg}
+                alt={`Architecture of ${project.title}`}
+                class="h-auto w-full"
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            </a>
+          ) : project.diagram ? (
+            <div
+              class={`overflow-hidden rounded-lg border border-line bg-white ${i % 2 === 1 ? 'lg:order-1' : ''}`}
+            >
+              <img
+                src={project.diagram}
+                alt={`Architecture diagram for ${project.title}`}
+                class="h-auto w-full object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          ) : null}
+        </article>
+      ))
+    }
+  </div>
+
+  <!-- The rest, as a compact index. -->
+  <div class="mt-16" data-reveal>
+    <h3 class="mb-4 font-mono text-sm text-muted">more projects</h3>
+    <ul class="divide-y divide-line border-y border-line">
+      {
+        otherProjects.map(project => (
+          <li>
+            <a
+              href={project.github ?? '#work'}
+              class="group grid gap-1 py-4 transition-colors sm:grid-cols-[minmax(0,3fr)_minmax(0,5fr)_auto] sm:items-baseline sm:gap-4"
+            >
+              <span class="font-medium text-white transition-colors group-hover:text-accent">
+                {project.title}
+              </span>
+              <span class="text-sm text-muted">{project.tagline}</span>
+              <span class="hidden font-mono text-xs text-muted transition-colors group-hover:text-accent sm:block">
+                {project.github ? '↗' : ''}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Section>

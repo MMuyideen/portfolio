@@ -1,0 +1,16 @@
+- name: Cloud
+  tools: [AWS, Azure, GCP, DigitalOcean]
+- name: Containers
+  tools: [Kubernetes, Docker, ArgoCD, AKS, EKS]
+- name: IaC
+  tools: [Terraform, ARM Templates, CloudFormation, OpenTofu]
+- name: CI/CD
+  tools: [GitHub Actions, Azure DevOps, Jenkins, CircleCI]
+- name: Observability
+  tools: [Prometheus, Grafana, Azure Monitor, CloudWatch, New Relic]
+- name: Scripting
+  tools: [Python, PowerShell, Bash, YAML]
+- name: Security
+  tools: [Azure Policy, RBAC, IAM, MFA, Microsoft Entra]
+- name: Networking
+  tools: [DNS, VPN, Load Balancing, WAF, Firewalls, VNet]

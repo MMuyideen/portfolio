@@ -1,0 +1,41 @@
+- issuer: Microsoft
+  title: Microsoft Certified Trainer (MCT) 2026
+  date: 2026-01
+  verifyUrl: https://www.credly.com/badges/7b8de62b-ba25-4a54-b17a-ef6da2159dd0/public_url
+  badge: /certifications/microsoft-certified-trainer-mct-2026.png
+
+- issuer: Microsoft
+  title: "AZ-400 Microsoft Certified: DevOps Engineer Expert"
+  date: 2026-04
+  verifyUrl: https://learn.microsoft.com/en-us/users/muyideenm/credentials/43bd58e6a9e3c6e5
+  badge: /certifications/AZ-400-Microsoft-Certified-Azure-DevOps-Engineer.png
+
+- issuer: The Linux Foundation
+  title: "KCNA: Kubernetes and Cloud Native Associate"
+  date: 2025-08
+  verifyUrl: https://www.credly.com/badges/e7df1162-2a0f-46e7-a139-dfd2c3abb77c/
+  badge: /certifications/kcna-kubernetes-and-cloud-native-associate.png
+
+- issuer: Amazon Web Services (AWS)
+  title: AWS Certified Solutions Architect – Associate
+  date: 2024-01
+  verifyUrl: https://www.credly.com/badges/b1d029b9-5870-4af0-9580-9c31db1d7696/
+  badge: /certifications/aws-certified-solutions-architect-associate.png
+
+- issuer: Amazon Web Services (AWS)
+  title: AWS Certified Cloud Practitioner
+  date: 2023-10
+  verifyUrl: https://www.credly.com/badges/e7df1162-2a0f-46e7-a139-dfd2c3abb77c/
+  badge: /certifications/aws-certified-cloud-practitioner.png
+
+- issuer: Microsoft
+  title: "Microsoft Certified: Azure Administrator Associate"
+  date: 2023-08
+  verifyUrl: https://learn.microsoft.com/en-gb/users/muyideenm/credentials/ac333bcc783f9764
+  badge: /certifications/azure-administrator-associate.png
+
+- issuer: Microsoft
+  title: "Microsoft Certified: Azure Fundamentals"
+  date: 2022-08
+  verifyUrl: https://learn.microsoft.com/api/credentials/share/en-us/MuyideenM/F2D11B0DEDC24DF0?sharingId=63CC44E8B3AF8C6
+  badge: /certifications/microsoft-certified-azure-fundamentals.png

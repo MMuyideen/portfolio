@@ -1,0 +1,21 @@
+- id: perizer
+  role: Cloud/DevOps Engineer
+  company: Perizer
+  period: 2025 – present
+  bullets:
+    - Led design and implementation of end-to-end CI/CD pipelines using GitHub Actions and Azure DevOps, reducing deployment times by 60%.
+    - Automated infrastructure provisioning with Terraform and ARM Templates across Azure and AWS, eliminating manual configuration drift.
+    - Built and managed containerised workflows using Docker and Kubernetes (AKS/EKS), improving platform reliability and fault tolerance.
+    - Implemented monitoring and alerting using Azure Monitor, Prometheus, and Grafana, maintaining 99.9% service availability.
+    - Enforced cloud security through Azure Policy, RBAC, and automated compliance checks, reducing audit findings.
+
+- id: teknowledge
+  role: Azure Cloud Support Engineer
+  company: Teknowledge
+  period: 2023 – 2026
+  bullets:
+    - Designed and deployed scalable cloud environments using Terraform IaC, reducing manual provisioning time by 40%.
+    - Hardened cloud environments with Azure Policy and RBAC, ensuring 100% compliance with ISO 27001 standards.
+    - Built and maintained Azure DevOps YAML pipelines for automated CI/CD, enabling daily production deployments with zero downtime.
+    - Implemented Azure Monitor and Log Analytics with custom dashboards and proactive alerting, achieving 99.99% uptime.
+    - Reduced monthly cloud spend by 30% through Azure Advisor recommendations, Reserved Instances, and automated shutdown schedules.

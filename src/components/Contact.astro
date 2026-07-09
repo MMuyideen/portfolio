@@ -1,0 +1,64 @@
+---
+import Section from './Section.astro'
+import { site } from '../lib/site'
+---
+
+<Section id="contact" index="05" title="Contact">
+  <div class="max-w-[64ch]" data-reveal>
+    <p class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+      Have something that should run itself?
+    </p>
+    <p class="mt-4 leading-relaxed text-muted">
+      I'm open to DevOps and cloud engineering work — platform builds,
+      migrations, or pipelines that need to stop being hand-fed. The fastest
+      way to reach me is email; I usually reply within a day.
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center gap-4">
+      <a
+        href={`mailto:${site.email}`}
+        class="rounded-md bg-accent px-5 py-2.5 font-mono text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+      >
+        Email me
+      </a>
+      <button
+        type="button"
+        id="copy-email"
+        data-email={site.email}
+        class="rounded-md border border-line px-5 py-2.5 font-mono text-sm text-fg transition-colors hover:border-accent/50 hover:text-white"
+      >
+        copy {site.email}
+      </button>
+    </div>
+
+    <p class="mt-6 flex flex-wrap gap-5 font-mono text-sm text-muted">
+      <a href={site.linkedin} class="transition-colors hover:text-white">
+        linkedin ↗
+      </a>
+      <a href={site.github} class="transition-colors hover:text-white">
+        github ↗
+      </a>
+      <a href="/resume.pdf" class="transition-colors hover:text-white">
+        resume ↓
+      </a>
+    </p>
+  </div>
+</Section>
+
+<script>
+  const btn = document.getElementById('copy-email') as HTMLButtonElement | null
+  if (btn) {
+    const label = btn.textContent
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.email ?? '')
+        btn.textContent = 'copied ✓'
+        setTimeout(() => {
+          btn.textContent = label
+        }, 1800)
+      } catch {
+        // Clipboard unavailable — the mailto button is right there.
+      }
+    })
+  }
+</script>
