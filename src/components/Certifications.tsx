@@ -10,6 +10,16 @@ function getCredlyImage(verifyUrl: string): string | null {
   return m ? `https://images.credly.com/badges/${m[1]}/original.png` : null
 }
 
+/** Format "2026-01" as "Jan 2026"; unrecognised values pass through. */
+function formatCertDate(date: string): string {
+  const match = date.match(/^(\d{4})-(\d{2})$/)
+  if (!match) return date
+  return new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 1)).toLocaleDateString(
+    'en-GB',
+    { month: 'short', year: 'numeric', timeZone: 'UTC' },
+  )
+}
+
 function issuerAbbrev(issuer: string): string {
   const words = issuer.replace(/\(.*?\)/g, '').trim().split(/\s+/).filter(Boolean)
   if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
@@ -77,7 +87,7 @@ export function Certifications({ certifications }: { certifications: Certificati
               </div>
 
               <div className="w-full flex items-center justify-between font-mono text-[10px] text-muted mt-auto pt-2 border-t">
-                <span className="tabular-nums">{cert.date}</span>
+                <span className="tabular-nums">{formatCertDate(cert.date)}</span>
                 <span className="flex items-center gap-0.5 text-accent group-hover:underline">
                   verified
                   <ExternalLink size={9} aria-hidden="true" />

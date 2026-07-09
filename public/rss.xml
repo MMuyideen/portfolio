@@ -6,7 +6,7 @@
     <atom:link href="https://www.muyideen.dev/rss.xml" rel="self" type="application/rss+xml" />
     <description>Field notes on Azure, Terraform, OpenShift and CI/CD from building and running cloud platforms.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Jul 2026 10:06:28 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 09 Jul 2026 10:37:52 GMT</lastBuildDate>
     <item>
       <title>How this site works: Azure Static Web Apps, Terraform and OIDC</title>
       <link>https://www.muyideen.dev/blog/how-this-site-works</link>

@@ -6,6 +6,7 @@ import { Education } from '../components/Education'
 import { TechStack } from '../components/TechStack'
 import { Certifications } from '../components/Certifications'
 import { LatestPosts } from '../components/LatestPosts'
+import { SiteArchitecture } from '../components/SiteArchitecture'
 import { Contact } from '../components/Contact'
 import { portfolio } from '../data/portfolio'
 
@@ -25,13 +26,16 @@ export function Home() {
         <meta property="og:type" content="website" />
       </Helmet>
 
+      {/* Functional order: identity → track record → proof of work → skills
+          → credentials → education → writing → site case study → reach out. */}
       <Hero />
       <Experience experience={portfolio.experience} />
       <Projects projects={portfolio.projects} />
-      <Education education={portfolio.education} />
       <TechStack skills={portfolio.skills} />
       <Certifications certifications={portfolio.certifications} />
+      <Education education={portfolio.education} />
       <LatestPosts />
+      <SiteArchitecture />
       <Contact
         email={portfolio.email}
         github={portfolio.github}

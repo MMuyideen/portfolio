@@ -2,6 +2,10 @@
 
 Personal portfolio and blog for a DevOps & Cloud Engineer, live at [muyideen.dev](https://www.muyideen.dev). React + Vite + TypeScript + Tailwind CSS, hosted on Azure Static Web Apps, managed with Terraform, deployed via GitHub Actions using OIDC (no long-lived cloud secrets). The site is its own case study: the visitor counter on the home page is a managed Azure Function backed by Table Storage, provisioned by the Terraform in this repo.
 
+## Architecture
+
+![Architecture diagram: GitHub Actions deploys via OIDC; Terraform provisions Azure Static Web Apps and Table Storage](src/content/posts/how-this-site-works/architecture.svg)
+
 ## Stack
 
 | Layer | Choice |

@@ -26,6 +26,11 @@ html {
   outline-offset: 2px;
 }
 
+/* Anchor targets clear the sticky header (h-14 + breathing room). */
+section[id] {
+  scroll-margin-top: 4rem;
+}
+
 /* Even line lengths on headings; fewer orphans in long prose. */
 h1, h2, h3 {
   text-wrap: balance;
@@ -144,10 +149,34 @@ h1, h2, h3 {
   border-color: rgba(74, 222, 128, 0.5);
 }
 
-/* Images that live alongside a post */
+/* Images that live alongside a post — click to enlarge (see BlogPost) */
 .post-prose img {
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 6px;
+  height: auto; /* keep aspect ratio when width/height attrs are set */
+  cursor: zoom-in;
+}
+
+/* Hover anchors injected after h2/h3 by the markdown renderer */
+.post-prose .heading-anchor {
+  margin-left: 0.4em;
+  color: #6e7681;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.post-prose h2:hover .heading-anchor,
+.post-prose h3:hover .heading-anchor,
+.post-prose .heading-anchor:focus-visible {
+  opacity: 1;
+}
+.post-prose .heading-anchor:hover {
+  color: #4ade80;
+}
+@media (hover: none) {
+  .post-prose .heading-anchor {
+    opacity: 1; /* no hover on touch — keep anchors visible */
+  }
 }
 .post-prose pre.hljs code {
   font-family: inherit;

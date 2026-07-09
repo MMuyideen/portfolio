@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
+import { Lightbox } from './Lightbox'
 import { SectionHeader } from './SectionHeader'
 import { EASE, VIEWPORT, slideIn } from '../lib/motion'
 import type { Project } from '../data/portfolio'
@@ -55,17 +56,32 @@ function StackDiagram({ stack, id }: { stack: string[]; id: string }) {
 }
 
 function DiagramPanel({ project }: { project: Project }) {
+  const [expanded, setExpanded] = useState(false)
+
   if (project.diagram) {
+    const alt = `${project.title} architecture diagram`
     return (
-      <div className="rounded border overflow-hidden w-full h-full min-h-[300px]">
-        <img
-          src={project.diagram}
-          alt={`${project.title} architecture diagram`}
-          className="w-full h-full object-cover"
-          loading="lazy"
-          decoding="async"
+      <>
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          aria-label={`Enlarge ${alt}`}
+          className="block rounded border overflow-hidden w-full h-full min-h-[300px] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          <img
+            src={project.diagram}
+            alt={alt}
+            className="w-full h-full object-contain"
+            loading="lazy"
+            decoding="async"
+          />
+        </button>
+        <Lightbox
+          src={expanded ? project.diagram : null}
+          alt={alt}
+          onClose={() => setExpanded(false)}
         />
-      </div>
+      </>
     )
   }
 
@@ -178,7 +194,12 @@ export function Projects({ projects }: { projects: Project[] }) {
             <button
               type="button"
               aria-expanded={expanded}
-              onClick={() => setExpanded(prev => !prev)}
+              onClick={() => {
+                setExpanded(prev => !prev)
+                // Collapsing removes content above the fold; return to the
+                // section top so the user isn't stranded mid-page.
+                if (expanded) document.getElementById('projects')?.scrollIntoView()
+              }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded border font-mono text-sm text-muted hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
               {expanded ? (

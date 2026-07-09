@@ -10,14 +10,7 @@ This site is a static React app, but everything around it is the part I actually
 
 ## The shape of the system
 
-```
-GitHub repo ──▶ GitHub Actions (OIDC, no stored cloud secrets)
-                 ├─ terraform apply ──▶ Resource Group
-                 │                       ├─ Static Web App (site + managed API)
-                 │                       └─ Storage Account (Table: visitors)
-                 └─ swa deploy ──────▶ dist/ + api/
-Browser ──▶ muyideen.dev ──▶ SWA CDN ──▶ /api/visitors ──▶ Table Storage
-```
+![Architecture: GitHub Actions authenticates to Azure with OIDC; Terraform provisions a Static Web App and a Table Storage account; visitors reach the site over HTTPS and a managed Function increments the counter with ETag retries](./architecture.svg)
 
 The frontend is Vite + React + TypeScript, built to a `dist/` folder. Azure Static Web Apps serves it from a global edge, and also hosts the small Functions API that lives in `api/` — no separate Function App to provision or pay for.
 

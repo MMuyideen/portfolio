@@ -13,6 +13,8 @@ const POSTS_DIR = join(
 )
 const VIRTUAL_ID = 'virtual:post-meta'
 const RESOLVED_ID = '\0' + VIRTUAL_ID
+const DIMS_VIRTUAL_ID = 'virtual:post-image-dims'
+const DIMS_RESOLVED_ID = '\0' + DIMS_VIRTUAL_ID
 
 /** Words per minute used to estimate reading time. */
 const WORDS_PER_MINUTE = 200
@@ -61,25 +63,62 @@ function loadPostMeta() {
   return posts
 }
 
+/** Width/height from a PNG's IHDR chunk, or null for anything else. */
+function pngDims(file: string): [number, number] | null {
+  const buf = readFileSync(file)
+  if (buf.length < 24 || buf.readUInt32BE(12) !== 0x49484452) return null
+  return [buf.readUInt32BE(16), buf.readUInt32BE(20)]
+}
+
 /**
- * Exposes post frontmatter as `virtual:post-meta`, parsed at build time so
- * gray-matter (and its Node Buffer dependency) never ships to the browser.
+ * Intrinsic dimensions for every post image, keyed by `<slug>/<filename>`.
+ * The markdown renderer writes them as width/height attributes so lazy-loaded
+ * screenshots don't cause layout shift while reading.
+ */
+function loadImageDims() {
+  const dims: Record<string, [number, number]> = {}
+  for (const entry of readdirSync(POSTS_DIR)) {
+    if (entry.startsWith('.')) continue
+    const entryPath = join(POSTS_DIR, entry)
+    if (!statSync(entryPath).isDirectory()) continue
+    for (const file of readdirSync(entryPath)) {
+      if (!/\.png$/i.test(file)) continue
+      const d = pngDims(join(entryPath, file))
+      if (d) dims[`${entry}/${file}`] = d
+    }
+  }
+  return dims
+}
+
+/**
+ * Exposes post frontmatter as `virtual:post-meta` and image dimensions as
+ * `virtual:post-image-dims`, both computed at build time so gray-matter (and
+ * its Node Buffer dependency) never ships to the browser.
  */
 function postMeta(): Plugin {
   return {
     name: 'post-meta',
     resolveId(id) {
-      return id === VIRTUAL_ID ? RESOLVED_ID : undefined
+      if (id === VIRTUAL_ID) return RESOLVED_ID
+      if (id === DIMS_VIRTUAL_ID) return DIMS_RESOLVED_ID
+      return undefined
     },
     load(id) {
-      if (id !== RESOLVED_ID) return undefined
-      return `export const posts = ${JSON.stringify(loadPostMeta())}`
+      if (id === RESOLVED_ID) {
+        return `export const posts = ${JSON.stringify(loadPostMeta())}`
+      }
+      if (id === DIMS_RESOLVED_ID) {
+        return `export const imageDims = ${JSON.stringify(loadImageDims())}`
+      }
+      return undefined
     },
     // Dev only: editing a post re-reads frontmatter on the next page load.
     handleHotUpdate({ file, server }) {
       if (!file.includes('/content/posts/')) return
-      const mod = server.moduleGraph.getModuleById(RESOLVED_ID)
-      if (mod) server.moduleGraph.invalidateModule(mod)
+      for (const id of [RESOLVED_ID, DIMS_RESOLVED_ID]) {
+        const mod = server.moduleGraph.getModuleById(id)
+        if (mod) server.moduleGraph.invalidateModule(mod)
+      }
       server.ws.send({ type: 'full-reload' })
       return []
     },

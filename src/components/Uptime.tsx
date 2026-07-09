@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { EASE, VIEWPORT } from '../lib/motion'
 
 /** Site launch date — set this to your real go-live date (must be in the past, UTC). */
@@ -30,17 +30,19 @@ function elapsedSince(from: Date, now: number): Elapsed {
   return { years, days, hours, minutes, seconds }
 }
 
-function useUptime(): Elapsed {
+/** Ticks once per second, but only while the card is actually on screen. */
+function useUptime(active: boolean): Elapsed {
   const [elapsed, setElapsed] = useState<Elapsed>(() =>
     elapsedSince(LAUNCH, Date.now()),
   )
 
   useEffect(() => {
+    if (!active) return
     const tick = () => setElapsed(elapsedSince(LAUNCH, Date.now()))
     tick()
     const id = window.setInterval(tick, 1000)
     return () => window.clearInterval(id)
-  }, [])
+  }, [active])
 
   return elapsed
 }
@@ -80,7 +82,9 @@ function StatCell({ stat, index }: { stat: Stat; index: number }) {
 }
 
 export function Uptime() {
-  const { years, days, hours, minutes, seconds } = useUptime()
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref)
+  const { years, days, hours, minutes, seconds } = useUptime(inView)
   const launchLabel = LAUNCH.toISOString().slice(0, 10)
 
   const stats: Stat[] = [
@@ -95,6 +99,7 @@ export function Uptime() {
   return (
     <motion.div
       id="uptime"
+      ref={ref}
       className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface"
       aria-label="Site uptime"
       initial={{ opacity: 0, y: 20 }}

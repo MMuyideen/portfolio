@@ -11,13 +11,15 @@ interface CommandPaletteProps {
   onOpenChange: (open: boolean) => void
 }
 
+/** Order mirrors the home page sections. */
 const NAV_ITEMS = [
   { label: 'Hero', href: '#main-content' },
-  { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
-  { label: 'Education', href: '#education' },
+  { label: 'Projects', href: '#projects' },
   { label: 'Tech Stack', href: '#tech-stack' },
   { label: 'Certifications', href: '#certifications' },
+  { label: 'Education', href: '#education' },
+  { label: 'How this site works', href: '#architecture' },
   { label: 'Contact', href: '#contact' },
 ]
 

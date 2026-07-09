@@ -3,34 +3,65 @@ import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Clock } from 'lucide-react'
+import { Lightbox } from '../components/Lightbox'
 import { getPostBySlug, loadPostBody, formatPostDate } from '../lib/posts'
+import type { TocEntry } from '../lib/markdown'
 
 const SITE_URL = 'https://www.muyideen.dev'
+
+interface RenderedPost {
+  html: string
+  toc: TocEntry[]
+}
 
 /**
  * Fetch the post body and render it to HTML lazily, so the markdown body,
  * markdown-it and highlight.js all stay out of the initial bundle.
  */
-function useRenderedBody(slug: string | undefined): string | null {
-  const [html, setHtml] = useState<string | null>(null)
+function useRenderedBody(slug: string | undefined): RenderedPost | null {
+  const [rendered, setRendered] = useState<RenderedPost | null>(null)
 
   useEffect(() => {
     if (slug === undefined) return
     let active = true
-    setHtml(null)
+    setRendered(null)
     Promise.all([loadPostBody(slug), import('../lib/markdown')])
-      .then(([body, { renderMarkdown }]) => {
-        if (active) setHtml(renderMarkdown(body, slug))
+      .then(([body, { renderMarkdown, extractToc }]) => {
+        if (active) setRendered({ html: renderMarkdown(body, slug), toc: extractToc(body) })
       })
       .catch(() => {
-        if (active) setHtml('')
+        if (active) setRendered({ html: '', toc: [] })
       })
     return () => {
       active = false
     }
   }, [slug])
 
-  return html
+  return rendered
+}
+
+/** "On this page" outline, shown when a post has enough sections to warrant one. */
+function TableOfContents({ toc }: { toc: TocEntry[] }) {
+  if (toc.length < 3) return null
+  return (
+    <nav aria-label="Table of contents" className="mt-8 rounded border bg-surface p-5">
+      <p className="font-mono text-xs text-muted mb-3" aria-hidden="true">
+        <span className="text-accent">$</span> grep &apos;^##&apos; post.md
+      </p>
+      <ul className="space-y-1.5">
+        {toc.map(entry => (
+          <li key={entry.slug} className={entry.level === 3 ? 'pl-4' : ''}>
+            <a
+              href={`#${entry.slug}`}
+              className="font-mono text-sm text-muted hover:text-accent transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              {entry.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
 }
 
 /** Add a copy-to-clipboard button to every rendered code block. */
@@ -97,9 +128,26 @@ function NotFound() {
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>()
   const post = slug ? getPostBySlug(slug) : undefined
-  const html = useRenderedBody(post?.slug)
+  const rendered = useRenderedBody(post?.slug)
+  const html = rendered?.html ?? null
   const proseRef = useRef<HTMLDivElement>(null)
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   useCodeCopyButtons(proseRef, html)
+
+  // Click any post image to view it full-screen (event delegation, so it
+  // survives re-renders of the injected HTML).
+  useEffect(() => {
+    const root = proseRef.current
+    if (!root || !html) return
+    const onClick = (event: MouseEvent) => {
+      const target = event.target
+      if (target instanceof HTMLImageElement) {
+        setLightbox({ src: target.currentSrc || target.src, alt: target.alt })
+      }
+    }
+    root.addEventListener('click', onClick)
+    return () => root.removeEventListener('click', onClick)
+  }, [html])
 
   if (!post) return <NotFound />
 
@@ -171,14 +219,22 @@ export function BlogPost() {
             Rendering…
           </p>
         ) : (
-          <motion.div
-            ref={proseRef}
-            className="post-prose mt-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
+          <>
+            <TableOfContents toc={rendered?.toc ?? []} />
+            <motion.div
+              ref={proseRef}
+              className="post-prose mt-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+            <Lightbox
+              src={lightbox?.src ?? null}
+              alt={lightbox?.alt ?? ''}
+              onClose={() => setLightbox(null)}
+            />
+          </>
         )}
       </article>
     </>
