@@ -245,17 +245,24 @@ export const portfolio: PortfolioData = {
   certifications: [
     {
       issuer: 'Microsoft',
-      title: 'Microsoft Certified Trainer (MCT) 2026',
-      date: '2026-01',
-      verifyUrl: 'https://www.credly.com/badges/7b8de62b-ba25-4a54-b17a-ef6da2159dd0/public_url',
-      badgeImage: '/certifications/microsoft-certified-trainer-mct-2026.png',
+      title: 'AZ-305 Microsoft Certified: Azure Solutions Architect Expert',
+      date: '2026-08',
+      verifyUrl: 'https://learn.microsoft.com/en-us/users/muyideenm/credentials/86a2c05bb8a43811',
+      badgeImage: '/certifications/az-305.webp',
     },
     {
       issuer: 'Microsoft',
       title: 'AZ-400 Microsoft Certified: DevOps Engineer Expert',
       date: '2026-04',
       verifyUrl: 'https://learn.microsoft.com/en-us/users/muyideenm/credentials/43bd58e6a9e3c6e5',
-      badgeImage: '/certifications/AZ-400-Microsoft-Certified-Azure-DevOps-Engineer.png',
+      badgeImage: '/certifications/CERT-Expert-DevOps-Engineer-600x600.png',
+    },
+    {
+      issuer: 'Microsoft',
+      title: 'Microsoft Certified Trainer (MCT) 2026',
+      date: '2026-01',
+      verifyUrl: 'https://www.credly.com/badges/7b8de62b-ba25-4a54-b17a-ef6da2159dd0/public_url',
+      badgeImage: '/certifications/microsoft-certified-trainer-mct-2026.png',
     },
     {
       issuer: 'The Linux Foundation',
