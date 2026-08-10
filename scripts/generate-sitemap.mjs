@@ -62,6 +62,7 @@ const posts = loadPosts()
 const urls = [
   { loc: `${SITE_URL}/`, changefreq: 'monthly', priority: '1.0' },
   { loc: `${SITE_URL}/blog`, changefreq: 'weekly', priority: '0.8' },
+  { loc: `${SITE_URL}/resume`, changefreq: 'monthly', priority: '0.8' },
   ...posts.map(post => ({
     loc: `${SITE_URL}/blog/${post.slug}`,
     changefreq: 'yearly',

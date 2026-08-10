@@ -25,13 +25,15 @@ src/
 ├── content/posts/     # blog: one folder per post (index.md + images)
 ├── data/portfolio.ts  # ALL editable site content
 ├── lib/               # posts loader, markdown renderer, motion tokens
-└── pages/             # Home, BlogIndex, BlogPost, NotFound
+├── pages/             # Home, Resume, BlogIndex, BlogPost, NotFound
+└── styles/            # tokens.css (global) + resume.css (screen + print)
 api/visitors/          # visitor-counter Azure Function
 infra/                 # Terraform (resource group, SWA, counter storage)
 public/
 ├── diagrams/          # project architecture diagrams
-└── certifications/    # certification badge images
-scripts/               # sitemap.xml + rss.xml generation (runs pre-build)
+├── certifications/    # certification badge images
+└── resume.pdf         # generated from /resume — committed, see “Résumé”
+scripts/               # sitemap + rss generation (pre-build), résumé PDF rendering
 ```
 
 ---
@@ -45,6 +47,7 @@ npm run build      # sitemap + rss → typecheck → production build → dist/
 npm run typecheck  # tsc --noEmit
 npm run lint       # ESLint (warnings are errors)
 npm run sitemap    # regenerate public/sitemap.xml + public/rss.xml only
+npm run resume:pdf # build, then re-render /resume → public/resume.pdf
 ```
 
 ---

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { Linkedin, Download } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Linkedin, FileText } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
 import { useTerminalSequence, type TerminalStep } from '../hooks/useTerminalSequence'
 import { EASE } from '../lib/motion'
@@ -78,14 +79,13 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.5, ease: EASE }}
           >
-            <a
-              href="/resume.pdf"
-              download
+            <Link
+              to="/resume"
               className="inline-flex items-center gap-2 px-4 py-2 rounded font-mono text-sm font-semibold bg-accent text-bg hover:bg-accent/90 hover:shadow-[0_0_28px_rgba(74,222,128,0.28)] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
-              <Download size={14} aria-hidden="true" />
-              Download Resume
-            </a>
+              <FileText size={14} aria-hidden="true" />
+              Résumé
+            </Link>
             <a
               href={portfolio.github}
               target="_blank"

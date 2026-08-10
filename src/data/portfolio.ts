@@ -36,6 +36,32 @@ export interface SkillCategory {
   tools: string[]
 }
 
+/** A headline number on the résumé. Each one is claimed by an experience bullet. */
+export interface ResumeMetric {
+  value: string
+  label: string
+}
+
+/** A project shown on the résumé, referenced by `Project.id`. */
+export interface ResumeProjectRef {
+  id: string
+  /** Overrides the project's own copy where the shell-comment voice doesn't fit. */
+  title?: string
+  summary?: string
+}
+
+/**
+ * Content that exists only on the résumé (/resume). Everything else it renders
+ * — experience, skills, certifications, education, projects — is read from the
+ * fields above, so the page, the PDF, and the home page cannot drift apart.
+ */
+export interface ResumeData {
+  headline: string
+  summary: string
+  metrics: ResumeMetric[]
+  projects: ResumeProjectRef[]
+}
+
 export interface PortfolioData {
   name: string
   role: string
@@ -48,6 +74,7 @@ export interface PortfolioData {
   experience: ExperienceEntry[]
   education: EducationEntry[]
   skills: SkillCategory[]
+  resume: ResumeData
 }
 
 export const portfolio: PortfolioData = {
@@ -361,4 +388,33 @@ export const portfolio: PortfolioData = {
       ],
     },
   ],
+
+  resume: {
+    headline:
+      'Infrastructure that provisions, deploys, and recovers without hands on it.',
+    summary:
+      'DevOps & Cloud Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
+
+    // A live certification count is appended to these in Resume.tsx.
+    metrics: [
+      { value: '60%', label: 'faster deployments' },
+      { value: '99.99%', label: 'uptime sustained' },
+      { value: '30%', label: 'cloud spend cut' },
+    ],
+
+    projects: [
+      { id: 'aks-terraform-argocd' },
+      {
+        id: 'Azure Three Tier app',
+        summary: 'Classic three-tier architecture on Azure, fully Terraform-managed.',
+      },
+      { id: 'EKS-terraform-argocd' },
+      {
+        id: 'azure-serverless-api',
+        title: 'Azure Serverless API',
+        summary:
+          'Function Apps behind API Management and Front Door, provisioned with Terraform.',
+      },
+    ],
+  },
 }

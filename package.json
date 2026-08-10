@@ -8,6 +8,7 @@
     "sitemap": "node scripts/generate-sitemap.mjs",
     "build": "node scripts/generate-sitemap.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
+    "resume:pdf": "npm run build && node scripts/build-resume-pdf.mjs",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit"
   },

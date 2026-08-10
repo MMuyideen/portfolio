@@ -16,6 +16,9 @@ const BlogIndex = lazy(() =>
 const BlogPost = lazy(() =>
   import('./pages/BlogPost').then(m => ({ default: m.BlogPost })),
 )
+const Resume = lazy(() =>
+  import('./pages/Resume').then(m => ({ default: m.Resume })),
+)
 
 function RouteFallback() {
   return (
@@ -97,6 +100,7 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/blog" element={<BlogIndex />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/resume" element={<Resume />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
