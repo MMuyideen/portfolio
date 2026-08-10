@@ -21,5 +21,5 @@ resource "azurerm_storage_account" "counter" {
 
 resource "azurerm_storage_table" "visitors" {
   name                 = var.table_name
-  storage_account_name = azurerm_storage_account.counter.name
+  storage_account_id = azurerm_storage_account.counter.id
 }
