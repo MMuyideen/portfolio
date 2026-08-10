@@ -28,14 +28,15 @@ src/
 ├── data/*.yaml        # ALL editable site content (projects, experience, certs, …)
 ├── layouts/           # Base.astro (head, header/footer, reveal script)
 ├── lib/               # site constants, YAML loaders, post helpers, build hash
-├── pages/             # index, blog/index, blog/[slug], 404, rss.xml
+├── pages/             # index, resume, blog/index, blog/[slug], 404, rss.xml
 └── styles/global.css  # design tokens (@theme) + prose styles
 api/visitors/          # visitor-counter Azure Function
 infra/                 # Terraform (resource group, SWA, counter storage)
 public/
 ├── diagrams/          # project architecture diagrams
-└── certifications/    # certification badge images
-scripts/               # post-build CSP hashing for Astro's inline island scripts
+├── certifications/    # certification badge images
+└── resume.pdf         # generated from /resume — committed, see “Résumé”
+scripts/               # post-build CSP hashing + résumé PDF rendering
 ```
 
 ---
@@ -48,6 +49,7 @@ npm run dev        # http://localhost:4321
 npm run build      # astro build → dist/, then CSP-hash inline scripts
 npm run preview    # serve the production build locally
 npm run check      # astro check (typechecks .astro + .ts)
+npm run resume:pdf # build, then re-render /resume → public/resume.pdf
 ```
 
 ---
@@ -62,6 +64,7 @@ All editable site content lives in **`src/data/*.yaml`** (plus identity in `src/
 | `experience.yaml` | Roles, periods, bullets |
 | `certifications.yaml` | Certs with verify URLs and badge images |
 | `education.yaml`, `skills.yaml` | Schools/bootcamps, toolbox categories |
+| `resume.yaml` | Résumé-only copy: headline, summary, impact metrics, project picks |
 
 ### Adding a project
 
@@ -115,7 +118,46 @@ Notes:
 - **`draft: true` posts are invisible everywhere** — site, sitemap, and RSS. Flip to `false` to publish.
 - Relative image references (`./image.png`) are optimized to hashed WebP with intrinsic dimensions at build time (zero layout shift). Keep images in the post's own folder — external hot-linking is blocked by the CSP.
 - Code blocks are highlighted by Shiki at build time and get a copy button; headings get hover anchors; posts with 3+ `##` headings get a table of contents.
+- Post images and project diagrams get a magnifier badge that opens them full screen (`src/components/Lightbox.astro`, a native `<dialog>`). Anything else opts in with `data-zoomable` on the image's container.
 - `sitemap-index.xml` and `rss.xml` regenerate on every build — nothing to hand-maintain.
+
+---
+
+## Résumé
+
+`/resume` and `public/resume.pdf` are the **same document rendered twice**. `src/pages/resume.astro` holds one markup tree; on screen it inherits the dark control-plane theme, and a `@media print` block flips every colour token to paper (A4, 13mm margins, deeper amber for contrast on white) and drops the site chrome. So there is no separate PDF template to keep in sync — and no separate copy of the content either: experience, skills, certifications, education, and projects all resolve from `src/data/*.yaml`, with `resume.yaml` adding only what the résumé alone needs. The impact strip's certification count is derived from `certifications.yaml`, so it stays current on its own.
+
+### Regenerating the PDF
+
+```bash
+npm run resume:pdf
+```
+
+This runs a normal build, serves `dist/` on an ephemeral port, and drives headless Chrome with `--print-to-pdf` over `/resume` — so the PDF is produced by the same print stylesheet you get from the page's own **Print** button. Output is written to `public/resume.pdf` (and copied into the current `dist/`).
+
+- **Run it whenever résumé content changes**, then commit the regenerated `public/resume.pdf`. It is deliberately *not* part of `npm run build`: CI has no browser, so the committed PDF is the deployed artifact.
+- Chrome is discovered automatically (macOS Chrome/Chromium/Edge, then the usual Linux paths). Override with `CHROME_PATH=/path/to/chrome npm run resume:pdf`.
+- Current Chrome does not always exit after printing, so the script waits for the PDF to stop growing and then terminates the browser itself. Expect it to take a few seconds.
+
+### Editing résumé content
+
+`src/data/resume.yaml`:
+
+```yaml
+headline: One line under the name.
+summary: >-
+  The opening paragraph.
+metrics:                    # three claimed numbers; certification count is appended automatically
+  - value: 60%
+    label: faster deployments
+projects:                   # ids from projects.yaml, in display order
+  - id: portfolio-site
+    title: muyideen.dev — portfolio   # optional: overrides projects.yaml
+    tagline: Optional override too.   # use where homepage copy reads as self-reference
+  - id: aks-gitops
+```
+
+An unknown project id fails the build rather than silently dropping the entry. Contact details come from `src/lib/site.ts`.
 
 ---
 
@@ -167,10 +209,11 @@ This provisions the resource group, the Static Web App (with custom domains from
 
 ## GitHub Actions configuration
 
-Two workflows:
+Four workflows:
 
 - **`ci.yml`** — typecheck and build on every pull request and every non-`main` branch push. No cloud access needed.
 - **`deploy.yml`** — on push to `main`: `terraform apply`, then build and deploy to SWA. Authenticates to Azure with `azure/login` via **OIDC federated identity** — GitHub mints a short-lived token per run; the three Azure values below are identifiers, not credentials.
+- **`preview.yml`** / **`preview-teardown.yml`** — the side-by-side `v2` preview environment, below.
 
 Set these in **Settings → Secrets and variables → Actions** (all as **secrets**, matching `deploy.yml`):
 
@@ -182,6 +225,22 @@ Set these in **Settings → Secrets and variables → Actions** (all as **secret
 | `AZURE_STATIC_WEB_APPS_API_TOKEN` | SWA deployment token (Portal → SWA → Manage deployment token) |
 
 Dependabot (`.github/dependabot.yml`) watches npm (root and `api/`), GitHub Actions, and the Terraform providers weekly.
+
+### Side-by-side preview environment
+
+Static Web Apps can host **staging environments** next to production, which is how two designs get compared on real URLs before one wins.
+
+- **`preview.yml`** — on every push to `v2` (or manually), builds and uploads to the named `v2` staging environment on the same Static Web App. Production at `www.muyideen.dev` is untouched. The run summary prints the preview URL next to the production one. Deliberately **no Terraform**: `v2` shares production's infrastructure, and only `deploy.yml` on `main` is allowed to apply.
+- **`preview-teardown.yml`** — deletes that environment, either on demand (Actions → *Preview teardown (v2)*, type `delete` to confirm) or automatically when the `v2` branch is deleted. It only ever removes the named `v2` environment, and it's a no-op if the environment is already gone.
+
+Preview builds run with `PREVIEW=true`, which adds `<meta name="robots" content="noindex, nofollow">` (see `isPreview` in `src/lib/build.ts`) so the comparison copy never competes with production in search. Canonical URLs already point at `muyideen.dev` regardless.
+
+Notes:
+
+- **Both workflow files must exist on `main`.** `workflow_dispatch` only shows a *Run workflow* button for workflows on the default branch, and `delete` events only fire workflows from there. The push trigger works from `v2` itself.
+- Staging environments count against the Free tier's quota (3 at time of writing) — check the portal if a deploy is rejected.
+- Custom domains attach to the production environment only, so the preview lives on its `*.azurestaticapps.net` URL. A branded `v2.muyideen.dev` would need a second Static Web App in `infra/`.
+- App settings are per environment. The preview's `/api/visitors` may not have the storage connection string, in which case the hero counter renders `—` there; the site is otherwise fully functional.
 
 ---
 
@@ -229,6 +288,12 @@ Check `draft: false` in its frontmatter, and that the folder contains an `index.
 
 **Images in a post render as broken**
 Reference them relatively (`./image-01.png`) from inside the post's folder. External image hosts are blocked by the CSP by design.
+
+**`npm run resume:pdf` fails with "No Chrome found"**
+The script needs a local Chromium-family browser. Point it at one: `CHROME_PATH=/path/to/chrome npm run resume:pdf`.
+
+**The downloaded résumé is out of date**
+`public/resume.pdf` is a committed artifact, not a build output. Run `npm run resume:pdf` after editing any résumé data and commit the result.
 
 **Browser console shows a CSP violation for an inline script**
 Rebuild with `npm run build` — the CSP hashes in `dist/staticwebapp.config.json` are regenerated from the built HTML on every build (see `scripts/postbuild-csp.mjs`).

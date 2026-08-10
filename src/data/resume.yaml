@@ -1,0 +1,36 @@
+# Content that exists only on the résumé. Experience, skills, certifications,
+# education, and projects are pulled from the sibling YAML files, so the page,
+# the PDF, and the homepage can never drift apart.
+
+headline: Infrastructure that provisions, deploys, and recovers without hands on it.
+
+summary: >-
+  DevOps & Cloud Engineer with 5+ years building and running production
+  infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions,
+  Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters —
+  provision every environment from reusable Terraform modules, and hold
+  availability with Prometheus, Grafana, and Azure Monitor. Governance is code
+  too: Azure Policy, RBAC, and automated compliance checks instead of review
+  meetings. Azure Solutions Architect Expert and DevOps Engineer Expert,
+  AWS SAA, KCNA, and Microsoft Certified Trainer.
+
+# Headline numbers. Each one is claimed by a bullet in experience.yaml — keep
+# them in sync. A live certification count is appended in lib/resume.ts.
+metrics:
+  - value: 60%
+    label: faster deployments
+  - value: 99.99%
+    label: uptime sustained
+  - value: 30%
+    label: cloud spend cut
+
+# Projects from projects.yaml, in the order they should appear. `title` and
+# `tagline` override the homepage copy where it reads as self-reference — the
+# résumé is a standalone document, not a page on the site.
+projects:
+  - id: portfolio-site
+    title: muyideen.dev — portfolio
+    tagline: This portfolio, run like production infrastructure.
+  - id: aks-gitops
+  - id: azure-three-tier
+  - id: eks-gitops

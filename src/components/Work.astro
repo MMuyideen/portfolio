@@ -49,21 +49,25 @@ import architectureSvg from '../content/posts/how-this-site-works/architecture.s
           </div>
 
           {project.diagram === 'architecture' ? (
-            <a
-              href={project.writeup ? `/blog/${project.writeup}` : '#'}
-              class={`block overflow-hidden rounded-lg border border-line bg-panel transition-colors hover:border-accent/40 ${i % 2 === 1 ? 'lg:order-1' : ''}`}
-              aria-label="How this site works — architecture diagram"
-            >
-              <Image
-                src={architectureSvg}
-                alt={`Architecture of ${project.title}`}
-                class="h-auto w-full"
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-            </a>
+            /* The zoom badge is a sibling of the link, never nested inside it. */
+            <div class={i % 2 === 1 ? 'lg:order-1' : ''} data-zoomable>
+              <a
+                href={project.writeup ? `/blog/${project.writeup}` : '#'}
+                class="block overflow-hidden rounded-lg border border-line bg-panel transition-colors hover:border-accent/40"
+                aria-label="How this site works — architecture diagram"
+              >
+                <Image
+                  src={architectureSvg}
+                  alt={`Architecture of ${project.title}`}
+                  class="h-auto w-full"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+              </a>
+            </div>
           ) : project.diagram ? (
             <div
               class={`overflow-hidden rounded-lg border border-line bg-white ${i % 2 === 1 ? 'lg:order-1' : ''}`}
+              data-zoomable
             >
               <img
                 src={project.diagram}

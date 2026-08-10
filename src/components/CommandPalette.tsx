@@ -23,6 +23,7 @@ const SECTIONS = [
   { label: 'Credentials', href: '/#credentials' },
   { label: 'Contact', href: '/#contact' },
   { label: 'Blog', href: '/blog' },
+  { label: 'Résumé', href: '/resume' },
 ]
 
 const LINKS = [
@@ -128,7 +129,7 @@ export default function CommandPalette({ posts }: Props) {
             className={ITEM_CLASS}
           >
             <Download size={14} aria-hidden="true" />
-            Download resume
+            Download résumé (PDF)
           </Command.Item>
         </Command.Group>
 

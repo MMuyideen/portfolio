@@ -1,0 +1,75 @@
+name: Preview teardown (v2)
+
+# Deletes the v2 staging environment created by preview.yml — either on demand
+# once a direction has been picked, or automatically when the v2 branch is
+# deleted. Production is never touched: only the named `v2` environment is
+# removed, and no Terraform runs here.
+#
+# Both triggers below only work from the default branch, so this file has to
+# exist on main to be usable.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "delete" to confirm removing the v2 preview environment'
+        required: true
+        default: ''
+
+  delete:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  # Mirrors var.prefix in infra/variables.tf ("mmportfolio").
+  SWA_NAME: mmportfolio-swa
+  RESOURCE_GROUP: mmportfolio-rg
+  ENVIRONMENT: v2
+
+jobs:
+  teardown:
+    name: Delete v2 preview
+    # Branch deletions fire for every branch; only react to v2 being removed.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.ref_type == 'branch' && github.event.ref == 'v2')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check confirmation
+        if: github.event_name == 'workflow_dispatch' && inputs.confirm != 'delete'
+        run: |
+          echo "::error::Type 'delete' in the confirm input to run this workflow."
+          exit 1
+
+      - name: Azure Login with OIDC
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Delete the v2 staging environment
+        run: |
+          set -euo pipefail
+
+          if ! az staticwebapp environment show \
+                --name "$SWA_NAME" \
+                --resource-group "$RESOURCE_GROUP" \
+                --environment-name "$ENVIRONMENT" >/dev/null 2>&1; then
+            echo "Environment '$ENVIRONMENT' does not exist — nothing to do."
+            echo "No \`$ENVIRONMENT\` environment found; nothing to tear down." \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          az staticwebapp environment delete \
+            --name "$SWA_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --environment-name "$ENVIRONMENT" \
+            --yes
+
+          echo "Deleted the \`$ENVIRONMENT\` preview environment. Production is untouched." \
+            >> "$GITHUB_STEP_SUMMARY"
