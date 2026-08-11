@@ -149,27 +149,27 @@ then run `create_users.sh user_groups.txt`
 
 After running the script with the command `./create_users.sh user_groups.txt`
 
-![](./image-01.png)
+![Terminal running sudo bash create_users.sh new_users.txt, reporting that the user creation process completed and pointing to /var/log/user_management.log](./image-01.png)
 
 To validate the users created we run `id <username>`. It will show the user names and their groups.
 
-![](./image-02.png)
+![Terminal output of the id command for users light, idimma and mayowa, each showing a personal group plus sudo, www-data and dev memberships](./image-02.png)
 
 Then we verify the home directories created by running the `ls /home`
 
-![](./image-03.png)
+![Terminal output of ls /home listing the home directories azureuser, idimma, light and mayowa](./image-03.png)
 
 Then we check the logs by running `sudo cat /var/log/user_management.log`
 
-![](./image-04.png)
+![Terminal output of the user management log, with timestamped lines recording each user created, password set and group membership added](./image-04.png)
 
 We also verify the passwords for each user by running `sudo cat /var/secure/user_passwords.csv`
 
-![](./image-05.png)
+![Terminal output of the generated password file, one comma-separated username and password per created user](./image-05.png)
 
 Lastly, we can verify group ownerships by running `groups <username>`
 
-![](./image-06.png)
+![Terminal output of the groups command for light, idimma and mayowa, confirming each user's group memberships](./image-06.png)
 
 **Conclusion**
 
