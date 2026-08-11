@@ -109,6 +109,18 @@ const rssItems = posts
   })
   .join('\n')
 
+/**
+ * Dated from the newest post rather than "now", so rss.xml is a pure function
+ * of the content. Stamping the current time made every single build dirty a
+ * committed file — noise in `git status`, and a diff on every commit once the
+ * pre-commit hook started regenerating this.
+ */
+const lastBuildDate = new Date(
+  posts.length > 0
+    ? Math.max(...posts.map(post => Date.parse(post.date)))
+    : 0,
+).toUTCString()
+
 writeFileSync(
   join(root, 'public', 'rss.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>
@@ -119,7 +131,7 @@ writeFileSync(
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
     <description>${escapeXml(SITE_DESCRIPTION)}</description>
     <language>en</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
 ${rssItems}
   </channel>
 </rss>
