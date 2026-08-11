@@ -209,11 +209,10 @@ This provisions the resource group, the Static Web App (with custom domains from
 
 ## GitHub Actions configuration
 
-Four workflows:
+Two workflows:
 
 - **`ci.yml`** — typecheck and build on every pull request and every non-`main` branch push. No cloud access needed.
 - **`deploy.yml`** — on push to `main`: `terraform apply`, then build and deploy to SWA. Authenticates to Azure with `azure/login` via **OIDC federated identity** — GitHub mints a short-lived token per run; the three Azure values below are identifiers, not credentials.
-- **`preview.yml`** / **`preview-teardown.yml`** — the side-by-side `v2` preview environment, below.
 
 Set these in **Settings → Secrets and variables → Actions** (all as **secrets**, matching `deploy.yml`):
 
@@ -225,22 +224,6 @@ Set these in **Settings → Secrets and variables → Actions** (all as **secret
 | `AZURE_STATIC_WEB_APPS_API_TOKEN` | SWA deployment token (Portal → SWA → Manage deployment token) |
 
 Dependabot (`.github/dependabot.yml`) watches npm (root and `api/`), GitHub Actions, and the Terraform providers weekly.
-
-### Side-by-side preview environment
-
-Static Web Apps can host **staging environments** next to production, which is how two designs get compared on real URLs before one wins.
-
-- **`preview.yml`** — on every push to `v2` (or manually), builds and uploads to the named `v2` staging environment on the same Static Web App. Production at `www.muyideen.dev` is untouched. The run summary prints the preview URL next to the production one. Deliberately **no Terraform**: `v2` shares production's infrastructure, and only `deploy.yml` on `main` is allowed to apply.
-- **`preview-teardown.yml`** — deletes that environment, either on demand (Actions → *Preview teardown (v2)*, type `delete` to confirm) or automatically when the `v2` branch is deleted. It only ever removes the named `v2` environment, and it's a no-op if the environment is already gone.
-
-Preview builds run with `PREVIEW=true`, which adds `<meta name="robots" content="noindex, nofollow">` (see `isPreview` in `src/lib/build.ts`) so the comparison copy never competes with production in search. Canonical URLs already point at `muyideen.dev` regardless.
-
-Notes:
-
-- **Both workflow files must exist on `main`.** `workflow_dispatch` only shows a *Run workflow* button for workflows on the default branch, and `delete` events only fire workflows from there. The push trigger works from `v2` itself.
-- Staging environments count against the Free tier's quota (3 at time of writing) — check the portal if a deploy is rejected.
-- Custom domains attach to the production environment only, so the preview lives on its `*.azurestaticapps.net` URL. A branded `v2.muyideen.dev` would need a second Static Web App in `infra/`.
-- App settings are per environment. The preview's `/api/visitors` may not have the storage connection string, in which case the hero counter renders `—` there; the site is otherwise fully functional.
 
 ---
 

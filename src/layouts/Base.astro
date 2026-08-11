@@ -5,7 +5,6 @@ import Footer from '../components/Footer.astro'
 import CommandPalette from '../components/CommandPalette'
 import Lightbox from '../components/Lightbox.astro'
 import { site } from '../lib/site'
-import { isPreview } from '../lib/build'
 import { getPublishedPosts } from '../lib/posts'
 
 interface Props {
@@ -29,7 +28,6 @@ const posts = (await getPublishedPosts()).map(p => ({
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {isPreview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0b0d10" />
     <link rel="sitemap" href="/sitemap-index.xml" />
