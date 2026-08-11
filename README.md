@@ -34,6 +34,7 @@ public/
 ├── certifications/    # certification badge images
 └── resume.pdf         # generated from /resume — committed, see “Résumé”
 scripts/               # sitemap + rss generation, prerendering, résumé PDF rendering
+.githooks/             # pre-commit: regenerates the committed build outputs
 ```
 
 ---
@@ -50,6 +51,7 @@ npm run typecheck  # tsc --noEmit
 npm run lint       # ESLint (warnings are errors)
 npm run sitemap    # regenerate public/sitemap.xml + public/rss.xml only
 npm run resume:pdf # build, then re-render /resume → public/resume.pdf
+npm run hooks:install  # point git at .githooks (regenerates derived files on commit)
 ```
 
 ---
@@ -141,6 +143,37 @@ Notes:
 
 ---
 
+## Committed build outputs
+
+Three generated files live in git rather than being built on demand:
+`public/sitemap.xml`, `public/rss.xml` and `public/resume.pdf`. That is
+deliberate — CI has no browser to print the PDF with — but it is exactly the
+kind of arrangement that quietly goes stale.
+
+`.githooks/pre-commit` keeps them honest. Install it once:
+
+```bash
+npm run hooks:install    # git config core.hooksPath .githooks
+```
+
+Each step is conditional on what you actually staged, so ordinary commits stay
+fast:
+
+| Staged change | What regenerates |
+|---|---|
+| `src/content/posts/**`, `scripts/generate-sitemap.mjs` | `sitemap.xml`, `rss.xml` |
+| `src/pages/Resume.tsx`, `src/styles/resume.css`, `src/data/portfolio.ts`, `scripts/build-resume-pdf.mjs` | `public/resume.pdf` (builds first — the slow path) |
+
+Regenerated files are staged into the same commit. If no Chrome is found the
+hook warns and leaves the PDF alone rather than failing the commit — run
+`npm run resume:pdf` before deploying in that case. `git commit --no-verify`
+skips the hook entirely.
+
+Prerendered HTML is **not** in this list: it is written into `dist/`, which is
+never committed, so it is regenerated on every build.
+
+---
+
 ## Prerendering
 
 The site is a client-routed SPA, so `index.html` alone would serve the same
@@ -167,6 +200,12 @@ configuration change was needed.
 - Needs a local Chrome (`CHROME_PATH` overrides discovery). GitHub's
   `ubuntu-latest` runners ship one, so CI and deploys prerender too. Use
   `npm run build:spa` to build without it.
+
+The downloadable PDF is served from `/resume.pdf` so existing links keep
+working, but the `download` attribute renames it to
+`Muyideen_Morenigbade_resume.pdf` on the way to disk. That name is derived from
+`portfolio.name` in `src/lib/resume.ts`, shared by the résumé page and the ⌘K
+palette.
 
 ---
 

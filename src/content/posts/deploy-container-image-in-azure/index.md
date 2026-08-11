@@ -20,7 +20,7 @@ For this task, i will be working in the Azure CLI
     
     (note that the registry name must be unique within azure and can only contain between 5-50 lowercase alphanumeric characters.)
     
-    ![](./image-01.png)
+    ![Azure Cloud Shell cloning the acr-build-helloworld-node repository, changing into its directory and setting the ACR_NAME variable](./image-01.png)
     
     The original GitHub repository to be forked for this task can be found [here](https://github.com/Azure-Samples/acr-build-helloworld-node)
     
@@ -30,13 +30,13 @@ For this task, i will be working in the Azure CLI
     
 6. Create the acr using the command as shown in the image
     
-    ![](./image-02.png)
+    ![Cloud Shell setting the resource group variable, then running az group create and az acr create with the Standard SKU in eastus, with JSON output showing provisioningState Succeeded](./image-02.png)
     
 7. Use ACR Tasks to build a container image from the sample code. Execute the `az acr build` command to perform a quick task.
     
     From the output from the `az acr build` command. You can see the upload of the source code to Azure, and the details of the `docker build` operation that the ACR task runs in the cloud.
     
-    ![](./image-03.png)
+    ![Output of az acr build, packing and uploading the source, logging in to the registry and starting the Docker build from the node:15-alpine base image](./image-03.png)
     
     ### **Deploy to Azure Container Instances**
     
@@ -54,7 +54,7 @@ For this task, i will be working in the Azure CLI
     az keyvault create --resource-group $RES_GROUP --name $AKV_NAME
     ```
     
-    ![](./image-04.png)
+    ![Cloud Shell setting the AKV_NAME variable and running az keyvault create in the resource group](./image-04.png)
     
     #### **Create a service principal and store credentials**
     
@@ -75,7 +75,7 @@ For this task, i will be working in the Azure CLI
                     --output tsv)
     ```
     
-    ![](./image-05.png)
+    ![az keyvault secret set storing the password of a new service principal created with az ad sp create-for-rbac and the acrpull role, alongside a warning to protect the returned credentials](./image-05.png)
     
 12. Next, store the service principal's *appId* in the vault, which is the **username** you pass to Azure Container Registry for authentication:
     
@@ -94,7 +94,7 @@ For this task, i will be working in the Azure CLI
     * `$ACR_NAME-pull-pwd`: The service principal password, for use as the container registry **password**.
         
     
-    ![](./image-06.png)
+    ![az keyvault secret set storing the service principal application ID as the registry pull username, with the resulting Key Vault secret returned as JSON](./image-06.png)
     
 13. Execute the following `az container create` command to deploy a container instance. The command uses the service principal's credentials stored in Azure Key Vault to authenticate to your container registry.
     
@@ -113,11 +113,11 @@ For this task, i will be working in the Azure CLI
     
     The `--dns-name-label` value must be unique within Azure, so the preceding command appends the container registry's name to the container's DNS name label.
     
-    ![](./image-07.png)
+    ![az container create passing the image, registry login server, and the username and password read back from Key Vault, with a DNS name label, returning the container FQDN](./image-07.png)
     
 14. Take note of the FQDN
     
-    ![](./image-08.png)
+    ![The same az container create output with the resulting FQDN acr-tasks-muyiregistry.eastus.azurecontainer.io highlighted](./image-08.png)
     
     ### **Verify the deployment**
     
@@ -129,11 +129,11 @@ For this task, i will be working in the Azure CLI
     
     The `az container attach` output first displays the container's status as it pulls the image and starts, then binds the local console's STDOUT and STDERR to that of the container.
     
-    ![](./image-09.png)
+    ![az container attach reporting the container in the Running state and streaming its logs, ending with "Server running at http://localhost: 80"](./image-09.png)
     
 16. When `Server running at http://localhost:80` appears, navigate to the container's FQDN in your browser to see the running application.
     
-    ![](./image-10.png)
+    ![Browser at the container FQDN showing the running application output, "Hello World" and "Version: 15.14.0"](./image-10.png)
     
     To detach your console from the container, hit `Control+C`.
     
@@ -147,7 +147,7 @@ For this task, i will be working in the Azure CLI
     
     input `y` to confirm the action from the prompt
     
-    ![](./image-11.png)
+    ![az container delete prompting for confirmation, with the deleted container group returned as JSON showing its running state and port 80](./image-11.png)
     
 18. To remove *all* resources you've created in this tutorial, including the container registry, key vault, and service principal, issue the following commands.
     
@@ -156,6 +156,6 @@ For this task, i will be working in the Azure CLI
     az ad sp delete --id http://$ACR_NAME-pull
     ```
     
-    ![](./image-12.png)
+    ![Tail of the container JSON showing the DNS name label, FQDN and public IP, followed by az group delete and az ad sp delete to tear the demo down](./image-12.png)
     
     Thank you for reading. connect with me on [Linkedin](https://www.linkedin.com/in/muyideenmorenigbade/)

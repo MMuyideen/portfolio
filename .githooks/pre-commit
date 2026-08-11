@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# Regenerates the derived files that are committed to the repo, so they can
+# never fall behind the content they are generated from:
+#
+#   public/sitemap.xml + public/rss.xml  ← posts and routes
+#   public/resume.pdf                    ← the /resume page
+#
+# Both are build outputs that live in git, which is exactly the kind of thing
+# that silently goes stale. Each step only runs when something it depends on is
+# actually staged, so ordinary commits stay fast.
+#
+# Install with: npm run hooks:install   (sets core.hooksPath to .githooks)
+# Skip once with: git commit --no-verify
+
+set -e
+
+staged() {
+	git diff --cached --name-only --diff-filter=ACMR | grep -qE "$1"
+}
+
+# ── Sitemap and RSS ─────────────────────────────────────────────────────────
+# Driven by post frontmatter and the static route list in the generator.
+if staged '^src/content/posts/|^scripts/generate-sitemap\.mjs$'; then
+	echo "[pre-commit] regenerating sitemap.xml and rss.xml"
+	node scripts/generate-sitemap.mjs
+	git add public/sitemap.xml public/rss.xml
+fi
+
+# ── Résumé PDF ──────────────────────────────────────────────────────────────
+# Needs a production build first, since the PDF is printed from the built
+# /resume route — so this is the slow path and only runs when the résumé's own
+# inputs change.
+if staged '^src/pages/Resume\.tsx$|^src/styles/resume\.css$|^src/data/portfolio\.ts$|^scripts/build-resume-pdf\.mjs$'; then
+	if node -e "
+		const { existsSync } = require('node:fs')
+		const paths = [
+			process.env.CHROME_PATH,
+			'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+			'/Applications/Chromium.app/Contents/MacOS/Chromium',
+			'/usr/bin/google-chrome',
+			'/usr/bin/google-chrome-stable',
+			'/usr/bin/chromium',
+			'/usr/bin/chromium-browser',
+		].filter(Boolean)
+		process.exit(paths.some(p => existsSync(p)) ? 0 : 1)
+	"; then
+		echo "[pre-commit] regenerating resume.pdf (building first, this takes a moment)"
+		npm run --silent build:spa
+		node scripts/build-resume-pdf.mjs
+		git add public/resume.pdf
+	else
+		echo "[pre-commit] WARNING: no Chrome found — public/resume.pdf NOT regenerated."
+		echo "[pre-commit] Run 'npm run resume:pdf' on a machine with Chrome before deploying."
+	fi
+fi
+
+exit 0

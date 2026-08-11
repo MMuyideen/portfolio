@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { GitHubIcon } from './GitHubIcon'
 import { getAllPosts } from '../lib/posts'
 import { portfolio } from '../data/portfolio'
+import { RESUME_FILENAME } from '../lib/resume'
 
 interface CommandPaletteProps {
   open: boolean
@@ -126,7 +127,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   onSelect={() => {
                     const link = document.createElement('a')
                     link.href = '/resume.pdf'
-                    link.download = ''
+                    link.download = RESUME_FILENAME
                     link.click()
                     onOpenChange(false)
                   }}

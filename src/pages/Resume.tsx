@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Download, Printer } from 'lucide-react'
 import { portfolio } from '../data/portfolio'
+import { RESUME_FILENAME } from '../lib/resume'
 import { profilePageSchema } from '../lib/structuredData'
 import '../styles/resume.css'
 
@@ -128,7 +129,11 @@ export function Resume() {
           </header>
 
           <div className="rz-actions">
-            <a className="rz-btn rz-btn--solid" href="/resume.pdf" download>
+            <a
+              className="rz-btn rz-btn--solid"
+              href="/resume.pdf"
+              download={RESUME_FILENAME}
+            >
               <Download size={15} aria-hidden="true" />
               Download PDF
             </a>
