@@ -1,10 +1,9 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { EASE } from './lib/motion'
 import { Nav } from './components/Nav'
 import { Footer } from './components/Footer'
-import { CommandPalette } from './components/CommandPalette'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { portfolio } from './data/portfolio'
@@ -18,6 +17,12 @@ const BlogPost = lazy(() =>
 )
 const Resume = lazy(() =>
   import('./pages/Resume').then(m => ({ default: m.Resume })),
+)
+// cmdk + Radix Dialog are only needed once someone reaches for ⌘K, so they stay
+// out of the initial bundle. Mounted on first open and kept mounted after, so
+// the dialog keeps its enter/exit animations.
+const CommandPalette = lazy(() =>
+  import('./components/CommandPalette').then(m => ({ default: m.CommandPalette })),
 )
 
 function RouteFallback() {
@@ -52,12 +57,20 @@ function ScrollToTop() {
 
 export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [paletteMounted, setPaletteMounted] = useState(false)
   const location = useLocation()
+
+  // Opening is what pulls the palette chunk in; it stays mounted from then on.
+  const openPalette = useCallback(() => {
+    setPaletteMounted(true)
+    setPaletteOpen(true)
+  }, [])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
+        setPaletteMounted(true)
         setPaletteOpen(prev => !prev)
       }
     }
@@ -82,8 +95,12 @@ export default function App() {
       >
         Skip to content
       </a>
-      <Nav onOpenPalette={() => setPaletteOpen(true)} />
-      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <Nav onOpenPalette={openPalette} />
+      {paletteMounted && (
+        <Suspense fallback={null}>
+          <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+        </Suspense>
+      )}
       <main id="main-content">
         {/* Route transitions: quick crossfade + drift so page changes feel
             engineered rather than hard-cut. */}
