@@ -4,22 +4,14 @@ name: Preview (v2)
 # be viewed side by side with production. Infrastructure is deliberately out of
 # scope here — v2 shares production's SWA, storage, and app settings, and only
 # `deploy.yml` (on main) is allowed to run Terraform.
+#
+# The side-by-side comparison is over and v1 won, so the push trigger is off and
+# the staging environment has been deleted: this branch is an archive and must
+# not redeploy on its own. Manual dispatch is kept so the preview can be brought
+# back deliberately — note that GitHub only offers the Run workflow button for
+# workflows present on the default branch.
 
 on:
-  push:
-    branches:
-      - v2
-    paths:
-      - 'src/**'
-      - 'api/**'
-      - 'public/**'
-      - 'scripts/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'astro.config.mjs'
-      - 'tsconfig.json'
-      - '.github/workflows/preview.yml'
-
   workflow_dispatch:
 
 # One preview at a time; a newer push supersedes an in-flight deploy.
