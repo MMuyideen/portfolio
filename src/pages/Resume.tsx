@@ -99,6 +99,9 @@ export function Resume() {
         <meta property="og:url" content={`${SITE_URL}/resume`} />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`Résumé — ${portfolio.name}`} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">
           {JSON.stringify(profilePageSchema())}
         </script>

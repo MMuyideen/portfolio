@@ -33,7 +33,7 @@ public/
 ├── diagrams/          # project architecture diagrams
 ├── certifications/    # certification badge images
 └── resume.pdf         # generated from /resume — committed, see “Résumé”
-scripts/               # sitemap + rss generation (pre-build), résumé PDF rendering
+scripts/               # sitemap + rss generation, prerendering, résumé PDF rendering
 ```
 
 ---
@@ -43,7 +43,9 @@ scripts/               # sitemap + rss generation (pre-build), résumé PDF rend
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm run build      # sitemap + rss → typecheck → production build → dist/
+npm run build      # sitemap + rss → typecheck → vite build → prerender → dist/
+npm run build:spa  # same, without prerendering (no Chrome needed)
+npm run prerender  # re-run prerendering over an existing dist/
 npm run typecheck  # tsc --noEmit
 npm run lint       # ESLint (warnings are errors)
 npm run sitemap    # regenerate public/sitemap.xml + public/rss.xml only
@@ -136,6 +138,35 @@ Notes:
 - Frontmatter is parsed at build time by the `post-meta` Vite plugin (`vite.config.ts`); post bodies are code-split so the home page never downloads them.
 - Reading time is estimated automatically (override with `readingTime: N` in frontmatter).
 - `sitemap.xml` and `rss.xml` regenerate on every build — nothing to hand-maintain.
+
+---
+
+## Prerendering
+
+The site is a client-routed SPA, so `index.html` alone would serve the same
+`<title>`, description, canonical, OG tags and JSON-LD for every URL — they only
+become correct once React boots. Googlebot renders JavaScript and mostly
+recovers, but social scrapers (LinkedIn, X, Slack, WhatsApp) do not, so every
+shared link previewed as the home page.
+
+`scripts/prerender.mjs` runs at the end of `npm run build`: it serves `dist/`,
+loads each route in headless Chrome, and writes the rendered DOM to
+`dist/<route>/index.html`. Azure Static Web Apps serves those files directly —
+`navigationFallback` only applies to paths that match no file, so no
+configuration change was needed.
+
+- **Routes come from `dist/sitemap.xml`**, generated moments earlier in the same
+  build, so prerendering and the sitemap can never disagree about what exists.
+- **Chrome runs with `--force-prefers-reduced-motion`.** The app is wrapped in
+  `<MotionConfig reducedMotion="user">`, so under that flag Framer Motion renders
+  final states instead of baking half-played entrance animations — without it,
+  everything below the fold would be frozen at `opacity: 0` in the HTML.
+- **Descriptive meta lives only in the page components.** `index.html` keeps just
+  a fallback `<title>`; when it also carried `description`/`og:*`/`twitter:*`,
+  the prerendered HTML ended up with two of each and scrapers read the first.
+- Needs a local Chrome (`CHROME_PATH` overrides discovery). GitHub's
+  `ubuntu-latest` runners ship one, so CI and deploys prerender too. Use
+  `npm run build:spa` to build without it.
 
 ---
 

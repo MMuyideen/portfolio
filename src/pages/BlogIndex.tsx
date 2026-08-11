@@ -27,6 +27,7 @@ export function BlogIndex() {
         <meta property="og:url" content={`${SITE_URL}/blog`} />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
       </Helmet>
 
       <div className="max-w-content mx-auto px-6 pt-28 pb-24">

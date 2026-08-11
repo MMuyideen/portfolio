@@ -23,8 +23,27 @@ export function Home() {
           content="DevOps & Cloud Engineer specialising in Azure, AWS, OpenShift, Terraform, Kubernetes, and CI/CD pipelines."
         />
         <link rel="canonical" href={`${SITE_URL}/`} />
-        <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${SITE_URL}/`} />
+        <meta
+          property="og:title"
+          content="Muyideen Morenigbade — DevOps & Cloud Engineer"
+        />
+        <meta
+          property="og:description"
+          content="DevOps & Cloud Engineer specialising in Azure, AWS, OpenShift, Terraform, Kubernetes, and CI/CD pipelines."
+        />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Muyideen Morenigbade — DevOps & Cloud Engineer"
+        />
+        <meta
+          name="twitter:description"
+          content="DevOps & Cloud Engineer specialising in Azure, AWS, OpenShift, Terraform, Kubernetes, and CI/CD pipelines."
+        />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">
           {JSON.stringify(personSchema())}
         </script>
