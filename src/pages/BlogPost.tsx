@@ -6,6 +6,7 @@ import { ArrowLeft, Clock } from 'lucide-react'
 import { Lightbox } from '../components/Lightbox'
 import { getPostBySlug, loadPostBody, formatPostDate } from '../lib/posts'
 import type { TocEntry } from '../lib/markdown'
+import { blogPostingSchema } from '../lib/structuredData'
 
 const SITE_URL = 'https://www.muyideen.dev'
 
@@ -169,6 +170,9 @@ export function BlogPost() {
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={post.excerpt} />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
+        <script type="application/ld+json">
+          {JSON.stringify(blogPostingSchema(post))}
+        </script>
       </Helmet>
 
       <article className="max-w-2xl mx-auto px-6 pt-28 pb-24">

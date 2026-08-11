@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Download, Printer } from 'lucide-react'
 import { portfolio } from '../data/portfolio'
+import { profilePageSchema } from '../lib/structuredData'
 import '../styles/resume.css'
 
 const SITE_URL = 'https://www.muyideen.dev'
@@ -98,6 +99,9 @@ export function Resume() {
         <meta property="og:url" content={`${SITE_URL}/resume`} />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
         <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">
+          {JSON.stringify(profilePageSchema())}
+        </script>
       </Helmet>
 
       <div className="resume">

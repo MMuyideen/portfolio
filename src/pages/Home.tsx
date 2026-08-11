@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async'
+import { personSchema, websiteSchema } from '../lib/structuredData'
 import { Hero } from '../components/Hero'
 import { Projects } from '../components/Projects'
 import { Experience } from '../components/Experience'
@@ -24,6 +25,12 @@ export function Home() {
         <link rel="canonical" href={`${SITE_URL}/`} />
         <meta property="og:url" content={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify(personSchema())}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(websiteSchema())}
+        </script>
       </Helmet>
 
       {/* Functional order: identity → track record → proof of work → skills
