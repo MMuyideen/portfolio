@@ -74,26 +74,75 @@ export const portfolio: PortfolioData = {
   name: 'Muyideen Morenigbade',
   role: 'DevOps & Cloud Engineer',
   email: 'contact@muyideen.dev',
-  github: 'https://github.com/mmuyideen',
+  github: 'https://github.com/MMuyideen',
   linkedin: 'https://linkedin.com/in/muyideenmorenigbade',
   blog: 'https://www.muyideen.dev/blog', // Self-hosted blog (/blog route)
 
+  /**
+   * Ordered by engineering depth, most involved first — the Projects section
+   * renders this array in order and only reveals the first four before the
+   * "show all" expander, so the ranking decides what a visitor actually sees.
+   *
+   * Every entry was checked against the repository it links to: the title
+   * describes what the code does, and `stack` lists only technologies that
+   * appear in that repo.
+   */
   projects: [
-    // Add the projects here
+    // Reusable Terraform modules + callable GitHub Actions workflows
+    {
+      id: 'terraform-modules-and-pipelines',
+      title: 'Multi-Cloud Terraform Module Library',
+      command: 'run module-library',
+      description: [
+        '# Eighteen reusable Terraform modules spanning Azure, AWS and GCP,',
+        '# published alongside the pipelines that consume them: composite',
+        '# actions for OIDC cloud login and fmt/validate, plus callable',
+        '# plan/apply/destroy workflows other repos reference by tag.',
+      ],
+      stack: ['Terraform', 'GitHub Actions', 'Azure', 'AWS', 'GCP', 'OIDC', 'Dependabot'],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/terraform-modules-and-pipelines',
+          external: true,
+        },
+      ],
+    },
+    // Custom Kubernetes controller in Python (kopf)
+    {
+      id: 'python-kubernetes-operator',
+      title: 'Kubernetes WebApp Operator',
+      command: 'run webapp-operator',
+      description: [
+        '# A Kubernetes operator that reconciles a custom WebApp resource into',
+        '# Deployments, Services and HPAs, with OpenAPI validation on the CRD,',
+        '# owner references for garbage collection, and kopf timers that sync',
+        '# health back to the resource status.',
+      ],
+      stack: ['Python', 'kopf', 'Kubernetes', 'CRDs', 'RBAC', 'Docker', 'pytest', 'GitHub Actions'],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/python-kubernetes-operator',
+          external: true,
+        },
+      ],
+    },
     // AKS GitOps Pipeline
     {
       id: 'aks-terraform-argocd',
       title: 'AKS GitOps Pipeline',
       command: 'run aks-gitops',
       description: [
-        '# AKS cluster provisioned with Terraform and wired to ArgoCD',
-        '# for declarative GitOps — no imperative kubectl in the pipeline.',
+        '# AKS provisioned by Terraform modules, then a GitHub Actions pipeline',
+        '# that builds the image, rewrites the tag in the manifest and commits it',
+        '# — ArgoCD applies the change, so no imperative kubectl in the pipeline.',
       ],
-      stack: ['Terraform', 'Kubernetes', 'Azure', 'ArgoCD'],
+      stack: ['Terraform', 'Kubernetes', 'Azure', 'ArgoCD', 'Docker', 'Key Vault', 'GitHub Actions'],
       links: [
         {
           label: 'GitHub',
-          href: 'https://github.com/mmuyideen/AKS-terraform-argocd',
+          href: 'https://github.com/MMuyideen/AKS-terraform-argocd',
           external: true,
         },
       ],
@@ -101,68 +150,54 @@ export const portfolio: PortfolioData = {
     },
     // EKS GitOps Pipeline
     {
-      id: 'EKS-terraform-argocd',
+      id: 'eks-terraform-argocd',
       title: 'EKS GitOps Pipeline',
       command: 'run eks-gitops',
       description: [
-        '# EKS cluster provisioned with Terraform and wired to ArgoCD',
-        '# for declarative GitOps — no imperative kubectl in the pipeline.',
+        '# EKS cluster and its IAM roles built from Terraform modules, with a',
+        '# containerised Django app delivered through an ArgoCD sync manifest',
+        '# rather than applied by hand.',
       ],
-      stack: ['Terraform', 'Kubernetes', 'Azure', 'ArgoCD'],
+      stack: ['Terraform', 'Kubernetes', 'AWS', 'EKS', 'ArgoCD', 'IAM', 'Docker'],
       links: [
         {
           label: 'GitHub',
-          href: 'https://github.com/mmuyideen/EKS-terraform-argocd',
+          href: 'https://github.com/MMuyideen/EKS-terraform-argocd',
           external: true,
         },
       ],
       diagram: '/diagrams/eks-gitops.png',
     },
-    // AWS Three Tier App
+    // Azure Two Tier App
     {
-      id: 'AWS Three Tier app',
-      title: 'AWS Three Tier App',
-      command: 'run aws-three-tier',
+      id: 'azure-2tier-webapp',
+      title: 'Azure Two-Tier App',
+      command: 'run azure-two-tier',
       description: [
-        '# AWS three-tier application architecture with CLI',
+        '# Two-tier Azure architecture split across eight Terraform modules —',
+        '# scale set behind an Application Gateway, MySQL Flexible Server reached',
+        '# over a private DNS zone, jumpbox for admin access, secrets in Key Vault.',
       ],
-      stack: ['AWS', 'CLI', 'EC2', 'RDS', 'Load Balancers', 'VPC', 'Security Groups'],
+      stack: ['Azure', 'Terraform', 'VMSS', 'App Gateway', 'MySQL Flexible Server', 'Private DNS', 'Key Vault', 'Azure CDN'],
       links: [
         {
           label: 'GitHub',
-          href: 'https://github.com/MMuyideen/aws-3tier-webapp',
+          href: 'https://github.com/MMuyideen/azure-2tier-webapp',
           external: true,
         },
       ],
-      diagram: '/diagrams/aws-three-tier.png',
-    },
-    // Azure Three Tier App
-    {
-      id: 'Azure Three Tier app',
-      title: 'Azure Three Tier App',
-      command: 'run azure-three-tier',
-      description: [
-        '# Azure three-tier application architecture with Terraform',
-      ],
-      stack: ['Azure', 'Terraform', 'VMSS', 'MySQL Database', 'App Gateway', 'Load Balancers', 'Private Endpoint', 'Azure CDN', 'DNS',],
-      links: [
-        {
-          label: 'GitHub',
-          href: 'https://github.com/MMuyideen/azure-3tier-webapp',
-          external: true,
-        },
-      ],
-      diagram: '/diagrams/azure-three-tier.png',
     },
     // AWS Two Tier App
     {
-      id: 'AWS two Tier app',
-      title: 'AWS Two Tier App',
+      id: 'aws-2tier-terraform',
+      title: 'AWS Two-Tier App',
       command: 'run aws-two-tier',
       description: [
-        '# AWS two-tier application architecture with Terraform',
+        '# Two-tier AWS architecture composed from seven Terraform modules:',
+        '# autoscaling group behind an ALB, RDS in private subnets reached',
+        '# through NAT, and CloudFront fronting it on an ACM certificate.',
       ],
-      stack: ['AWS', 'EC2', 'RDS', 'Load Balancers', 'VPC', 'Security Groups', 'CloudFront', 'DNS', 'AWS Certificate Manager', 'Terraform'],
+      stack: ['AWS', 'Terraform', 'EC2', 'Auto Scaling', 'RDS', 'ALB', 'VPC', 'CloudFront', 'ACM'],
       links: [
         {
           label: 'GitHub',
@@ -172,29 +207,95 @@ export const portfolio: PortfolioData = {
       ],
       diagram: '/diagrams/aws-two-tier.png',
     },
-    // Azure Two Tier App
+    // Azure Serverless Function App
     {
-      id: 'Azure two Tier app',
-      title: 'Azure Two Tier App',
-      command: 'run azure-two-tier',
+      id: 'azure-serverless-api',
+      title: 'Azure Serverless API',
+      command: 'run azure-serverless-api',
       description: [
-        '# Azure two-tier application architecture with Terraform',
+        '# A Python Function App published behind API Management and Front Door,',
+        '# provisioned by Terraform with Application Insights and Event Hub',
+        '# diagnostics wired in at the same time.',
       ],
-      stack: ['Azure', 'VMs', 'SQL Database', 'Load Balancers', 'VNet', 'Security Groups', 'DNS', 'Terraform'],
-      // No public repo yet: github.com/MMuyideen/azure-2tier-terraform 404s, and
-      // the previous diagram belonged to the AWS two-tier project. Restore both
-      // once the repo is published.
-      links: [],
+      stack: ['Azure', 'Terraform', 'Function Apps', 'Python', 'API Management', 'Front Door', 'App Insights', 'Event Hubs'],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/azure-serverless-api',
+          external: true,
+        },
+      ],
+      diagram: '/diagrams/azure-serverless-api.png',
+    },
+    // AKS + Bank of Anthos microservices workload
+    {
+      id: 'azure-aks-monitor',
+      title: 'AKS Microservices Platform',
+      command: 'run aks-microservices',
+      description: [
+        '# A zone-redundant, autoscaling AKS cluster built from Terraform modules',
+        '# with its own service principal and Key Vault, used to run the',
+        '# Bank of Anthos microservices suite as a realistic workload.',
+      ],
+      stack: ['Azure', 'Terraform', 'AKS', 'Kubernetes', 'Key Vault', 'Entra ID', 'Microservices'],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/azure-aks-monitor',
+          external: true,
+        },
+      ],
+    },
+    // Azure Three Tier App
+    {
+      id: 'azure-3tier-webapp',
+      title: 'Azure Three-Tier App',
+      command: 'run azure-three-tier',
+      description: [
+        '# Web, app and data tiers scripted end to end with the Azure CLI:',
+        '# Application Gateway at the edge, an internal load balancer between',
+        '# tiers, and MySQL Flexible Server resolved over a private DNS zone.',
+      ],
+      stack: ['Azure', 'Azure CLI', 'Bash', 'App Gateway', 'Load Balancer', 'MySQL Flexible Server', 'Private DNS', 'NSG'],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/azure-3tier-webapp',
+          external: true,
+        },
+      ],
+      diagram: '/diagrams/azure-three-tier.png',
+    },
+    // AWS Three Tier App
+    {
+      id: 'aws-3tier-webapp',
+      title: 'AWS Three-Tier App',
+      command: 'run aws-three-tier',
+      description: [
+        '# Web, app and data tiers stood up from the AWS CLI, each tier behind',
+        '# its own load balancer and driven by launch templates so instances',
+        '# come back configured.',
+      ],
+      stack: ['AWS', 'AWS CLI', 'Bash', 'EC2', 'RDS', 'Load Balancers', 'VPC', 'Security Groups'],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/aws-3tier-webapp',
+          external: true,
+        },
+      ],
+      diagram: '/diagrams/aws-three-tier.png',
     },
     // AWS Static Website
     {
-      id: 'aws-static-website',
-      title: 'AWS Static Website',
+      id: 'aws-static-webapp-cicd',
+      title: 'AWS Static Site with CI/CD',
       command: 'run aws-static-website',
       description: [
-        '# AWS static website architecture with GitHub Actions CI/CD pipeline',
+        '# S3 origin behind CloudFront on an ACM certificate, bootstrapped by a',
+        '# single CLI script and redeployed by GitHub Actions on every push.',
       ],
-      stack: ['AWS', 'S3', 'CloudFront', 'DNS', 'AWS Certificate Manager', 'CLI', 'GitHub Actions' ],
+      stack: ['AWS', 'S3', 'CloudFront', 'ACM', 'AWS CLI', 'GitHub Actions'],
       links: [
         {
           label: 'GitHub',
@@ -206,13 +307,15 @@ export const portfolio: PortfolioData = {
     },
     // Azure Static Website
     {
-      id: 'azure-static-website',
-      title: 'Azure Static Website',
+      id: 'azure-static-webapp-cicd',
+      title: 'Azure Static Site with CI/CD',
       command: 'run azure-static-website',
       description: [
-        '# Azure static website architecture with Azure DevOps CI/CD pipeline',
+        '# Static site served from a storage account with a CDN endpoint in',
+        '# front, deployed by an Azure DevOps pipeline that runs the same CLI',
+        '# script used to create it.',
       ],
-      stack: ['Azure', 'Storage Accounts', 'Azure CDN', 'DNS', 'CLI', 'Azure DevOps Pipelines' ],
+      stack: ['Azure', 'Storage Accounts', 'Azure CDN', 'Azure CLI', 'Azure DevOps Pipelines'],
       links: [
         {
           label: 'GitHub',
@@ -222,44 +325,6 @@ export const portfolio: PortfolioData = {
       ],
       diagram: '/diagrams/azure-static-website.png',
     },
-    // Azure Serverless Function App
-    {
-      id: 'azure-serverless-api',
-      title: 'Azure Serverless Function App Terraform',
-      command: 'run azure-serverless-function-app',
-      description: [
-        '# Azure Serverless Function App architecture with APIM, Front door and Terraform',
-      ],
-      stack: ['Azure', 'Terraform', 'Function Apps', 'API Management', 'Front Door', 'Azure CDN'],
-      links: [
-        {
-          label: 'GitHub',
-          href: 'https://github.com/MMuyideen/azure-serverless-api',
-          external: true,
-        },
-      ],
-      diagram: '/diagrams/azure-serverless-api.png',
-    },
-    // Azure AKS Monitor
-    {
-      id: 'azure-aks-monitor',
-      title: 'Azure AKS Monitor',
-      command: 'run azure-aks-monitor',
-      description: [
-        '# Azure AKS Monitor architecture ',
-      ],
-      stack: ['Azure', 'AKS', 'Azure Key Vault', 'Entra ID', 'Service Principal', ],
-      links: [
-        {
-          label: 'GitHub',
-          href: 'https://github.com/MMuyideen/azure-aks-monitor',
-          external: true,
-        },
-      ],
-      // diagram: '/diagrams/azure-aks-monitor.png',
-      // diagram: 'https://github.com/MMuyideen/azure-aks-monitor/blob/main/Arch-diagram.png?raw=true',
-    },
-
   ],
 
   certifications: [
@@ -347,7 +412,7 @@ export const portfolio: PortfolioData = {
   skills: [
     { name: 'Cloud', tools: ['AWS', 'Azure', 'GCP', 'DigitalOcean'] },
     { name: 'Containers', tools: ['Kubernetes', 'Docker', 'ArgoCD', 'AKS', 'EKS'] },
-    { name: 'IaC', tools: ['Terraform', 'ARM Templates', 'CloudFormation', 'OpenTofu'] },
+    { name: 'IaC', tools: ['Terraform', 'ARM Templates', 'CloudFormation'] },
     { name: 'CI/CD', tools: ['GitHub Actions', 'Azure DevOps', 'Jenkins', 'CircleCI'] },
     { name: 'Observability', tools: ['Prometheus', 'Grafana', 'Azure Monitor', 'CloudWatch', 'New Relic'] },
     { name: 'Scripting', tools: ['Python', 'PowerShell', 'Bash', 'YAML'] },
@@ -389,18 +454,29 @@ export const portfolio: PortfolioData = {
       'DevOps & Cloud Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
 
 
+    // The top of the complexity ranking in `projects`, trimmed to four so the
+    // section holds one page. Summaries are overridden because the shell-comment
+    // voice on the home page runs long once flattened into a sentence.
     projects: [
-      { id: 'aks-terraform-argocd' },
       {
-        id: 'Azure Three Tier app',
-        summary: 'Classic three-tier architecture on Azure, fully Terraform-managed.',
+        id: 'terraform-modules-and-pipelines',
+        summary:
+          'Eighteen reusable Terraform modules across Azure, AWS and GCP, shipped with the composite actions and callable plan/apply/destroy workflows other repositories consume.',
       },
-      { id: 'EKS-terraform-argocd' },
+      {
+        id: 'python-kubernetes-operator',
+        summary:
+          'A Python operator that reconciles a custom WebApp resource into Deployments, Services and HPAs, with a validated CRD, least-privilege RBAC and a tested release pipeline.',
+      },
+      {
+        id: 'aks-terraform-argocd',
+        summary:
+          'AKS provisioned from Terraform modules, with CI that builds the image and commits the new tag for ArgoCD to apply — no imperative kubectl in the pipeline.',
+      },
       {
         id: 'azure-serverless-api',
-        title: 'Azure Serverless API',
         summary:
-          'Function Apps behind API Management and Front Door, provisioned with Terraform.',
+          'A Python Function App behind API Management and Front Door, provisioned with Terraform alongside its Application Insights and Event Hub diagnostics.',
       },
     ],
   },
