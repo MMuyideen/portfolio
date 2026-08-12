@@ -177,35 +177,6 @@
   line-height: 1.65;
 }
 
-/* ── Impact numbers ───────────────────────────────────────────────────────── */
-.rz-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--rz-rule);
-  border: 1px solid var(--rz-rule);
-  border-radius: 6px;
-  overflow: hidden;
-}
-.rz-metric {
-  background: #0a0e14;
-  padding: 1.125rem 1.25rem;
-}
-.rz-metric dt {
-  font-family: var(--rz-mono);
-  font-size: 1.75rem;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--rz-accent);
-  font-variant-numeric: tabular-nums;
-}
-.rz-metric dd {
-  margin: 0.5rem 0 0;
-  font-size: 0.8125rem;
-  color: var(--rz-muted);
-}
-
 /* ── Experience & projects ────────────────────────────────────────────────── */
 .rz-entry__head {
   display: flex;
@@ -388,9 +359,6 @@
   .rz-rail {
     position: static;
   }
-  .rz-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .rz-certs,
   .rz-skill {
     grid-template-columns: minmax(0, 1fr);
@@ -486,21 +454,6 @@
     font-size: 10pt;
     line-height: 1.5;
     max-width: none;
-  }
-
-  .rz-metrics {
-    border-radius: 4px;
-  }
-  .rz-metric {
-    background: #fff;
-    padding: 0.5rem 0.7rem;
-  }
-  .rz-metric dt {
-    font-size: 15pt;
-  }
-  .rz-metric dd {
-    font-size: 7.6pt;
-    margin-top: 0.2rem;
   }
 
   /* Keep a role and its bullets together; never orphan a heading. */

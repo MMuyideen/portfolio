@@ -57,6 +57,16 @@ const MIME = {
 
 const sleep = ms => new Promise(done => setTimeout(done, ms))
 
+/**
+ * Routes to render that are deliberately absent from the sitemap.
+ *
+ * /resume is not a public page — nothing links to it and it is noindex — but
+ * scripts/build-resume-pdf.mjs prints the PDF from it, and printing a static
+ * file is far more reliable than waiting on the SPA fallback to boot React,
+ * load the route chunk and apply its stylesheet.
+ */
+const EXTRA_ROUTES = ['/resume']
+
 /** Every path in the sitemap, as site-relative routes ("/", "/blog", …). */
 function routesFromSitemap() {
   const sitemap = join(DIST, 'sitemap.xml')
@@ -66,7 +76,7 @@ function routesFromSitemap() {
   const xml = readFileSync(sitemap, 'utf8')
   const routes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
     .map(([, loc]) => loc.replace(SITE_URL, '').replace(/\/$/, '') || '/')
-  return [...new Set(routes)]
+  return [...new Set([...routes, ...EXTRA_ROUTES])]
 }
 
 /** Serve dist with the SPA fallback, mirroring staticwebapp.config.json. */

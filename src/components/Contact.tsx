@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { Check, Copy, FileText, Linkedin, Mail } from 'lucide-react'
+import { Check, Copy, Download, Linkedin, Mail } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
+import { RESUME_FILENAME } from '../lib/resume'
 import { EASE, VIEWPORT } from '../lib/motion'
 
 interface ContactProps {
@@ -120,10 +120,14 @@ export function Contact({ email, github, linkedin }: ContactProps) {
                 <GitHubIcon size={13} aria-hidden="true" />
                 GitHub
               </a>
-              <Link to="/resume" className={GHOST_BUTTON}>
-                <FileText size={13} aria-hidden="true" />
+              <a
+                href="/resume.pdf"
+                download={RESUME_FILENAME}
+                className={GHOST_BUTTON}
+              >
+                <Download size={13} aria-hidden="true" />
                 Résumé
-              </Link>
+              </a>
             </div>
           </div>
 

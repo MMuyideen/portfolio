@@ -25,7 +25,7 @@ src/
 ├── content/posts/     # blog: one folder per post (index.md + images)
 ├── data/portfolio.ts  # ALL editable site content
 ├── lib/               # posts loader, markdown renderer, motion tokens
-├── pages/             # Home, Resume, BlogIndex, BlogPost, NotFound
+├── pages/             # Home, BlogIndex, BlogPost, NotFound (+ Resume, build-only)
 └── styles/            # tokens.css (global) + resume.css (screen + print)
 api/visitors/          # visitor-counter Azure Function
 infra/                 # Terraform (resource group, SWA, counter storage)
@@ -203,11 +203,20 @@ configuration change was needed.
   `ubuntu-latest` runners ship one, so CI and deploys prerender too. Use
   `npm run build:spa` to build without it.
 
-The downloadable PDF is served from `/resume.pdf` so existing links keep
-working, but the `download` attribute renames it to
-`Muyideen_Morenigbade_resume.pdf` on the way to disk. That name is derived from
-`portfolio.name` in `src/lib/resume.ts`, shared by the résumé page and the ⌘K
-palette.
+### The résumé is a download, not a page
+
+There is no public résumé route. The hero, the contact block and ⌘K all link
+straight at `/resume.pdf`, and the `download` attribute names the saved file
+`Muyideen_Morenigbade_resume.pdf` — derived from `portfolio.name` in
+`src/lib/resume.ts` so the call sites cannot disagree.
+
+`src/pages/Resume.tsx` still exists and is still routed, but only so
+`scripts/build-resume-pdf.mjs` has something to print: that keeps the PDF
+generated from the same data as the home page instead of hand-maintained. It is
+absent from the sitemap, unlinked from anywhere, and `noindex`. `prerender.mjs`
+renders it via `EXTRA_ROUTES` because printing a static file is far more
+reliable than waiting on the SPA fallback to boot React and load the route's
+stylesheet.
 
 ---
 

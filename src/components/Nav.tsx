@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BookOpen, FileText, Menu, X } from 'lucide-react'
+import { BookOpen, Menu, X } from 'lucide-react'
 import { motion, useScroll } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import { Monogram } from './Monogram'
@@ -115,13 +115,6 @@ export function Nav({ onOpenPalette }: NavProps) {
             <BookOpen size={11} aria-hidden="true" />
             Blog
           </Link>
-          <Link
-            to="/resume"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-accent hover:text-accent/80 transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
-          >
-            <FileText size={11} aria-hidden="true" />
-            Résumé
-          </Link>
         </nav>
 
         {/* ⌘K */}
@@ -178,14 +171,6 @@ export function Nav({ onOpenPalette }: NavProps) {
             >
               <BookOpen size={13} aria-hidden="true" />
               Blog
-            </Link>
-            <Link
-              to="/resume"
-              onClick={() => setMenuOpen(false)}
-              className="inline-flex items-center gap-2 font-mono text-sm text-accent py-2.5 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
-            >
-              <FileText size={13} aria-hidden="true" />
-              Résumé
             </Link>
           </div>
         </motion.nav>

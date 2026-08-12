@@ -36,12 +36,6 @@ export interface SkillCategory {
   tools: string[]
 }
 
-/** A headline number on the résumé. Each one is claimed by an experience bullet. */
-export interface ResumeMetric {
-  value: string
-  label: string
-}
-
 /** A project shown on the résumé, referenced by `Project.id`. */
 export interface ResumeProjectRef {
   id: string
@@ -58,7 +52,6 @@ export interface ResumeProjectRef {
 export interface ResumeData {
   headline: string
   summary: string
-  metrics: ResumeMetric[]
   projects: ResumeProjectRef[]
 }
 
@@ -395,12 +388,6 @@ export const portfolio: PortfolioData = {
     summary:
       'DevOps & Cloud Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
 
-    // A live certification count is appended to these in Resume.tsx.
-    metrics: [
-      { value: '60%', label: 'faster deployments' },
-      { value: '99.99%', label: 'uptime sustained' },
-      { value: '30%', label: 'cloud spend cut' },
-    ],
 
     projects: [
       { id: 'aks-terraform-argocd' },

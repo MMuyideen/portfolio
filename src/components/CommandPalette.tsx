@@ -112,17 +112,6 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   Copy email address
                 </Command.Item>
                 <Command.Item
-                  value="View résumé"
-                  onSelect={() => {
-                    navigate('/resume')
-                    onOpenChange(false)
-                  }}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
-                >
-                  <FileText size={11} className="shrink-0" aria-hidden="true" />
-                  View résumé
-                </Command.Item>
-                <Command.Item
                   value="Download résumé PDF"
                   onSelect={() => {
                     const link = document.createElement('a')

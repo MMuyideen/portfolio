@@ -78,14 +78,3 @@ export function blogPostingSchema(post: {
   }
 }
 
-/** The résumé route, described as a profile page about the person. */
-export function profilePageSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'ProfilePage',
-    url: `${SITE_URL}/resume`,
-    name: `Résumé — ${portfolio.name}`,
-    inLanguage: 'en',
-    mainEntity: { '@type': 'Person', name: portfolio.name, url: SITE_URL },
-  }
-}

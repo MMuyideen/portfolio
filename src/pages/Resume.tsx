@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async'
 import { Download, Printer } from 'lucide-react'
 import { portfolio } from '../data/portfolio'
 import { RESUME_FILENAME } from '../lib/resume'
-import { profilePageSchema } from '../lib/structuredData'
 import '../styles/resume.css'
 
 const SITE_URL = 'https://www.muyideen.dev'
@@ -32,20 +31,25 @@ function asSentence(description: string[]): string {
     .join(' ')
 }
 
-const SECTIONS = [
-  { title: 'Summary', command: 'whoami' },
-  { title: 'Impact', command: 'metrics --top' },
-  { title: 'Experience', command: 'git log --oneline' },
-  { title: 'Selected work', command: 'ls projects/' },
-  { title: 'Toolbox', command: 'which --all' },
-  { title: 'Certifications', command: 'verify --issuer' },
-  { title: 'Education', command: 'cat education' },
-]
+const SECTIONS = {
+  summary: { title: 'Summary', command: 'whoami' },
+  experience: { title: 'Experience', command: 'git log --oneline' },
+  work: { title: 'Selected work', command: 'ls projects/' },
+  toolbox: { title: 'Toolbox', command: 'which --all' },
+  certifications: { title: 'Certifications', command: 'verify --issuer' },
+  education: { title: 'Education', command: 'cat education' },
+} as const
+
+type SectionKey = keyof typeof SECTIONS
 
 /**
- * The résumé, rendered from the same data as the home page and printed to
- * /resume.pdf by scripts/build-resume-pdf.mjs. Intentionally free of scroll
- * reveals: anything below the fold would print at opacity 0.
+ * The résumé document. Not linked from anywhere and not in the sitemap — it
+ * exists so scripts/build-resume-pdf.mjs has a page to print, keeping the PDF
+ * generated from the same data as the home page rather than hand-maintained.
+ * Visitors get the PDF directly from the hero, contact block and ⌘K palette.
+ *
+ * Intentionally free of scroll reveals: anything below the fold would print at
+ * opacity 0.
  */
 export function Resume() {
   const { resume, certifications, education, experience, skills } = portfolio
@@ -56,10 +60,6 @@ export function Resume() {
     return () => document.body.classList.remove('resume-doc')
   }, [])
 
-  const metrics = [
-    ...resume.metrics,
-    { value: String(certifications.length), label: 'certifications' },
-  ]
 
   const projects = resume.projects.map(ref => {
     const project = portfolio.projects.find(p => p.id === ref.id)
@@ -86,26 +86,14 @@ export function Resume() {
     year: 'numeric',
   })
 
-  const description = `Résumé of ${portfolio.name}, ${portfolio.role} — Azure and AWS platforms built with Terraform, Kubernetes, and CI/CD.`
-
   return (
     <>
       <Helmet>
         <title>Résumé — {portfolio.name}</title>
-        <meta name="description" content={description} />
-        <link rel="canonical" href={`${SITE_URL}/resume`} />
-        <meta property="og:type" content="profile" />
-        <meta property="og:title" content={`Résumé — ${portfolio.name}`} />
-        <meta property="og:description" content={description} />
-        <meta property="og:url" content={`${SITE_URL}/resume`} />
-        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`Résumé — ${portfolio.name}`} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
-        <script type="application/ld+json">
-          {JSON.stringify(profilePageSchema())}
-        </script>
+        {/* Not a public page: it exists so scripts/build-resume-pdf.mjs has
+            something to print. Kept out of the sitemap, and noindex in case it
+            is ever reached directly. */}
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="resume">
@@ -148,22 +136,12 @@ export function Resume() {
             <span className="rz-updated">updated {updated}</span>
           </div>
 
-          <Section index={0} id="rz-summary">
+          <Section name="summary" id="rz-summary">
             <p className="rz-lede">{resume.summary}</p>
           </Section>
 
-          <Section index={1} id="rz-impact">
-            <dl className="rz-metrics">
-              {metrics.map(metric => (
-                <div className="rz-metric" key={metric.label}>
-                  <dt>{metric.value}</dt>
-                  <dd>{metric.label}</dd>
-                </div>
-              ))}
-            </dl>
-          </Section>
 
-          <Section index={2} id="rz-experience" stack>
+          <Section name="experience" id="rz-experience" stack>
             {experience.map(entry => (
               <div className="rz-entry" key={`${entry.company}-${entry.period}`}>
                 <div className="rz-entry__head">
@@ -181,7 +159,7 @@ export function Resume() {
             ))}
           </Section>
 
-          <Section index={3} id="rz-work" stack>
+          <Section name="work" id="rz-work" stack>
             {projects.map(project => (
               <div className="rz-entry" key={project.id}>
                 <div className="rz-entry__head">
@@ -202,7 +180,7 @@ export function Resume() {
             ))}
           </Section>
 
-          <Section index={4} id="rz-toolbox">
+          <Section name="toolbox" id="rz-toolbox">
             <dl className="rz-skills">
               {skills.map(category => (
                 <div className="rz-skill" key={category.name}>
@@ -213,7 +191,7 @@ export function Resume() {
             </dl>
           </Section>
 
-          <Section index={5} id="rz-certs">
+          <Section name="certifications" id="rz-certs">
             <ul className="rz-certs">
               {certifications.map(cert => (
                 <li key={cert.verifyUrl + cert.title}>
@@ -240,7 +218,7 @@ export function Resume() {
             </ul>
           </Section>
 
-          <Section index={6} id="rz-education">
+          <Section name="education" id="rz-education">
             <ul className="rz-education">
               {education.map(entry => (
                 <li key={entry.degree}>
@@ -271,20 +249,20 @@ export function Resume() {
 
 /** A labelled row: the `$ command` rail on the left, content on the right. */
 function Section({
-  index,
+  name,
   id,
   stack,
   children,
 }: {
-  index: number
+  name: SectionKey
   id: string
   stack?: boolean
   children: React.ReactNode
 }) {
-  const section = SECTIONS[index]
+  const section = SECTIONS[name]
   return (
     <section
-      className={`rz-row${index === 0 ? ' rz-row--first' : ''}`}
+      className={`rz-row${name === 'summary' ? ' rz-row--first' : ''}`}
       aria-labelledby={id}
     >
       <div className="rz-rail">
