@@ -186,6 +186,7 @@ export const portfolio: PortfolioData = {
           external: true,
         },
       ],
+      diagram: '/diagrams/azure-two-tier.png',
     },
     // AWS Two Tier App
     {

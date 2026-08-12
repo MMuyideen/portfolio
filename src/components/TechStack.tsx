@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import {
   siGooglecloud, siDigitalocean,
   siKubernetes, siDocker, siArgo,
-  siTerraform, siOpentofu,
+  siTerraform,
   siGithubactions, siJenkins, siCircleci,
   siPrometheus, siGrafana, siNewrelic,
   siPython, siGnubash, siAnsible, siVmware,
@@ -21,7 +21,6 @@ const TOOL_ICONS: Record<string, SimpleIcon> = {
   'Docker':         siDocker,
   'ArgoCD':         siArgo,
   'Terraform':      siTerraform,
-  'OpenTofu':       siOpentofu,
   'GitHub Actions': siGithubactions,
   'Jenkins':        siJenkins,
   'CircleCI':       siCircleci,
