@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Download, Printer } from 'lucide-react'
-import { portfolio, skillRows } from '../data/portfolio'
+import { portfolio } from '../data/portfolio'
 import { RESUME_FILENAME } from '../lib/resume'
 import { SITE_URL } from '../lib/site'
 import '../styles/resume.css'
@@ -52,10 +52,7 @@ type SectionKey = keyof typeof SECTIONS
  * opacity 0.
  */
 export function Resume() {
-  const { resume, certifications, education, experience } = portfolio
-  // The three-level hierarchy is a home-page device; the printed sheet is a
-  // definition list, so it takes the flattened rows instead.
-  const skills = skillRows()
+  const { resume, certifications, education, experience, skills } = portfolio
 
   // Scopes the print rules in resume.css so printing any other page is normal.
   useEffect(() => {

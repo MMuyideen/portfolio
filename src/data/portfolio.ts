@@ -102,21 +102,6 @@ export interface SkillCategory {
   tools: string[]
 }
 
-/**
- * The stack in three levels rather than one flat wall: what the work is
- * actually built on, what it is operated with, and everything else grouped by
- * what it is for. Depth in a core set, breadth across the ecosystem — the flat
- * list read as "every technology I have ever touched".
- */
-export interface Skills {
-  /** The five that show up in nearly every project. */
-  core: string[]
-  /** Day-to-day platform and delivery tooling. */
-  platform: string[]
-  /** Everything else, grouped by purpose. */
-  supporting: SkillCategory[]
-}
-
 /** A project shown on the résumé, referenced by `Project.id`. */
 export interface ResumeProjectRef {
   id: string
@@ -150,7 +135,7 @@ export interface PortfolioData {
   certifications: Certification[]
   experience: ExperienceEntry[]
   education: EducationEntry[]
-  skills: Skills
+  skills: SkillCategory[]
   resume: ResumeData
 }
 
@@ -564,17 +549,13 @@ export const portfolio: PortfolioData = {
       title: 'AWS Certified Cloud Practitioner',
       tier: 'additional',
       date: '2023-10',
-      // FIXME(muyideen): this is the KCNA badge URL, not Cloud Practitioner's —
-      // the two entries point at the same Credly badge, and fetching it returns
-      // "KCNA: Kubernetes and Cloud Native Associate". Replace with the real
-      // Cloud Practitioner badge URL; it can't be guessed from here.
-      verifyUrl: 'https://www.credly.com/badges/e7df1162-2a0f-46e7-a139-dfd2c3abb77c/',
+      verifyUrl: 'https://www.credly.com/badges/25ab1b86-3790-42d4-be4d-3dfa563b724f',
       badgeImage: '/certifications/aws-certified-cloud-practitioner.png',
     },
     {
       issuer: 'Microsoft',
       title: 'Microsoft Certified: Azure Administrator Associate',
-      tier: 'additional',
+      tier: 'featured',
       date: '2023-08',
       verifyUrl: 'https://learn.microsoft.com/en-gb/users/muyideenm/credentials/ac333bcc783f9764',
       badgeImage: '/certifications/azure-administrator-associate.png',
@@ -612,24 +593,16 @@ export const portfolio: PortfolioData = {
     },
   ],
 
-  /**
-   * Three levels, promoted out of what used to be eight equal-weight rows.
-   * Nothing was added or dropped in the reshuffle — `core` and `platform` are
-   * pulled up out of the old categories, and the remainder keeps its grouping.
-   */
-  skills: {
-    core: ['Azure', 'AWS', 'Terraform', 'Kubernetes', 'GitOps'],
-    platform: ['AKS', 'EKS', 'ArgoCD', 'Docker', 'GitHub Actions', 'Azure DevOps'],
-    supporting: [
-      { name: 'Observability', tools: ['Prometheus', 'Grafana', 'Azure Monitor', 'CloudWatch', 'New Relic'] },
-      { name: 'Security', tools: ['Azure Policy', 'RBAC', 'IAM', 'Microsoft Entra', 'MFA'] },
-      { name: 'Networking', tools: ['VNet', 'DNS', 'Load Balancing', 'WAF', 'Firewalls', 'VPN'] },
-      { name: 'Languages', tools: ['Python', 'Bash', 'PowerShell', 'YAML'] },
-      { name: 'CI/CD', tools: ['Jenkins', 'CircleCI'] },
-      { name: 'IaC', tools: ['ARM Templates', 'CloudFormation'] },
-      { name: 'Cloud', tools: ['GCP', 'DigitalOcean'] },
-    ],
-  },
+  skills: [
+    { name: 'Cloud', tools: ['AWS', 'Azure', 'GCP', 'DigitalOcean'] },
+    { name: 'Containers', tools: ['Kubernetes', 'Docker', 'ArgoCD', 'AKS', 'EKS'] },
+    { name: 'IaC', tools: ['Terraform', 'ARM Templates', 'CloudFormation'] },
+    { name: 'CI/CD', tools: ['GitHub Actions', 'Azure DevOps', 'Jenkins', 'CircleCI'] },
+    { name: 'Observability', tools: ['Prometheus', 'Grafana', 'Azure Monitor', 'CloudWatch', 'New Relic'] },
+    { name: 'Scripting', tools: ['Python', 'PowerShell', 'Bash', 'YAML'] },
+    { name: 'Security', tools: ['Azure Policy', 'RBAC', 'IAM', 'MFA', 'Microsoft Entra'] },
+    { name: 'Networking', tools: ['DNS', 'VPN', 'Load Balancing', 'WAF', 'Firewalls', 'VNet'] },
+  ],
 
   experience: [
     {
@@ -700,29 +673,6 @@ export const portfolio: PortfolioData = {
       },
     ],
   },
-}
-
-/**
- * Skills flattened back to one list, for consumers that need every tool rather
- * than the display hierarchy — schema.org `knowsAbout`, and the ⌘K palette.
- */
-export function allTools(): string[] {
-  const { core, platform, supporting } = portfolio.skills
-  return [...core, ...platform, ...supporting.flatMap(category => category.tools)]
-}
-
-/**
- * Skills as flat labelled rows, in display order. The résumé prints as a
- * definition list and has no room for the three-level treatment, so `core` and
- * `platform` become two rows of their own ahead of the grouped remainder.
- */
-export function skillRows(): SkillCategory[] {
-  const { core, platform, supporting } = portfolio.skills
-  return [
-    { name: 'Core', tools: core },
-    { name: 'Platform', tools: platform },
-    ...supporting,
-  ]
 }
 
 /** The four projects that lead the section as full case studies. */

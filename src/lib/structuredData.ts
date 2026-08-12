@@ -1,4 +1,4 @@
-import { allTools, portfolio } from '../data/portfolio'
+import { portfolio } from '../data/portfolio'
 import { SITE_URL } from './site'
 
 /**
@@ -19,7 +19,7 @@ export function personSchema() {
     email: `mailto:${portfolio.email}`,
     image: `${SITE_URL}/og-image.png`,
     sameAs: [portfolio.github, portfolio.linkedin],
-    knowsAbout: allTools(),
+    knowsAbout: portfolio.skills.flatMap(category => category.tools),
     alumniOf: portfolio.education.map(entry => ({
       '@type': 'EducationalOrganization',
       name: entry.institution,
