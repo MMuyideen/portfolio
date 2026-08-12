@@ -7,8 +7,8 @@ import { Lightbox } from '../components/Lightbox'
 import { getPostBySlug, loadPostBody, formatPostDate } from '../lib/posts'
 import type { TocEntry } from '../lib/markdown'
 import { blogPostingSchema } from '../lib/structuredData'
+import { SITE_URL } from '../lib/site'
 
-const SITE_URL = 'https://www.muyideen.dev'
 
 interface RenderedPost {
   html: string

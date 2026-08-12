@@ -8,7 +8,7 @@ export default {
         bg: '#0a0e14',
         surface: '#11161f',
         'surface-2': '#161c26',
-        muted: '#6e7681',
+        muted: '#7d8590',
         accent: '#4ade80',
       },
       fontFamily: {

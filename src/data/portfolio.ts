@@ -1,3 +1,42 @@
+/**
+ * How much room a project gets on the home page. `featured` projects render as
+ * full case studies with a diagram; `supporting` ones collapse to a compact
+ * card. Not every project deserves the same visual weight.
+ */
+export type ProjectTier = 'featured' | 'supporting'
+
+/**
+ * A minimal fan-out diagram — one source, optionally through a single stage,
+ * out to several targets. Used for the featured projects whose repositories
+ * ship no diagram image, so the shape of the system is still legible without
+ * inventing a picture of it.
+ */
+export interface ProjectFlow {
+  source: string
+  /** Label on the edge leaving `source`, e.g. "OIDC". */
+  edge?: string
+  /** Intermediate stage between source and targets, if there is one. */
+  via?: string
+  targets: string[]
+}
+
+/**
+ * The case-study copy for a featured project.
+ *
+ * Every field is written from what is actually in the repository — file layout,
+ * workflow steps, resource types. Deliberately no "results" field: these are
+ * personal build-outs with no production traffic behind them, and inventing
+ * percentages for them would undercut the measured numbers in `impact`.
+ */
+export interface ProjectCaseStudy {
+  /** The problem the repository sets out to solve. */
+  problem: string
+  /** How it is put together. */
+  approach: string
+  /** Specific decisions visible in the code, not generic best practice. */
+  decisions: string[]
+}
+
 export interface Project {
   id: string
   title: string
@@ -6,7 +45,26 @@ export interface Project {
   stack: string[]
   links: Array<{ label: string; href: string; external?: boolean }>
   diagram?: string
+  tier: ProjectTier
+  /** Rendered in place of `diagram` when the repository has no image. */
+  flow?: ProjectFlow
+  /** Required for `featured` projects; omitted for `supporting` ones. */
+  caseStudy?: ProjectCaseStudy
 }
+
+/**
+ * A measured result from paid work. `source` names the role it came from — it
+ * is not rendered, it exists so every number on the page can be traced back to
+ * an experience bullet rather than to a design mock.
+ */
+export interface ImpactMetric {
+  value: string
+  label: string
+  source: string
+}
+
+/** Expert-level credentials lead; foundational ones sit behind a disclosure. */
+export type CertificationTier = 'featured' | 'additional'
 
 export interface Certification {
   issuer: string
@@ -14,6 +72,9 @@ export interface Certification {
   date: string
   verifyUrl: string
   badgeImage?: string
+  tier: CertificationTier
+  /** Short label for the featured grid, where the full exam title is too long. */
+  shortTitle?: string
 }
 
 export interface ExperienceEntry {
@@ -21,6 +82,11 @@ export interface ExperienceEntry {
   company: string
   period: string
   bullets: string[]
+  /**
+   * Technologies named in `bullets`, pulled out so the role can be scanned
+   * without reading it. Extracted from the bullets — never added to them.
+   */
+  tech: string[]
 }
 
 export interface EducationEntry {
@@ -34,6 +100,21 @@ export interface EducationEntry {
 export interface SkillCategory {
   name: string
   tools: string[]
+}
+
+/**
+ * The stack in three levels rather than one flat wall: what the work is
+ * actually built on, what it is operated with, and everything else grouped by
+ * what it is for. Depth in a core set, breadth across the ecosystem — the flat
+ * list read as "every technology I have ever touched".
+ */
+export interface Skills {
+  /** The five that show up in nearly every project. */
+  core: string[]
+  /** Day-to-day platform and delivery tooling. */
+  platform: string[]
+  /** Everything else, grouped by purpose. */
+  supporting: SkillCategory[]
 }
 
 /** A project shown on the résumé, referenced by `Project.id`. */
@@ -58,34 +139,68 @@ export interface ResumeData {
 export interface PortfolioData {
   name: string
   role: string
+  /** One sentence under the name: what he builds, on what. */
+  positioning: string
   email: string
   github: string
   linkedin: string
   blog: string
+  impact: ImpactMetric[]
   projects: Project[]
   certifications: Certification[]
   experience: ExperienceEntry[]
   education: EducationEntry[]
-  skills: SkillCategory[]
+  skills: Skills
   resume: ResumeData
 }
 
 export const portfolio: PortfolioData = {
   name: 'Muyideen Morenigbade',
-  role: 'DevOps & Cloud Engineer',
+  role: 'Cloud & Platform Engineer',
+  positioning:
+    'I design and automate reliable cloud platforms across Azure and AWS using Terraform, Kubernetes and GitOps.',
   email: 'contact@muyideen.dev',
   github: 'https://github.com/MMuyideen',
   linkedin: 'https://linkedin.com/in/muyideenmorenigbade',
   blog: 'https://www.muyideen.dev/blog', // Self-hosted blog (/blog route)
 
   /**
-   * Ordered by engineering depth, most involved first — the Projects section
-   * renders this array in order and only reveals the first four before the
-   * "show all" expander, so the ranking decides what a visitor actually sees.
+   * Every figure here is lifted verbatim from an `experience` bullet below —
+   * nothing on this page is a number that isn't also on the résumé. Where two
+   * roles report an availability figure, the more conservative one is used.
+   */
+  impact: [
+    {
+      value: '60%',
+      label: 'Faster deployments',
+      source: 'Perizer — CI/CD pipelines on GitHub Actions and Azure DevOps',
+    },
+    {
+      value: '40%',
+      label: 'Less manual provisioning',
+      source: 'Teknowledge — Terraform-provisioned environments',
+    },
+    {
+      value: '30%',
+      label: 'Lower cloud spend',
+      source: 'Teknowledge — rightsizing, reservations, shutdown schedules',
+    },
+    {
+      value: '99.9%',
+      label: 'Service availability',
+      source: 'Perizer — Azure Monitor, Prometheus and Grafana alerting',
+    },
+  ],
+
+  /**
+   * Ordered by engineering depth, most involved first. The four `featured`
+   * entries lead the section as full case studies; the rest render as compact
+   * cards below them, so the ranking decides prominence rather than presence —
+   * every project is in the markup for crawlers either way.
    *
    * Every entry was checked against the repository it links to: the title
-   * describes what the code does, and `stack` lists only technologies that
-   * appear in that repo.
+   * describes what the code does, `stack` lists only technologies that appear
+   * in that repo, and each `caseStudy` is written from what is in the code.
    */
   projects: [
     // Reusable Terraform modules + callable GitHub Actions workflows
@@ -107,6 +222,24 @@ export const portfolio: PortfolioData = {
           external: true,
         },
       ],
+      tier: 'featured',
+      flow: {
+        source: 'GitHub Actions',
+        edge: 'OIDC',
+        targets: ['Azure', 'AWS', 'GCP'],
+      },
+      caseStudy: {
+        problem:
+          'Infrastructure code and the pipeline that runs it usually get rewritten per repository. Each copy drifts — a different module layout, a different set of workflow steps, and its own way of authenticating to the cloud.',
+        approach:
+          'One repository holding eighteen Terraform modules across Azure, AWS and GCP, published alongside the automation that consumes them: composite actions for cloud login and fmt/validate, and callable plan/apply/destroy workflows other repositories reference by tag.',
+        decisions: [
+          'Cloud login is a composite action, so OIDC federation is configured once and inherited — consuming repositories store no long-lived cloud credentials.',
+          'plan, apply and destroy are `workflow_call` workflows rather than copied YAML, so a fix to the pipeline reaches every repository that references it.',
+          'Consumers pin a tag rather than tracking the default branch, so a module change never lands in someone else’s apply unannounced.',
+          'Dependabot watches the action and provider versions the modules pin, so upgrades arrive as reviewable pull requests.',
+        ],
+      },
     },
     // Custom Kubernetes controller in Python (kopf)
     {
@@ -127,6 +260,25 @@ export const portfolio: PortfolioData = {
           external: true,
         },
       ],
+      tier: 'featured',
+      flow: {
+        source: 'WebApp CR',
+        via: 'Operator',
+        targets: ['Deployment', 'Service', 'HPA'],
+      },
+      caseStudy: {
+        problem:
+          'Running an application on Kubernetes means keeping a Deployment, a Service and an HPA in step by hand. One idea — "this app, at this size" — spread across three manifests that drift apart.',
+        approach:
+          'A WebApp custom resource plus a kopf controller that reconciles it into those three objects, validates the spec before it is ever stored, and writes observed health back to the resource status.',
+        decisions: [
+          'The CRD carries an OpenAPI schema, so an invalid spec is rejected by the API server rather than crashing the controller at reconcile time.',
+          'Child objects are created with owner references, so deleting a WebApp garbage-collects its Deployment, Service and HPA without the controller being involved.',
+          'A kopf timer re-reads pod health on an interval and syncs it to `status`, so the resource stays truthful between watch events.',
+          'RBAC is scoped to the resources the controller actually touches rather than granted cluster-admin.',
+          'pytest runs with coverage in CI before the image is built and published.',
+        ],
+      },
     },
     // AKS GitOps Pipeline
     {
@@ -147,6 +299,19 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/aks-gitops.png',
+      tier: 'featured',
+      caseStudy: {
+        problem:
+          'A pipeline that ends in `kubectl apply` has to hold cluster credentials, and it leaves the cluster’s real state undocumented — what is running is whatever the last job happened to do.',
+        approach:
+          'Terraform provisions AKS and its supporting resources. CI builds and pushes the image, rewrites the tag in the manifest and commits it; ArgoCD sees the commit and applies it.',
+        decisions: [
+          'The pipeline’s last step is a git commit, not a cluster call — CI never holds kubectl credentials.',
+          'The deployed tag is a line in a committed manifest, so cluster state is readable from the repository and a rollback is a git revert.',
+          'Application secrets come from Key Vault rather than pipeline variables.',
+          'The cluster is composed from Terraform modules rather than one flat root configuration, so environments differ by inputs instead of by copies.',
+        ],
+      },
     },
     // EKS GitOps Pipeline
     {
@@ -167,6 +332,18 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/eks-gitops.png',
+      tier: 'featured',
+      caseStudy: {
+        problem:
+          'The same GitOps question on AWS, where cluster identity is a set of IAM roles rather than a managed identity — and where getting those roles wrong is the usual reason a cluster half-works.',
+        approach:
+          'Terraform builds the EKS cluster and its IAM roles as separate modules, and a containerised Django application is delivered through an ArgoCD sync manifest rather than applied by hand.',
+        decisions: [
+          'EKS and IAM are separate modules, so node and service-account roles can be reviewed on their own instead of buried in the cluster definition.',
+          'Delivery is an ArgoCD sync manifest, so the pipeline stops at the registry and the cluster pulls its own changes.',
+          'The workload is a real containerised Django app rather than a placeholder image, so the build and rollout paths are actually exercised.',
+        ],
+      },
     },
     // Azure Two Tier App
     {
@@ -187,6 +364,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/azure-two-tier.png',
+      tier: 'supporting',
     },
     // AWS Two Tier App
     {
@@ -207,6 +385,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/aws-two-tier.png',
+      tier: 'supporting',
     },
     // Azure Serverless Function App
     {
@@ -227,6 +406,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/azure-serverless-api.png',
+      tier: 'supporting',
     },
     // AKS + Bank of Anthos microservices workload
     {
@@ -246,6 +426,7 @@ export const portfolio: PortfolioData = {
           external: true,
         },
       ],
+      tier: 'supporting',
     },
     // Azure Three Tier App
     {
@@ -266,6 +447,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/azure-three-tier.png',
+      tier: 'supporting',
     },
     // AWS Three Tier App
     {
@@ -286,6 +468,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/aws-three-tier.png',
+      tier: 'supporting',
     },
     // AWS Static Website
     {
@@ -305,6 +488,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/aws-static-website.png',
+      tier: 'supporting',
     },
     // Azure Static Website
     {
@@ -325,6 +509,7 @@ export const portfolio: PortfolioData = {
         },
       ],
       diagram: '/diagrams/azure-static-website.png',
+      tier: 'supporting',
     },
   ],
 
@@ -332,6 +517,8 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'Microsoft',
       title: 'AZ-305 Microsoft Certified: Azure Solutions Architect Expert',
+      tier: 'featured',
+      shortTitle: 'Azure Solutions Architect Expert',
       date: '2026-08',
       verifyUrl: 'https://learn.microsoft.com/en-us/users/muyideenm/credentials/86a2c05bb8a43811',
       badgeImage: '/certifications/az-305.webp',
@@ -339,6 +526,8 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'Microsoft',
       title: 'AZ-400 Microsoft Certified: DevOps Engineer Expert',
+      tier: 'featured',
+      shortTitle: 'Azure DevOps Engineer Expert',
       date: '2026-04',
       verifyUrl: 'https://learn.microsoft.com/en-us/users/muyideenm/credentials/43bd58e6a9e3c6e5',
       badgeImage: '/certifications/CERT-Expert-DevOps-Engineer-600x600.png',
@@ -346,6 +535,8 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'Microsoft',
       title: 'Microsoft Certified Trainer (MCT) 2026',
+      tier: 'featured',
+      shortTitle: 'Microsoft Certified Trainer',
       date: '2026-01',
       verifyUrl: 'https://www.credly.com/badges/7b8de62b-ba25-4a54-b17a-ef6da2159dd0/public_url',
       badgeImage: '/certifications/microsoft-certified-trainer-mct-2026.png',
@@ -353,6 +544,8 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'The Linux Foundation',
       title: 'KCNA: Kubernetes and Cloud Native Associate',
+      tier: 'featured',
+      shortTitle: 'Kubernetes & Cloud Native Associate',
       date: '2025-08',
       verifyUrl: 'https://www.credly.com/badges/e7df1162-2a0f-46e7-a139-dfd2c3abb77c/',
       badgeImage: '/certifications/kcna-kubernetes-and-cloud-native-associate.png',
@@ -360,6 +553,8 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'Amazon Web Services (AWS)',
       title: 'AWS Certified Solutions Architect – Associate',
+      tier: 'featured',
+      shortTitle: 'AWS Solutions Architect Associate',
       date: '2024-01',
       verifyUrl: 'https://www.credly.com/badges/b1d029b9-5870-4af0-9580-9c31db1d7696/',
       badgeImage: '/certifications/aws-certified-solutions-architect-associate.png', // Replace
@@ -367,13 +562,19 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'Amazon Web Services (AWS)',
       title: 'AWS Certified Cloud Practitioner',
+      tier: 'additional',
       date: '2023-10',
+      // FIXME(muyideen): this is the KCNA badge URL, not Cloud Practitioner's —
+      // the two entries point at the same Credly badge, and fetching it returns
+      // "KCNA: Kubernetes and Cloud Native Associate". Replace with the real
+      // Cloud Practitioner badge URL; it can't be guessed from here.
       verifyUrl: 'https://www.credly.com/badges/e7df1162-2a0f-46e7-a139-dfd2c3abb77c/',
       badgeImage: '/certifications/aws-certified-cloud-practitioner.png',
     },
     {
       issuer: 'Microsoft',
       title: 'Microsoft Certified: Azure Administrator Associate',
+      tier: 'additional',
       date: '2023-08',
       verifyUrl: 'https://learn.microsoft.com/en-gb/users/muyideenm/credentials/ac333bcc783f9764',
       badgeImage: '/certifications/azure-administrator-associate.png',
@@ -381,6 +582,7 @@ export const portfolio: PortfolioData = {
     {
       issuer: 'Microsoft',
       title: 'Microsoft Certified: Azure Fundamentals',
+      tier: 'additional',
       date: '2022-08',
       verifyUrl: 'https://learn.microsoft.com/api/credentials/share/en-us/MuyideenM/F2D11B0DEDC24DF0?sharingId=63CC44E8B3AF8C6',
       badgeImage: '/certifications/microsoft-certified-azure-fundamentals.png',
@@ -410,16 +612,24 @@ export const portfolio: PortfolioData = {
     },
   ],
 
-  skills: [
-    { name: 'Cloud', tools: ['AWS', 'Azure', 'GCP', 'DigitalOcean'] },
-    { name: 'Containers', tools: ['Kubernetes', 'Docker', 'ArgoCD', 'AKS', 'EKS'] },
-    { name: 'IaC', tools: ['Terraform', 'ARM Templates', 'CloudFormation'] },
-    { name: 'CI/CD', tools: ['GitHub Actions', 'Azure DevOps', 'Jenkins', 'CircleCI'] },
-    { name: 'Observability', tools: ['Prometheus', 'Grafana', 'Azure Monitor', 'CloudWatch', 'New Relic'] },
-    { name: 'Scripting', tools: ['Python', 'PowerShell', 'Bash', 'YAML'] },
-    { name: 'Security', tools: ['Azure Policy', 'RBAC', 'IAM', 'MFA', 'Microsoft Entra'] },
-    { name: 'Networking', tools: ['DNS', 'VPN', 'Load Balancing', 'WAF', 'Firewalls', 'VNet'] },
-  ],
+  /**
+   * Three levels, promoted out of what used to be eight equal-weight rows.
+   * Nothing was added or dropped in the reshuffle — `core` and `platform` are
+   * pulled up out of the old categories, and the remainder keeps its grouping.
+   */
+  skills: {
+    core: ['Azure', 'AWS', 'Terraform', 'Kubernetes', 'GitOps'],
+    platform: ['AKS', 'EKS', 'ArgoCD', 'Docker', 'GitHub Actions', 'Azure DevOps'],
+    supporting: [
+      { name: 'Observability', tools: ['Prometheus', 'Grafana', 'Azure Monitor', 'CloudWatch', 'New Relic'] },
+      { name: 'Security', tools: ['Azure Policy', 'RBAC', 'IAM', 'Microsoft Entra', 'MFA'] },
+      { name: 'Networking', tools: ['VNet', 'DNS', 'Load Balancing', 'WAF', 'Firewalls', 'VPN'] },
+      { name: 'Languages', tools: ['Python', 'Bash', 'PowerShell', 'YAML'] },
+      { name: 'CI/CD', tools: ['Jenkins', 'CircleCI'] },
+      { name: 'IaC', tools: ['ARM Templates', 'CloudFormation'] },
+      { name: 'Cloud', tools: ['GCP', 'DigitalOcean'] },
+    ],
+  },
 
   experience: [
     {
@@ -433,6 +643,11 @@ export const portfolio: PortfolioData = {
         'Implemented monitoring and alerting using Azure Monitor, Prometheus, and Grafana, maintaining 99.9% service availability.',
         'Enforced cloud security through Azure Policy, RBAC, and automated compliance checks, reducing audit findings.',
       ],
+      tech: [
+        'GitHub Actions', 'Azure DevOps', 'Terraform', 'ARM Templates', 'Azure', 'AWS',
+        'Docker', 'AKS', 'EKS', 'Azure Monitor', 'Prometheus', 'Grafana',
+        'Azure Policy', 'RBAC',
+      ],
     },
     {
       role: 'Azure Cloud Support Engineer',
@@ -445,6 +660,10 @@ export const portfolio: PortfolioData = {
         'Implemented Azure Monitor and Log Analytics with custom dashboards and proactive alerting, achieving 99.99% uptime.',
         'Reduced monthly cloud spend by 30% through Azure Advisor recommendations, Reserved Instances, and automated shutdown schedules.',
       ],
+      tech: [
+        'Terraform', 'Azure', 'Azure DevOps', 'Azure Policy', 'RBAC', 'ISO 27001',
+        'Azure Monitor', 'Log Analytics', 'Azure Advisor', 'Reserved Instances',
+      ],
     },
   ],
 
@@ -452,7 +671,7 @@ export const portfolio: PortfolioData = {
     headline:
       'Infrastructure that provisions, deploys, and recovers without hands on it.',
     summary:
-      'DevOps & Cloud Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
+      'Cloud & Platform Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
 
 
     // The top of the complexity ranking in `projects`, trimmed to four so the
@@ -481,4 +700,47 @@ export const portfolio: PortfolioData = {
       },
     ],
   },
+}
+
+/**
+ * Skills flattened back to one list, for consumers that need every tool rather
+ * than the display hierarchy — schema.org `knowsAbout`, and the ⌘K palette.
+ */
+export function allTools(): string[] {
+  const { core, platform, supporting } = portfolio.skills
+  return [...core, ...platform, ...supporting.flatMap(category => category.tools)]
+}
+
+/**
+ * Skills as flat labelled rows, in display order. The résumé prints as a
+ * definition list and has no room for the three-level treatment, so `core` and
+ * `platform` become two rows of their own ahead of the grouped remainder.
+ */
+export function skillRows(): SkillCategory[] {
+  const { core, platform, supporting } = portfolio.skills
+  return [
+    { name: 'Core', tools: core },
+    { name: 'Platform', tools: platform },
+    ...supporting,
+  ]
+}
+
+/** The four projects that lead the section as full case studies. */
+export function featuredProjects(): Project[] {
+  return portfolio.projects.filter(project => project.tier === 'featured')
+}
+
+/** Everything below the featured four, rendered as compact cards. */
+export function supportingProjects(): Project[] {
+  return portfolio.projects.filter(project => project.tier === 'supporting')
+}
+
+/** Expert-level and current credentials, shown first and largest. */
+export function featuredCertifications(): Certification[] {
+  return portfolio.certifications.filter(cert => cert.tier === 'featured')
+}
+
+/** Foundational credentials, kept behind a disclosure. */
+export function additionalCertifications(): Certification[] {
+  return portfolio.certifications.filter(cert => cert.tier === 'additional')
 }

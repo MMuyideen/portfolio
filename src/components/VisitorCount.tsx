@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { EASE } from '../lib/motion'
+import { EASE, VIEWPORT } from '../lib/motion'
+import { LAUNCH_LABEL } from '../lib/site'
 
 /** Serverless endpoint backing the counter (Azure Table Storage). */
 const VISITORS_ENDPOINT = '/api/visitors'
+
+type CountState =
+  | { status: 'loading' }
+  | { status: 'ready'; count: number }
+  | { status: 'unavailable' }
 
 function prefersReducedMotion(): boolean {
   return (
@@ -12,26 +18,36 @@ function prefersReducedMotion(): boolean {
   )
 }
 
-/** Fetch the shared server-side count; null means unavailable (show a dash). */
-function useVisitorCount(): number | null {
-  const [count, setCount] = useState<number | null>(null)
+/**
+ * Fetch the shared server-side count.
+ *
+ * Failure is a normal outcome, not an error: the counter is a detail, and a
+ * cold Function or a blocked request must never take the section with it.
+ */
+function useVisitorCount(): CountState {
+  const [state, setState] = useState<CountState>({ status: 'loading' })
 
   useEffect(() => {
     let active = true
     fetch(VISITORS_ENDPOINT, { headers: { accept: 'application/json' } })
       .then(res => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data: { count?: number }) => {
-        if (active && typeof data.count === 'number') setCount(data.count)
+        if (!active) return
+        setState(
+          typeof data.count === 'number'
+            ? { status: 'ready', count: data.count }
+            : { status: 'unavailable' },
+        )
       })
       .catch(() => {
-        /* endpoint unavailable — keep null and render a dash */
+        if (active) setState({ status: 'unavailable' })
       })
     return () => {
       active = false
     }
   }, [])
 
-  return count
+  return state
 }
 
 /** Animate 0 → target once the element scrolls into view. */
@@ -64,62 +80,64 @@ function useCountUp(target: number, active: boolean): number {
   return display
 }
 
+/**
+ * The visitor count, stated rather than performed.
+ *
+ * It used to be a full terminal window in the hero running `cat visitors.count`
+ * — the loudest element on the page for the least important number. Same
+ * endpoint, same animation, a quarter of the volume, and now sitting beside the
+ * architecture it is evidence for.
+ */
 export function VisitorCount() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
-  const target = useVisitorCount()
-  const display = useCountUp(target ?? 0, inView && target !== null)
+  const state = useVisitorCount()
+  const ready = state.status === 'ready'
+  const display = useCountUp(ready ? state.count : 0, inView && ready)
 
   return (
     <motion.div
       id="visitors"
       ref={ref}
-      className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-      aria-label="Visitor count"
-      initial={{ opacity: 0, y: 20 }}
+      className="flex h-full flex-col rounded-lg border bg-surface p-5 sm:p-6"
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.55, ease: EASE }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.5, ease: EASE }}
     >
-      {/* Window chrome */}
-      <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.07)] px-4 py-3">
-        <div className="flex gap-2" aria-hidden="true">
-          <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
-          <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
-          <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
-        </div>
-        <span className="ml-2 font-mono text-sm text-muted">
-          ~/muyideen · visitors
+      <p className="font-mono text-[11px] uppercase tracking-widest text-muted">
+        Visitors
+      </p>
+
+      {/* Fixed line-height on a reserved row: the number arrives from a fetch,
+          and the layout must not move when it does. */}
+      <p
+        className="mt-4 font-mono text-4xl font-bold leading-none tabular-nums text-accent sm:text-5xl"
+        aria-busy={state.status === 'loading'}
+      >
+        {ready ? (
+          display.toLocaleString('en-US')
+        ) : (
+          <span className="text-muted" aria-hidden="true">—</span>
+        )}
+        <span className="sr-only">
+          {ready
+            ? `${state.count.toLocaleString('en-US')} visits since ${LAUNCH_LABEL}`
+            : state.status === 'loading'
+              ? 'Loading visitor count'
+              : 'Visitor count unavailable'}
         </span>
-      </div>
+      </p>
 
-      {/* Body */}
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="mb-5 font-mono text-sm sm:text-base">
-          <span className="text-accent">$</span>{' '}
-          <span className="font-semibold text-white">cat</span>{' '}
-          <span className="text-muted">visitors.count</span>
-        </p>
+      <p className="mt-3 text-sm text-muted">
+        {state.status === 'unavailable'
+          ? 'count unavailable'
+          : `since ${LAUNCH_LABEL}`}
+      </p>
 
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="font-mono text-5xl sm:text-6xl font-bold tabular-nums leading-none text-accent">
-            {target === null ? '—' : display.toLocaleString('en-US')}
-          </span>
-          <span className="font-mono text-sm text-muted">
-            total visits since launch
-          </span>
-        </div>
-
-        <p className="mt-5 inline-flex items-center gap-2 font-mono text-sm text-muted">
-          <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
-          served by {VISITORS_ENDPOINT} · azure table storage
-        </p>
-
-        {/* <p className="mt-auto pt-5 text-sm leading-relaxed text-muted">
-          The number is stored server-side and shared across everyone, so it
-          survives reloads. This preview just animates to a sample value.
-        </p> */}
-      </div>
+      <p className="mt-auto pt-5 font-mono text-[11px] text-muted">
+        Azure Table Storage
+      </p>
     </motion.div>
   )
 }

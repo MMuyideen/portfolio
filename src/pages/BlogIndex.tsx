@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Clock } from 'lucide-react'
 import { getAllPosts, formatPostDate } from '../lib/posts'
+import { SITE_URL } from '../lib/site'
 
-const SITE_URL = 'https://www.muyideen.dev'
 
 export function BlogIndex() {
   const posts = getAllPosts()

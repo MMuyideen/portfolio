@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react'
-import { BookOpen, Menu, X } from 'lucide-react'
+import { BookOpen, Download, Menu, X } from 'lucide-react'
 import { motion, useScroll } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import { Monogram } from './Monogram'
+import { RESUME_FILENAME } from '../lib/resume'
 
 interface NavProps {
   onOpenPalette: () => void
 }
 
-/** Order mirrors the home page sections. */
+/**
+ * Order mirrors the home page. Deliberately shorter than the page: every
+ * section used to have a link, which made the bar a table of contents rather
+ * than navigation. Certifications and Education are still on the page and in
+ * the ⌘K palette — they are just not top-level destinations.
+ */
 const NAV_LINKS = [
+  { label: 'Work', id: 'projects' },
   { label: 'Experience', id: 'experience' },
-  { label: 'Projects', id: 'projects' },
-  { label: 'Tech Stack', id: 'tech-stack' },
-  { label: 'Certifications', id: 'certifications' },
-  { label: 'Education', id: 'education' },
+  { label: 'Stack', id: 'tech-stack' },
   { label: 'Contact', id: 'contact' },
 ]
 
@@ -110,10 +114,10 @@ export function Nav({ onOpenPalette }: NavProps) {
           ))}
           <Link
             to="/blog"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-accent hover:text-accent/80 transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent ml-1"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted hover:text-white transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             <BookOpen size={11} aria-hidden="true" />
-            Blog
+            Writing
           </Link>
         </nav>
 
@@ -128,6 +132,16 @@ export function Nav({ onOpenPalette }: NavProps) {
           <span className="hidden sm:inline">Search</span>
           <kbd className="text-[10px] opacity-60 not-italic" aria-hidden="true">⌘K</kbd>
         </button>
+
+        {/* The one thing a recruiter is most likely to want, always reachable. */}
+        <a
+          href="/resume.pdf"
+          download={RESUME_FILENAME}
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-semibold bg-accent text-bg hover:bg-accent/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg shrink-0"
+        >
+          <Download size={11} aria-hidden="true" />
+          Résumé
+        </a>
 
         {/* Mobile menu toggle */}
         <button
@@ -167,11 +181,21 @@ export function Nav({ onOpenPalette }: NavProps) {
             <Link
               to="/blog"
               onClick={() => setMenuOpen(false)}
-              className="inline-flex items-center gap-2 font-mono text-sm text-accent py-2.5 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+              className="inline-flex items-center gap-2 border-b border-[rgba(255,255,255,0.05)] py-2.5 font-mono text-sm text-muted transition-colors hover:text-white rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               <BookOpen size={13} aria-hidden="true" />
-              Blog
+              Writing
             </Link>
+            {/* The desktop résumé button is hidden below sm, so it lives here. */}
+            <a
+              href="/resume.pdf"
+              download={RESUME_FILENAME}
+              onClick={() => setMenuOpen(false)}
+              className="mt-3 inline-flex items-center justify-center gap-2 rounded bg-accent px-4 py-2.5 font-mono text-sm font-semibold text-bg transition-colors hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            >
+              <Download size={13} aria-hidden="true" />
+              Résumé
+            </a>
           </div>
         </motion.nav>
       )}

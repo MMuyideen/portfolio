@@ -79,12 +79,26 @@ function routesFromSitemap() {
   return [...new Set([...routes, ...EXTRA_ROUTES])]
 }
 
-/** Serve dist with the SPA fallback, mirroring staticwebapp.config.json. */
-function serve() {
+/**
+ * Serve dist with the SPA fallback, mirroring staticwebapp.config.json.
+ *
+ * `shell` is the untouched Vite index.html, captured before the first route is
+ * written. It matters: "/" is rendered first and its output overwrites
+ * dist/index.html, so a naive fallback would hand every later route a document
+ * that already carries the home page's <title>, canonical and og:* tags.
+ * react-helmet-async appends to that head rather than clearing it, and the
+ * stale tags come first — which is exactly the duplication index.html was
+ * stripped down to avoid. Serving the shell keeps each route's head its own.
+ */
+function serve(shell) {
   const server = createServer((req, res) => {
     const clean = normalize(decodeURIComponent((req.url ?? '/').split('?')[0]))
-    let path = clean.includes('..') ? join(DIST, 'index.html') : join(DIST, clean)
-    if (!existsSync(path) || !statSync(path).isFile()) path = join(DIST, 'index.html')
+    const path = clean.includes('..') ? null : join(DIST, clean)
+    if (!path || !existsSync(path) || !statSync(path).isFile()) {
+      res.writeHead(200, { 'content-type': MIME['.html'] })
+      res.end(shell)
+      return
+    }
     res.writeHead(200, {
       'content-type': MIME[extname(path)] ?? 'application/octet-stream',
     })
@@ -177,7 +191,9 @@ function titleOf(html) {
 const chrome = findChrome()
 const routes = routesFromSitemap()
 const profile = await mkdtemp(join(tmpdir(), 'prerender-'))
-const { server, port } = await serve()
+// Read before anything is written — see serve().
+const shell = readFileSync(join(DIST, 'index.html'))
+const { server, port } = await serve(shell)
 
 let failures = 0
 try {

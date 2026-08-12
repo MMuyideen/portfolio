@@ -1,20 +1,24 @@
 import { motion } from 'framer-motion'
 import {
-  siGooglecloud, siDigitalocean,
   siKubernetes, siDocker, siArgo,
   siTerraform,
   siGithubactions, siJenkins, siCircleci,
   siPrometheus, siGrafana, siNewrelic,
-  siPython, siGnubash, siAnsible, siVmware,
+  siGooglecloud, siDigitalocean,
+  siPython, siGnubash,
   type SimpleIcon,
 } from 'simple-icons'
 import { SectionHeader } from './SectionHeader'
 import { EASE, VIEWPORT } from '../lib/motion'
-import type { SkillCategory } from '../data/portfolio'
+import type { Skills } from '../data/portfolio'
 
+/**
+ * Icons only where simple-icons still ships a mark. Azure, AWS and the
+ * abstract entries (GitOps, RBAC, DNS) have none, so the tiers that contain
+ * them are typographic — a half-iconed row reads as broken, and the brief
+ * warns against logo overload regardless.
+ */
 const TOOL_ICONS: Record<string, SimpleIcon> = {
-  'GCP':            siGooglecloud,
-  'DigitalOcean':   siDigitalocean,
   'Kubernetes':     siKubernetes,
   'AKS':            siKubernetes,
   'EKS':            siKubernetes,
@@ -27,10 +31,10 @@ const TOOL_ICONS: Record<string, SimpleIcon> = {
   'Prometheus':     siPrometheus,
   'Grafana':        siGrafana,
   'New Relic':      siNewrelic,
+  'GCP':            siGooglecloud,
+  'DigitalOcean':   siDigitalocean,
   'Python':         siPython,
   'Bash':           siGnubash,
-  'Ansible':        siAnsible,
-  'VMware':         siVmware,
 }
 
 /** "CI/CD" → "ci_cd" — categories rendered as yaml keys. */
@@ -38,72 +42,131 @@ function yamlKey(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
 }
 
-function ToolPill({ tool }: { tool: string }) {
+function ToolIcon({ tool, size }: { tool: string; size: number }) {
   const icon = TOOL_ICONS[tool]
-
+  if (!icon) return null
   return (
-    <span className="inline-flex items-center gap-1.5 bg-surface-2 border border-[rgba(255,255,255,0.06)] text-muted text-xs px-2.5 py-1 rounded font-mono hover:text-white hover:border-[rgba(255,255,255,0.16)] transition-colors">
-      {icon ? (
-        <svg
-          role="img"
-          viewBox="0 0 24 24"
-          width={11}
-          height={11}
-          fill="currentColor"
-          className="opacity-60 shrink-0"
-          aria-hidden="true"
-        >
-          <path d={icon.path} />
-        </svg>
-      ) : (
-        <span className="text-accent/50 text-[9px] shrink-0">•</span>
-      )}
-      {tool}
-    </span>
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="currentColor"
+      className="shrink-0 opacity-70"
+      aria-hidden="true"
+    >
+      <path d={icon.path} />
+    </svg>
+  )
+}
+
+/** A labelled tier: the yaml key on the left rail, the tools beside it. */
+function Tier({
+  name,
+  caption,
+  delay,
+  children,
+}: {
+  name: string
+  caption: string
+  delay: number
+  children: React.ReactNode
+}) {
+  return (
+    <motion.div
+      className="grid gap-3 md:grid-cols-[10rem_1fr] md:gap-6"
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.5, ease: EASE, delay }}
+    >
+      <div className="md:pt-1">
+        <p className="font-mono text-sm">
+          <span className="text-accent">{yamlKey(name)}</span>
+          <span className="text-muted">:</span>
+        </p>
+        <p className="mt-1 font-mono text-[11px] leading-snug text-muted">
+          {caption}
+        </p>
+      </div>
+      <div className="min-w-0">{children}</div>
+    </motion.div>
   )
 }
 
 /**
- * The stack as a manifest, not a card grid: one panel styled like a yaml
- * file, categories as keys, tools as values.
+ * The stack in three weights instead of eight equal rows.
+ *
+ * The flat version gave Terraform and DigitalOcean the same visual claim,
+ * which read as a list of everything ever touched. Now: five technologies at
+ * full size, the delivery tooling below them, and the long tail grouped small.
  */
-export function TechStack({ skills }: { skills: SkillCategory[] }) {
+export function TechStack({ skills }: { skills: Skills }) {
   return (
-    <section id="tech-stack" className="py-24 px-6">
-      <div className="max-w-content mx-auto">
-        <SectionHeader command="cat stack.yaml" title="Technical Arsenal" />
+    <section id="tech-stack" className="px-6 py-24">
+      <div className="mx-auto max-w-content">
+        <SectionHeader command="cat stack.yaml" title="Stack" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={VIEWPORT}
-          transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
-          className="mt-10 rounded-lg border bg-surface p-6 sm:p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-        >
-          <div className="grid gap-x-12 gap-y-7 md:grid-cols-2">
-            {skills.map((category, i) => (
-              <motion.div
-                key={category.name}
-                className="flex flex-col gap-2.5"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={VIEWPORT}
-                transition={{ duration: 0.45, ease: EASE, delay: 0.15 + (i % 4) * 0.06 }}
-              >
-                <p className="font-mono text-sm">
-                  <span className="text-accent">{yamlKey(category.name)}</span>
-                  <span className="text-muted">:</span>
-                  <span className="sr-only"> {category.name}</span>
-                </p>
-                <div className="flex flex-wrap gap-2 pl-4 border-l border-[rgba(255,255,255,0.06)]">
-                  {category.tools.map(tool => (
-                    <ToolPill key={tool} tool={tool} />
-                  ))}
+        <div className="mt-10 space-y-10 rounded-lg border bg-surface p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-8">
+
+          {/* Core — the five that carry the work. */}
+          <Tier name="Core" caption="in nearly every project here" delay={0.05}>
+            <ul className="flex flex-wrap gap-2.5">
+              {skills.core.map(tool => (
+                <li
+                  key={tool}
+                  className="inline-flex items-center gap-2 rounded border border-accent/40 bg-accent/[0.06] px-3.5 py-2 font-mono text-sm font-semibold text-accent"
+                >
+                  <ToolIcon tool={tool} size={14} />
+                  {tool}
+                </li>
+              ))}
+            </ul>
+          </Tier>
+
+          <div className="h-px bg-[rgba(255,255,255,0.06)]" aria-hidden="true" />
+
+          {/* Platform — how the core gets built and shipped. */}
+          <Tier name="Platform" caption="build, deliver and run" delay={0.1}>
+            <ul className="flex flex-wrap gap-2">
+              {skills.platform.map(tool => (
+                <li
+                  key={tool}
+                  className="inline-flex items-center gap-1.5 rounded border border-[rgba(255,255,255,0.14)] bg-surface-2 px-3 py-1.5 font-mono text-xs text-white/85"
+                >
+                  <ToolIcon tool={tool} size={12} />
+                  {tool}
+                </li>
+              ))}
+            </ul>
+          </Tier>
+
+          <div className="h-px bg-[rgba(255,255,255,0.06)]" aria-hidden="true" />
+
+          {/* Supporting — the long tail, grouped by what it is for. */}
+          <Tier name="Supporting" caption="grouped by what it is for" delay={0.15}>
+            <dl className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
+              {skills.supporting.map(category => (
+                <div key={category.name} className="min-w-0">
+                  <dt className="mb-1.5 font-mono text-[11px] uppercase tracking-widest text-muted">
+                    {category.name}
+                  </dt>
+                  <dd className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-xs text-muted">
+                    {category.tools.map((tool, i) => (
+                      <span key={tool} className="inline-flex items-center gap-1.5">
+                        <ToolIcon tool={tool} size={11} />
+                        {tool}
+                        {i < category.tools.length - 1 && (
+                          <span className="text-muted" aria-hidden="true">·</span>
+                        )}
+                      </span>
+                    ))}
+                  </dd>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+              ))}
+            </dl>
+          </Tier>
+        </div>
       </div>
     </section>
   )

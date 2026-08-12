@@ -3,16 +3,24 @@ import { SectionHeader } from './SectionHeader'
 import { EASE, VIEWPORT } from '../lib/motion'
 import type { ExperienceEntry } from '../data/portfolio'
 
+/**
+ * The career as a commit log.
+ *
+ * Kept the timeline, added the two things that make a role scannable: the
+ * company at heading weight rather than as an aside, and the technologies it
+ * used pulled out from under the bullets so the shape of the role reads
+ * without them.
+ */
 export function Experience({ experience }: { experience: ExperienceEntry[] }) {
   return (
-    <section id="experience" className="py-24 px-6">
-      <div className="max-w-content mx-auto">
+    <section id="experience" className="px-6 py-24">
+      <div className="mx-auto max-w-content">
         <SectionHeader command="git log --oneline" title="Experience" />
 
-        <div className="mt-10 space-y-10">
+        <div className="mt-12 space-y-12">
           {experience.map((entry, i) => (
-            <motion.div
-              key={i}
+            <motion.article
+              key={`${entry.company}-${entry.period}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={VIEWPORT}
@@ -20,19 +28,18 @@ export function Experience({ experience }: { experience: ExperienceEntry[] }) {
               className="flex gap-4"
             >
               {/* Commit glyph + connector */}
-              <div className="flex flex-col items-center shrink-0 pt-0.5">
+              <div className="flex shrink-0 flex-col items-center pt-1.5">
                 <motion.span
-                  className="text-accent text-base leading-none"
+                  className="block h-2.5 w-2.5 rounded-full bg-accent"
+                  aria-hidden="true"
                   initial={{ scale: 0, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
                   viewport={VIEWPORT}
                   transition={{ duration: 0.4, ease: EASE, delay: i * 0.08 + 0.1 }}
-                >
-                  ●
-                </motion.span>
+                />
                 {i < experience.length - 1 && (
                   <motion.div
-                    className="mt-2 w-px flex-1 bg-[rgba(255,255,255,0.07)] origin-top"
+                    className="mt-2 w-px flex-1 origin-top bg-[rgba(255,255,255,0.09)]"
                     initial={{ scaleY: 0 }}
                     whileInView={{ scaleY: 1 }}
                     viewport={VIEWPORT}
@@ -42,24 +49,53 @@ export function Experience({ experience }: { experience: ExperienceEntry[] }) {
                 )}
               </div>
 
-              <div className="flex-1 pb-2">
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 font-mono text-sm">
-                  <h3 className="font-semibold">{entry.role}</h3>
-                  <span className="text-muted">{entry.company}</span>
-                  <span className="text-muted text-xs tabular-nums ml-auto">{entry.period}</span>
+              <div className="min-w-0 flex-1 pb-2">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 className="font-mono text-base font-semibold text-white">
+                    {entry.role}
+                  </h3>
+                  <span className="font-mono text-sm text-accent">
+                    {entry.company}
+                  </span>
+                  <span className="ml-auto font-mono text-xs tabular-nums text-muted">
+                    {entry.period}
+                  </span>
                 </div>
-                <ul className="mt-3 space-y-1.5">
-                  {entry.bullets.map((bullet, j) => (
-                    <li key={j} className="flex gap-2.5 font-sans text-sm text-muted leading-relaxed">
-                      <span className="text-accent/50 shrink-0 mt-0.5 font-mono" aria-hidden="true">
+
+                <p className="mt-4 font-mono text-[11px] uppercase tracking-widest text-muted">
+                  Key impact
+                </p>
+                <ul className="mt-2.5 space-y-2">
+                  {entry.bullets.map(bullet => (
+                    <li
+                      key={bullet}
+                      className="flex gap-2.5 text-sm leading-relaxed text-muted"
+                    >
+                      <span
+                        className="mt-0.5 shrink-0 font-mono text-accent/70"
+                        aria-hidden="true"
+                      >
                         #
                       </span>
                       {bullet}
                     </li>
                   ))}
                 </ul>
+
+                {entry.tech.length > 0 && (
+                  <p className="mt-5 flex flex-wrap gap-x-2 gap-y-1 font-mono text-[11px] text-muted">
+                    {entry.tech.map((tool, j) => (
+                      <span key={tool}>
+                        {tool}
+                        {j < entry.tech.length - 1 && (
+                          <span className="ml-2 text-muted" aria-hidden="true">·</span>
+                        )}
+                      </span>
+                    ))}
+                  </p>
+                )}
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
       </div>

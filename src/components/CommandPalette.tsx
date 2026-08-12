@@ -12,14 +12,20 @@ interface CommandPaletteProps {
   onOpenChange: (open: boolean) => void
 }
 
-/** Order mirrors the home page sections. */
+/**
+ * Order mirrors the home page. Unlike the nav bar this lists every section —
+ * the palette is where completeness belongs, so trimming the bar to four
+ * links costs nobody a route to Certifications or Education.
+ */
 const NAV_ITEMS = [
-  { label: 'Hero', href: '#main-content' },
+  { label: 'Top', href: '#main-content' },
+  { label: 'Engineering impact', href: '#impact' },
+  { label: 'Selected work', href: '#projects' },
   { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Tech Stack', href: '#tech-stack' },
+  { label: 'Stack', href: '#tech-stack' },
   { label: 'Certifications', href: '#certifications' },
   { label: 'Education', href: '#education' },
+  { label: 'Writing', href: '#blog' },
   { label: 'How this site works', href: '#architecture' },
   { label: 'Contact', href: '#contact' },
 ]

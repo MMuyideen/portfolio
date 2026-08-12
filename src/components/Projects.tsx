@@ -1,61 +1,26 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { GitHubIcon } from './GitHubIcon'
 import { Lightbox } from './Lightbox'
+import { ProjectFlowDiagram } from './ProjectFlowDiagram'
 import { SectionHeader } from './SectionHeader'
-import { EASE, VIEWPORT, slideIn } from '../lib/motion'
-import type { Project } from '../data/portfolio'
+import { EASE, VIEWPORT } from '../lib/motion'
+import { featuredProjects, supportingProjects, type Project } from '../data/portfolio'
 
-/** How many projects are visible before the "show all" expander. */
-const INITIAL_VISIBLE = 4
-
-function StackDiagram({ stack, id }: { stack: string[]; id: string }) {
-  const mid = Math.ceil(stack.length / 2)
-  const top = stack.slice(0, mid)
-  const bottom = stack.slice(mid)
-
-  return (
-    <div className="w-full flex flex-col items-center font-mono text-xs select-none">
-      <div className="flex flex-wrap justify-center gap-2">
-        {top.map(item => (
-          <div
-            key={item}
-            className="border border-accent/30 bg-[#0d1219] text-accent/80 px-3 py-1.5 rounded"
-          >
-            {item}
-          </div>
-        ))}
-      </div>
-
-      {bottom.length > 0 && (
-        <>
-          <div className="flex justify-center gap-10 my-0">
-            {bottom.map((_, i) => (
-              <div key={i} className="w-px h-5 bg-accent/20" />
-            ))}
-          </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            {bottom.map(item => (
-              <div
-                key={item}
-                className="border border-accent/15 bg-[#0d1219] text-muted px-3 py-1.5 rounded"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      <p className="mt-6 text-[10px] text-muted/40 tracking-widest uppercase">
-        {id}.arch
-      </p>
-    </div>
-  )
+/** Shell-comment description flattened into a sentence. */
+function asSentence(description: string[]): string {
+  return description.map(line => line.replace(/^#\s?/, '')).join(' ')
 }
 
-function DiagramPanel({ project }: { project: Project }) {
+function githubHref(project: Project): string | undefined {
+  return project.links.find(link => /github\.com/.test(link.href))?.href
+}
+
+/* ── Featured: full case studies ─────────────────────────────────────────── */
+
+/** The repository's own diagram, click-to-enlarge; or the drawn fan-out. */
+function Visual({ project }: { project: Project }) {
   const [expanded, setExpanded] = useState(false)
 
   if (project.diagram) {
@@ -66,12 +31,12 @@ function DiagramPanel({ project }: { project: Project }) {
           type="button"
           onClick={() => setExpanded(true)}
           aria-label={`Enlarge ${alt}`}
-          className="block rounded border overflow-hidden w-full h-full min-h-[300px] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="block h-full min-h-[260px] w-full cursor-zoom-in overflow-hidden rounded border bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           <img
             src={project.diagram}
             alt={alt}
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
             loading="lazy"
             decoding="async"
           />
@@ -85,136 +50,242 @@ function DiagramPanel({ project }: { project: Project }) {
     )
   }
 
-  return (
-    <div className="bg-surface border rounded overflow-hidden flex flex-col w-full h-full min-h-[300px]">
-      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b bg-surface-2 shrink-0">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" aria-hidden="true" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" aria-hidden="true" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" aria-hidden="true" />
-        <span className="ml-3 font-mono text-xs text-accent">$ {project.command}</span>
+  if (project.flow) {
+    return (
+      <div className="flex h-full min-h-[260px] items-center justify-center rounded border bg-surface-2">
+        <ProjectFlowDiagram flow={project.flow} label={`${project.id}.arch`} />
       </div>
-      <div className="flex-1 flex items-center justify-center p-10">
-        <StackDiagram stack={project.stack} id={project.id} />
-      </div>
-    </div>
-  )
+    )
+  }
+
+  return null
 }
 
-function ProjectRow({ project, index }: { project: Project; index: number }) {
-  const diagramLeft = index % 2 === 0
-  const githubLink = project.links.find(l => l.label === 'GitHub')
-  const description = project.description.map(d => d.replace(/^# /, '')).join(' ')
+function CaseStudy({ project, index }: { project: Project; index: number }) {
+  const study = project.caseStudy
+  const github = githubHref(project)
 
-  const textPanel = (
-    <motion.div className="flex flex-col justify-center" {...slideIn(!diagramLeft)}>
-      <p className="font-mono text-xs text-accent tracking-widest mb-2">
-        {'// '}Project {String(index + 1).padStart(2, '0')}
-      </p>
-      <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-5">
-        {project.title}
-      </h3>
-      <div className="bg-surface-2 border rounded p-4 mb-5">
-        <p className="text-muted leading-relaxed text-sm">{description}</p>
-      </div>
-      <div className="flex flex-wrap gap-2 mb-5">
-        {project.stack.map((tag, i) => (
-          <motion.span
-            key={tag}
-            className="font-mono text-[11px] border border-accent/40 text-accent px-2.5 py-1 rounded"
-            initial={{ opacity: 0, y: 6 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VIEWPORT}
-            transition={{ duration: 0.35, ease: EASE, delay: 0.2 + i * 0.04 }}
+  return (
+    <motion.article
+      className="overflow-hidden rounded-lg border bg-surface"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VIEWPORT}
+      transition={{ duration: 0.55, ease: EASE }}
+      aria-labelledby={`${project.id}-title`}
+    >
+      {/* Header */}
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 border-b border-[rgba(255,255,255,0.07)] px-6 py-5 sm:px-8">
+        <div className="min-w-0">
+          <p className="mb-1.5 font-mono text-[11px] uppercase tracking-widest text-accent">
+            Case study {String(index + 1).padStart(2, '0')}
+          </p>
+          <h3
+            id={`${project.id}-title`}
+            className="text-xl font-bold leading-tight text-white sm:text-2xl"
           >
-            {tag}
-          </motion.span>
+            {project.title}
+          </h3>
+        </div>
+        {github && (
+          <a
+            href={github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex shrink-0 items-center gap-2 rounded border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-[rgba(255,255,255,0.22)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            <GitHubIcon size={13} aria-hidden="true" />
+            Source
+            <ArrowUpRight
+              size={12}
+              aria-hidden="true"
+              className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+        )}
+      </div>
+
+      {/* Body: diagram beside problem/solution */}
+      <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-2 lg:gap-10">
+        <Visual project={project} />
+
+        <div className="min-w-0 space-y-6">
+          {study ? (
+            <>
+              <Field label="Problem">{study.problem}</Field>
+              <Field label="Solution">{study.approach}</Field>
+            </>
+          ) : (
+            <Field label="Overview">{asSentence(project.description)}</Field>
+          )}
+        </div>
+      </div>
+
+      {/* Engineering decisions */}
+      {study && (
+        <div className="border-t border-[rgba(255,255,255,0.07)] px-6 py-6 sm:px-8">
+          <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted">
+            Engineering decisions
+          </p>
+          <ul className="grid gap-3 sm:grid-cols-2 sm:gap-x-8">
+            {study.decisions.map(decision => (
+              <li
+                key={decision}
+                className="flex gap-2.5 text-sm leading-relaxed text-muted"
+              >
+                <span
+                  className="mt-0.5 shrink-0 font-mono text-accent/70"
+                  aria-hidden="true"
+                >
+                  #
+                </span>
+                {decision}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Stack */}
+      <div className="flex flex-wrap gap-2 border-t border-[rgba(255,255,255,0.07)] bg-surface-2/50 px-6 py-4 sm:px-8">
+        {project.stack.map(tool => (
+          <span
+            key={tool}
+            className="rounded border border-accent/30 px-2.5 py-1 font-mono text-[11px] text-accent/90"
+          >
+            {tool}
+          </span>
         ))}
       </div>
-      {githubLink && (
-        <a
-          href={githubLink.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 font-mono text-sm text-muted hover:text-white transition-colors w-fit rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-        >
-          <GitHubIcon size={14} aria-hidden="true" />
-          Source
-        </a>
-      )}
-    </motion.div>
+    </motion.article>
   )
+}
 
-  const diagramPanel = (
-    <motion.div
-      className="h-full min-h-[300px] sm:min-h-[360px]"
-      whileHover={{ y: -4 }}
-      {...slideIn(diagramLeft)}
-    >
-      <DiagramPanel project={project} />
-    </motion.div>
-  )
-
+function Field({ label, children }: { label: string; children: string }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-      {diagramLeft ? (
-        <>
-          {diagramPanel}
-          {textPanel}
-        </>
-      ) : (
-        <>
-          {textPanel}
-          {diagramPanel}
-        </>
-      )}
+    <div>
+      <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-muted">
+        {label}
+      </p>
+      <p className="text-sm leading-relaxed text-muted">{children}</p>
     </div>
   )
 }
 
-export function Projects({ projects }: { projects: Project[] }) {
-  const [expanded, setExpanded] = useState(false)
-  const collapsible = projects.length > INITIAL_VISIBLE
-  const visible =
-    collapsible && !expanded ? projects.slice(0, INITIAL_VISIBLE) : projects
-  const hiddenCount = projects.length - INITIAL_VISIBLE
+/* ── Supporting: compact cards ───────────────────────────────────────────── */
+
+/** Stack chips are capped so a card with nine technologies doesn't outgrow one
+ *  with five — the full list is on the repository. */
+const CHIP_LIMIT = 4
+
+function SupportingCard({ project, index }: { project: Project; index: number }) {
+  const github = githubHref(project)
+  const shown = project.stack.slice(0, CHIP_LIMIT)
+  const rest = project.stack.length - shown.length
+
+  const card = (
+    <>
+      <h3 className="font-mono text-base font-semibold leading-snug text-white transition-colors group-hover:text-accent">
+        {project.title}
+      </h3>
+      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+        {asSentence(project.description)}
+      </p>
+      <div className="mt-4 flex flex-wrap gap-1.5">
+        {shown.map(tool => (
+          <span
+            key={tool}
+            className="rounded border border-[rgba(255,255,255,0.12)] px-1.5 py-0.5 font-mono text-[10px] text-muted"
+          >
+            {tool}
+          </span>
+        ))}
+        {rest > 0 && (
+          <span className="px-1 py-0.5 font-mono text-[10px] text-muted">
+            +{rest}
+          </span>
+        )}
+      </div>
+      <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-xs text-accent">
+        <GitHubIcon size={12} aria-hidden="true" />
+        Source
+        <ArrowUpRight
+          size={12}
+          aria-hidden="true"
+          className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        />
+      </span>
+    </>
+  )
 
   return (
-    <section id="projects" className="py-24 px-6">
-      <div className="max-w-content mx-auto">
-        <SectionHeader command="ls -la projects/" title="Featured Architecture" />
+    <motion.li
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.45, ease: EASE, delay: (index % 3) * 0.06 }}
+    >
+      {github ? (
+        <a
+          href={github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex h-full flex-col rounded-lg border bg-surface p-5 transition-all duration-200 hover:-translate-y-1 hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          {card}
+        </a>
+      ) : (
+        <div className="group flex h-full flex-col rounded-lg border bg-surface p-5">
+          {card}
+        </div>
+      )}
+    </motion.li>
+  )
+}
 
-        <div className="mt-16 space-y-20 lg:space-y-28">
-          {visible.map((project, i) => (
-            <ProjectRow key={project.id} project={project} index={i} />
+/* ── Section ─────────────────────────────────────────────────────────────── */
+
+/**
+ * Two tiers, both always in the DOM.
+ *
+ * The previous version sliced the array behind a "show all" expander, which
+ * meant eight of twelve projects were missing from the prerendered HTML that
+ * social scrapers and non-JS crawlers read. Weight is now carried by layout —
+ * four case studies, then a compact grid — so nothing has to be hidden to keep
+ * the section from sprawling.
+ */
+export function Projects() {
+  const featured = featuredProjects()
+  const supporting = supportingProjects()
+
+  return (
+    <section id="projects" className="px-6 py-24">
+      <div className="mx-auto max-w-content">
+        <SectionHeader command="ls -la projects/" title="Selected work" />
+
+        <div className="mt-12 space-y-8 lg:space-y-12">
+          {featured.map((project, i) => (
+            <CaseStudy key={project.id} project={project} index={i} />
           ))}
         </div>
 
-        {collapsible && (
-          <div className="mt-16 flex justify-center">
-            <button
-              type="button"
-              aria-expanded={expanded}
-              onClick={() => {
-                setExpanded(prev => !prev)
-                // Collapsing removes content above the fold; return to the
-                // section top so the user isn't stranded mid-page.
-                if (expanded) document.getElementById('projects')?.scrollIntoView()
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded border font-mono text-sm text-muted hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-            >
-              {expanded ? (
-                <>
-                  <ChevronUp size={14} aria-hidden="true" />
-                  show fewer projects
-                </>
-              ) : (
-                <>
-                  <ChevronDown size={14} aria-hidden="true" />
-                  show all projects
-                  <span className="text-accent">+{hiddenCount}</span>
-                </>
-              )}
-            </button>
+        {supporting.length > 0 && (
+          <div className="mt-20">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <h3 className="font-mono text-base font-semibold">
+                More infrastructure builds
+              </h3>
+              <p className="font-mono text-xs text-muted">
+                {supporting.length} repositories
+              </p>
+            </div>
+            <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
+
+            <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {supporting.map((project, i) => (
+                <SupportingCard key={project.id} project={project} index={i} />
+              ))}
+            </ul>
           </div>
         )}
       </div>

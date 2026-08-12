@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Download, Printer } from 'lucide-react'
-import { portfolio } from '../data/portfolio'
+import { portfolio, skillRows } from '../data/portfolio'
 import { RESUME_FILENAME } from '../lib/resume'
+import { SITE_URL } from '../lib/site'
 import '../styles/resume.css'
 
-const SITE_URL = 'https://www.muyideen.dev'
 
 /** Strip the scheme so the printed résumé shows clean, typeable addresses. */
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '')
@@ -52,7 +52,10 @@ type SectionKey = keyof typeof SECTIONS
  * opacity 0.
  */
 export function Resume() {
-  const { resume, certifications, education, experience, skills } = portfolio
+  const { resume, certifications, education, experience } = portfolio
+  // The three-level hierarchy is a home-page device; the printed sheet is a
+  // definition list, so it takes the flattened rows instead.
+  const skills = skillRows()
 
   // Scopes the print rules in resume.css so printing any other page is normal.
   useEffect(() => {

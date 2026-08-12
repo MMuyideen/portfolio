@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { EASE, VIEWPORT } from '../lib/motion'
-
-/** Site launch date — set this to your real go-live date (must be in the past, UTC). */
-const LAUNCH = new Date('2026-07-03T00:00:00+01:00')
-const UPTIME_PERCENT = '100'
+import { LAUNCH, LAUNCH_DATE } from '../lib/site'
 
 interface Elapsed {
   years: number
@@ -47,105 +44,56 @@ function useUptime(active: boolean): Elapsed {
   return elapsed
 }
 
-interface Stat {
-  value: string
-  label: string
-  accent?: boolean
-  highlight?: boolean
-}
+const pad = (n: number) => String(n).padStart(2, '0')
 
-function StatCell({ stat, index }: { stat: Stat; index: number }) {
-  return (
-    <motion.div
-      className={
-        'flex flex-col items-center justify-center rounded bg-surface-2 px-2 py-4 sm:py-5 ' +
-        (stat.highlight
-          ? 'border border-accent/60'
-          : 'border border-[rgba(255,255,255,0.06)]')
-      }
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.45, ease: EASE, delay: 0.15 + index * 0.06 }}
-    >
-      <span
-        className={
-          'font-mono text-2xl sm:text-3xl font-bold tabular-nums leading-none ' +
-          (stat.accent || stat.highlight ? 'text-accent' : 'text-white')
-        }
-      >
-        {stat.value}
-      </span>
-      <span className="mt-3 font-mono text-xs text-muted">{stat.label}</span>
-    </motion.div>
-  )
-}
-
+/**
+ * Time since this deployment went live, counted from the shared launch date.
+ *
+ * The previous version also printed "100% uptime", which was a hardcoded
+ * string with nothing measuring it — the one unverifiable number on a page
+ * whose argument is that the numbers are verifiable. Elapsed time is a fact
+ * about the deployment, so that is all this claims.
+ */
 export function Uptime() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref)
   const { years, days, hours, minutes, seconds } = useUptime(inView)
-  const launchLabel = LAUNCH.toISOString().slice(0, 10)
 
-  const stats: Stat[] = [
-    { value: String(years), label: 'years', accent: years === 0 },
-    { value: String(days), label: 'days', accent: years === 0 && days === 0 },
-    { value: String(hours), label: 'hours' },
-    { value: String(minutes), label: 'minutes' },
-    { value: String(seconds), label: 'seconds' },
-    { value: UPTIME_PERCENT, label: '% uptime', highlight: true },
-  ]
+  const clock = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+  const span = years > 0 ? `${years}y ${days}d` : `${days}d`
 
   return (
     <motion.div
       id="uptime"
       ref={ref}
-      className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-      aria-label="Site uptime"
-      initial={{ opacity: 0, y: 20 }}
+      className="flex h-full flex-col rounded-lg border bg-surface p-5 sm:p-6"
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
-      transition={{ duration: 0.55, ease: EASE }}
+      transition={{ duration: 0.5, ease: EASE }}
     >
-      {/* Window chrome */}
-      <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.07)] px-4 py-3">
-        <div className="flex gap-2" aria-hidden="true">
-          <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
-          <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
-          <span className="h-3 w-3 rounded-full bg-[#3a4150]" />
-        </div>
-        <span className="ml-2 font-mono text-sm text-muted">
-          ~/muyideen · uptime
+      <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted">
+        Live
+        <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
         </span>
-        <span className="ml-auto inline-flex items-center gap-2 font-mono text-sm text-accent">
-          <span className="relative flex h-2 w-2" aria-hidden="true">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(74,222,128,0.7)]" />
-          </span>
-          online
+      </p>
+
+      <p className="mt-4 flex flex-wrap items-baseline gap-x-3 font-mono leading-none">
+        <span className="text-4xl font-bold tabular-nums text-accent sm:text-5xl">
+          {span}
         </span>
-      </div>
+        <span className="text-lg tabular-nums text-muted">{clock}</span>
+      </p>
 
-      {/* Body */}
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="mb-5 font-mono text-sm sm:text-base">
-          <span className="text-accent">$</span>{' '}
-          <span className="font-semibold text-white">uptime</span>{' '}
-          <span className="text-muted">-- since {launchLabel}</span>
-        </p>
+      <p className="mt-3 text-sm text-muted">
+        since the first deploy
+      </p>
 
-        <div className="grid grid-cols-3 gap-3">
-          {stats.map((stat, i) => (
-            <StatCell key={stat.label} stat={stat} index={i} />
-          ))}
-        </div>
-
-        {/* <p className="mt-auto pt-5 text-sm leading-relaxed text-muted">
-          Live since launch, counted from years down to the second. Set your real
-          launch date in the{' '}
-          <code className="font-mono text-white">LAUNCH</code> constant.
-        </p> */}
-      </div>
+      <p className="mt-auto pt-5 font-mono text-[11px] text-muted">
+        Azure Static Web Apps · since {LAUNCH_DATE}
+      </p>
     </motion.div>
   )
 }

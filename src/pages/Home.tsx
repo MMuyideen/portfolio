@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async'
 import { personSchema, websiteSchema } from '../lib/structuredData'
 import { Hero } from '../components/Hero'
+import { Impact } from '../components/Impact'
 import { Projects } from '../components/Projects'
 import { Experience } from '../components/Experience'
 import { Education } from '../components/Education'
@@ -10,39 +11,33 @@ import { LatestPosts } from '../components/LatestPosts'
 import { SiteArchitecture } from '../components/SiteArchitecture'
 import { Contact } from '../components/Contact'
 import { portfolio } from '../data/portfolio'
+import { SITE_URL } from '../lib/site'
 
-const SITE_URL = 'https://www.muyideen.dev'
+const TITLE =
+  'Muyideen Morenigbade | Cloud & Platform Engineer | Azure, AWS, Kubernetes & Terraform'
+
+const DESCRIPTION =
+  'Cloud & Platform Engineer designing and automating reliable cloud platforms across Azure and AWS with Terraform, Kubernetes and GitOps. 60% faster deployments, 30% lower cloud spend.'
 
 export function Home() {
   return (
     <>
       <Helmet>
-        <title>Muyideen Morenigbade — DevOps & Cloud Engineer</title>
-        <meta
-          name="description"
-          content="DevOps & Cloud Engineer specialising in Azure, AWS, OpenShift, Terraform, Kubernetes, and CI/CD pipelines."
-        />
+        <title>{TITLE}</title>
+        <meta name="description" content={DESCRIPTION} />
         <link rel="canonical" href={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE_URL}/`} />
-        <meta
-          property="og:title"
-          content="Muyideen Morenigbade — DevOps & Cloud Engineer"
-        />
-        <meta
-          property="og:description"
-          content="DevOps & Cloud Engineer specialising in Azure, AWS, OpenShift, Terraform, Kubernetes, and CI/CD pipelines."
-        />
+        <meta property="og:title" content={TITLE} />
+        <meta property="og:description" content={DESCRIPTION} />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta
+          property="og:image:alt"
+          content="Muyideen Morenigbade — Cloud & Platform Engineer. Azure, AWS, Terraform, Kubernetes."
+        />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Muyideen Morenigbade — DevOps & Cloud Engineer"
-        />
-        <meta
-          name="twitter:description"
-          content="DevOps & Cloud Engineer specialising in Azure, AWS, OpenShift, Terraform, Kubernetes, and CI/CD pipelines."
-        />
+        <meta name="twitter:title" content={TITLE} />
+        <meta name="twitter:description" content={DESCRIPTION} />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">
           {JSON.stringify(personSchema())}
@@ -52,13 +47,16 @@ export function Home() {
         </script>
       </Helmet>
 
-      {/* Functional order: identity → track record → proof of work → skills
-          → credentials → education → writing → site case study → reach out. */}
+      {/* Positioning → measured results → proof of work → how it was built
+          → credentials → writing → the site itself → reach out. Impact sits
+          directly under the hero because it is the fastest answer to "is this
+          person any good". */}
       <Hero />
+      <Impact impact={portfolio.impact} />
+      <Projects />
       <Experience experience={portfolio.experience} />
-      <Projects projects={portfolio.projects} />
       <TechStack skills={portfolio.skills} />
-      <Certifications certifications={portfolio.certifications} />
+      <Certifications />
       <Education education={portfolio.education} />
       <LatestPosts />
       <SiteArchitecture />

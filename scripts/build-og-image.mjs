@@ -107,7 +107,7 @@ const html = `<!doctype html>
     justify-content: space-between;
     font-family: 'Geist Mono', monospace;
     font-size: 21px;
-    color: #6e7681;
+    color: #7d8590;
   }
   .foot .site { color: #c9d1d9; }
   /* One accent hairline, echoing the nav's scroll indicator. */
@@ -125,7 +125,7 @@ const html = `<!doctype html>
   </svg>
   <div>
     <div class="name">Muyideen<br>Morenigbade</div>
-    <div class="role">DevOps &amp; Cloud Engineer</div>
+    <div class="role">Cloud &amp; Platform Engineer</div>
   </div>
   <div class="foot">
     <span class="site">muyideen.dev</span>

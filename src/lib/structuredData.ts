@@ -1,6 +1,5 @@
-import { portfolio } from '../data/portfolio'
-
-export const SITE_URL = 'https://www.muyideen.dev'
+import { allTools, portfolio } from '../data/portfolio'
+import { SITE_URL } from './site'
 
 /**
  * schema.org JSON-LD. Emitted inside <Helmet> as an `application/ld+json` data
@@ -20,7 +19,7 @@ export function personSchema() {
     email: `mailto:${portfolio.email}`,
     image: `${SITE_URL}/og-image.png`,
     sameAs: [portfolio.github, portfolio.linkedin],
-    knowsAbout: portfolio.skills.flatMap(category => category.tools),
+    knowsAbout: allTools(),
     alumniOf: portfolio.education.map(entry => ({
       '@type': 'EducationalOrganization',
       name: entry.institution,
