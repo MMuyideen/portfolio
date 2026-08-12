@@ -11,6 +11,7 @@
     "prerender": "node scripts/prerender.mjs",
     "preview": "vite preview",
     "resume:pdf": "npm run build && node scripts/build-resume-pdf.mjs",
+    "og:image": "node scripts/build-og-image.mjs",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit"

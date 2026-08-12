@@ -51,6 +51,7 @@ npm run typecheck  # tsc --noEmit
 npm run lint       # ESLint (warnings are errors)
 npm run sitemap    # regenerate public/sitemap.xml + public/rss.xml only
 npm run resume:pdf # build, then re-render /resume → public/resume.pdf
+npm run og:image   # re-render public/og-image.png (1200×630 social card)
 npm run hooks:install  # point git at .githooks (regenerates derived files on commit)
 ```
 
@@ -145,8 +146,8 @@ Notes:
 
 ## Committed build outputs
 
-Three generated files live in git rather than being built on demand:
-`public/sitemap.xml`, `public/rss.xml` and `public/resume.pdf`. That is
+Four generated files live in git rather than being built on demand:
+`public/sitemap.xml`, `public/rss.xml`, `public/resume.pdf` and `public/og-image.png`. That is
 deliberate — CI has no browser to print the PDF with — but it is exactly the
 kind of arrangement that quietly goes stale.
 
@@ -163,6 +164,7 @@ fast:
 |---|---|
 | `src/content/posts/**`, `scripts/generate-sitemap.mjs` | `sitemap.xml`, `rss.xml` |
 | `src/pages/Resume.tsx`, `src/styles/resume.css`, `src/data/portfolio.ts`, `scripts/build-resume-pdf.mjs` | `public/resume.pdf` (builds first — the slow path) |
+| `scripts/build-og-image.mjs` | `public/og-image.png` |
 
 Regenerated files are staged into the same commit. If no Chrome is found the
 hook warns and leaves the PDF alone rather than failing the commit — run

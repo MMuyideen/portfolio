@@ -55,4 +55,12 @@ if staged '^src/pages/Resume\.tsx$|^src/styles/resume\.css$|^src/data/portfolio\
 	fi
 fi
 
+# ── Open Graph card ─────────────────────────────────────────────────────────
+# Cheap next to the résumé PDF — no site build, just one screenshot.
+if staged '^scripts/build-og-image\.mjs$'; then
+	echo "[pre-commit] regenerating og-image.png"
+	node scripts/build-og-image.mjs
+	git add public/og-image.png
+fi
+
 exit 0
