@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Terminal, BookOpen, FileText, Menu, X } from 'lucide-react'
+import { BookOpen, FileText, Menu, X } from 'lucide-react'
 import { motion, useScroll } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
+import { Monogram } from './Monogram'
 
 interface NavProps {
   onOpenPalette: () => void
@@ -81,13 +82,15 @@ export function Nav({ onOpenPalette }: NavProps) {
       />
       <div className="max-w-content mx-auto px-6 h-14 flex items-center gap-6">
         {/* Logo */}
+        {/* The monogram is the wordmark — no lettering beside it. Kept in the
+            foreground colour so the mark stays monochrome while the accent
+            still belongs to interactive state. */}
         <Link
           to="/"
-          className="font-mono text-sm font-semibold text-accent flex items-center gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
+          className="flex items-center text-white/90 transition-colors hover:text-accent rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
           aria-label="Muyideen Morenigbade — home"
         >
-          <Terminal size={15} aria-hidden="true" />
-          <span>MM</span>
+          <Monogram size={26} />
         </Link>
 
         {/* Section links (desktop) */}
