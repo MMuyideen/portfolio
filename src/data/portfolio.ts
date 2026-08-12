@@ -53,14 +53,18 @@ export interface Project {
 }
 
 /**
- * A measured result from paid work. `source` names the role it came from — it
- * is not rendered, it exists so every number on the page can be traced back to
- * an experience bullet rather than to a design mock.
+ * What the work changed, stated as an outcome rather than a percentage.
+ *
+ * There were figures here — 60%, 40%, 30%, 99.9% — each one lifted from an
+ * experience bullet. They read as marketing anyway: a visitor has no way to
+ * check them, and four big numbers above the fold invite the suspicion they
+ * were chosen to look good. `detail` names the tooling that produced the
+ * outcome, which is the part someone technical can actually evaluate. The
+ * numbers still exist, in context, in the Experience bullets below.
  */
-export interface ImpactMetric {
-  value: string
-  label: string
-  source: string
+export interface ImpactOutcome {
+  outcome: string
+  detail: string
 }
 
 /** Expert-level credentials lead; foundational ones sit behind a disclosure. */
@@ -130,7 +134,7 @@ export interface PortfolioData {
   github: string
   linkedin: string
   blog: string
-  impact: ImpactMetric[]
+  impact: ImpactOutcome[]
   projects: Project[]
   certifications: Certification[]
   experience: ExperienceEntry[]
@@ -150,30 +154,25 @@ export const portfolio: PortfolioData = {
   blog: 'https://www.muyideen.dev/blog', // Self-hosted blog (/blog route)
 
   /**
-   * Every figure here is lifted verbatim from an `experience` bullet below —
-   * nothing on this page is a number that isn't also on the résumé. Where two
-   * roles report an availability figure, the more conservative one is used.
+   * Each outcome and its `detail` are drawn from an `experience` bullet below,
+   * so this section can never claim something the roles do not.
    */
   impact: [
     {
-      value: '60%',
-      label: 'Faster deployments',
-      source: 'Perizer — CI/CD pipelines on GitHub Actions and Azure DevOps',
+      outcome: 'Faster deployments',
+      detail: 'End-to-end CI/CD pipelines on GitHub Actions and Azure DevOps.',
     },
     {
-      value: '40%',
-      label: 'Less manual provisioning',
-      source: 'Teknowledge — Terraform-provisioned environments',
+      outcome: 'Less manual provisioning',
+      detail: 'Environments built from Terraform and ARM Templates across Azure and AWS.',
     },
     {
-      value: '30%',
-      label: 'Lower cloud spend',
-      source: 'Teknowledge — rightsizing, reservations, shutdown schedules',
+      outcome: 'Lower cloud spend',
+      detail: 'Azure Advisor rightsizing, Reserved Instances and automated shutdown schedules.',
     },
     {
-      value: '99.9%',
-      label: 'Service availability',
-      source: 'Perizer — Azure Monitor, Prometheus and Grafana alerting',
+      outcome: 'Sustained availability',
+      detail: 'Azure Monitor, Prometheus and Grafana with proactive alerting.',
     },
   ],
 

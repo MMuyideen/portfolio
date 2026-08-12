@@ -16,8 +16,11 @@ import { SITE_URL } from '../lib/site'
 const TITLE =
   'Muyideen Morenigbade | Cloud & Platform Engineer | Azure, AWS, Kubernetes & Terraform'
 
+// No percentages here either: the Impact section stopped leading with them,
+// and a description that advertises figures the page doesn't show is the worst
+// of both — a claim placed exactly where nobody can check it.
 const DESCRIPTION =
-  'Cloud & Platform Engineer designing and automating reliable cloud platforms across Azure and AWS with Terraform, Kubernetes and GitOps. 60% faster deployments, 30% lower cloud spend.'
+  'Cloud & Platform Engineer designing and automating reliable cloud platforms on Azure and AWS with Terraform, Kubernetes and GitOps.'
 
 export function Home() {
   return (
