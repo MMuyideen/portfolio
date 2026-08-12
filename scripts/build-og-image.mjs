@@ -125,7 +125,7 @@ const html = `<!doctype html>
   </svg>
   <div>
     <div class="name">Muyideen<br>Morenigbade</div>
-    <div class="role">Cloud &amp; Platform Engineer</div>
+    <div class="role">Cloud Platform &amp; DevOps Engineer</div>
   </div>
   <div class="foot">
     <span class="site">muyideen.dev</span>

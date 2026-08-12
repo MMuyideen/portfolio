@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
 
 const SITE_URL = 'https://www.muyideen.dev'
-const SITE_TITLE = 'Muyideen Morenigbade — Cloud & Platform Engineer'
+const SITE_TITLE = 'Muyideen Morenigbade — Cloud Platform & DevOps Engineer'
 const SITE_DESCRIPTION =
   'Field notes on Azure, Terraform, OpenShift and CI/CD from building and running cloud platforms.'
 

@@ -145,7 +145,7 @@ export interface PortfolioData {
 
 export const portfolio: PortfolioData = {
   name: 'Muyideen Morenigbade',
-  role: 'Cloud & Platform Engineer',
+  role: 'Cloud Platform & DevOps Engineer',
   positioning:
     'I design and automate reliable cloud platforms across Azure and AWS using Terraform, Kubernetes and GitOps.',
   email: 'contact@muyideen.dev',
@@ -643,7 +643,7 @@ export const portfolio: PortfolioData = {
     headline:
       'Infrastructure that provisions, deploys, and recovers without hands on it.',
     summary:
-      'Cloud & Platform Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
+      'Cloud Platform & DevOps Engineer with 5+ years building and running production infrastructure on Azure and AWS. I own delivery end to end — GitHub Actions, Azure DevOps, and ArgoCD across multi-environment Kubernetes clusters — provision every environment from reusable Terraform modules, and hold availability with Prometheus, Grafana, and Azure Monitor. Governance is code too: Azure Policy, RBAC, and automated compliance checks instead of review meetings. Azure Solutions Architect Expert and DevOps Engineer Expert, AWS SAA, KCNA, and Microsoft Certified Trainer.',
 
 
     // The top of the complexity ranking in `projects`, trimmed to four so the
