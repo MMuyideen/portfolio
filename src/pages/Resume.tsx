@@ -236,11 +236,6 @@ export function Resume() {
               ))}
             </ul>
           </Section>
-
-          <p className="rz-foot">
-            Generated from muyideen.dev — the live version of this document is at{' '}
-            {bare(SITE_URL)}/resume.
-          </p>
         </article>
       </div>
     </>

@@ -347,10 +347,6 @@
   color: var(--rz-muted);
 }
 
-.rz-foot {
-  display: none;
-}
-
 @media (max-width: 720px) {
   .rz-row {
     grid-template-columns: minmax(0, 1fr);
@@ -525,15 +521,5 @@
   .rz-certs a,
   .rz-edu__degree a {
     color: inherit;
-  }
-
-  .rz-foot {
-    display: block;
-    margin-top: 0.9rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--rz-rule);
-    font-family: var(--rz-mono);
-    font-size: 7.4pt;
-    color: var(--rz-muted);
   }
 }
