@@ -18,9 +18,9 @@
     "icons": "node scripts/build-icons.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/dm-sans": "^5.0.0",
-    "@fontsource-variable/geist-mono": "^5.0.0",
-    "@radix-ui/react-dialog": "^1.1.0",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@radix-ui/react-dialog": "^1.1.23",
     "cmdk": "^1.0.0",
     "framer-motion": "^11.0.0",
     "gray-matter": "^4.0.3",
@@ -31,7 +31,7 @@
     "react-dom": "^18.3.0",
     "react-helmet-async": "^3.0.0",
     "react-router-dom": "^7.18.1",
-    "simple-icons": "^16.24.0"
+    "simple-icons": "^16.28.0"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
@@ -40,10 +40,10 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react": "^4.3.0",
-    "autoprefixer": "^10.4.0",
+    "autoprefixer": "^10.5.4",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.0",
+    "eslint-plugin-react-refresh": "^0.5.3",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
