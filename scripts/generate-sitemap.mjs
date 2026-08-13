@@ -1,18 +1,23 @@
-// Generates public/sitemap.xml and public/rss.xml from the static routes plus
-// every non-draft post in src/content/posts. Runs automatically before the
-// Vite build, so neither list is ever hand-maintained.
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
+// Generates public/sitemap.xml, public/rss.xml and public/site.webmanifest from
+// the static routes plus every non-draft post in src/content/posts. Runs
+// automatically before the Vite build, so no list is ever hand-maintained.
+import { writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import matter from 'gray-matter'
+import { loadPosts } from './lib/posts.mjs'
 
 const SITE_URL = 'https://www.muyideen.dev'
 const SITE_TITLE = 'Muyideen Morenigbade — Cloud Platform & DevOps Engineer'
+// The feed's subject, which is the writing — not the site as a whole.
 const SITE_DESCRIPTION =
   'Field notes on Azure, Terraform, OpenShift and CI/CD from building and running cloud platforms.'
 
+// What the whole site is, for the installed app. Kept beside SITE_TITLE so a
+// change of role is one edit in one place.
+const SITE_SUMMARY =
+  'Portfolio and field notes of Muyideen Morenigbade — reliable cloud platforms on Azure and AWS, built with Terraform, Kubernetes and GitOps.'
+
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const postsDir = join(root, 'src', 'content', 'posts')
 
 function escapeXml(s) {
   return s
@@ -22,40 +27,7 @@ function escapeXml(s) {
     .replace(/"/g, '&quot;')
 }
 
-/**
- * Posts live in src/content/posts/<slug>/index.md (images alongside); flat
- * <slug>.md files are still supported.
- */
-function loadPosts() {
-  const posts = []
-  for (const entry of readdirSync(postsDir)) {
-    if (entry.startsWith('.')) continue
-    const entryPath = join(postsDir, entry)
-    let slug
-    let file
-    if (statSync(entryPath).isDirectory()) {
-      slug = entry
-      file = join(entryPath, 'index.md')
-      if (!existsSync(file)) continue
-    } else if (entry.endsWith('.md')) {
-      slug = entry.replace(/\.md$/, '')
-      file = entryPath
-    } else {
-      continue
-    }
-    const { data } = matter(readFileSync(file, 'utf8'))
-    if (data.draft === true) continue
-    posts.push({
-      slug,
-      title: typeof data.title === 'string' ? data.title : slug,
-      date: typeof data.date === 'string' ? data.date : undefined,
-      excerpt: typeof data.excerpt === 'string' ? data.excerpt : '',
-    })
-  }
-  return posts.sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
-}
-
-const posts = loadPosts()
+const posts = loadPosts(root)
 
 // ── sitemap.xml ──────────────────────────────────────────────────────────────
 
@@ -137,3 +109,45 @@ ${rssItems}
 `,
 )
 console.log(`rss.xml written with ${posts.length} items`)
+
+// ── site.webmanifest ─────────────────────────────────────────────────────────
+// Generated here rather than committed by hand so the installed app's name
+// tracks SITE_TITLE with the sitemap and the feed. A hand-written copy is
+// exactly the kind of file that keeps the old job title after a rename.
+//
+// The icons themselves come from `npm run icons` (scripts/build-icons.mjs).
+
+writeFileSync(
+  join(root, 'public', 'site.webmanifest'),
+  JSON.stringify(
+    {
+      name: SITE_TITLE,
+      short_name: 'Muyideen',
+      description: SITE_SUMMARY,
+      lang: 'en',
+      id: '/',
+      start_url: '/',
+      scope: '/',
+      display: 'standalone',
+      // Matches <meta name="theme-color"> in index.html — the page background,
+      // not the mark's chip, so the app frame continues the site.
+      theme_color: '#0a0e14',
+      background_color: '#0a0e14',
+      icons: [
+        { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+        // Full-bleed, mark inside the 80% safe circle, so Android can crop it
+        // to whatever shape the launcher uses without clipping the monogram.
+        {
+          src: '/icons/icon-maskable.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    null,
+    2,
+  ) + '\n',
+)
+console.log('site.webmanifest written')

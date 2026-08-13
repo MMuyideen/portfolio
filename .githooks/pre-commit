@@ -4,7 +4,10 @@
 # never fall behind the content they are generated from:
 #
 #   public/sitemap.xml + public/rss.xml  ← posts and routes
+#   public/site.webmanifest              ← the site title and description
 #   public/resume.pdf                    ← the /resume page
+#   public/og-image.png                  ← the shared-link card
+#   public/icons/*.png                   ← the monogram geometry
 #
 # Both are build outputs that live in git, which is exactly the kind of thing
 # that silently goes stale. Each step only runs when something it depends on is
@@ -19,12 +22,12 @@ staged() {
 	git diff --cached --name-only --diff-filter=ACMR | grep -qE "$1"
 }
 
-# ── Sitemap and RSS ─────────────────────────────────────────────────────────
+# ── Sitemap, RSS and web manifest ───────────────────────────────────────────
 # Driven by post frontmatter and the static route list in the generator.
 if staged '^src/content/posts/|^scripts/generate-sitemap\.mjs$'; then
-	echo "[pre-commit] regenerating sitemap.xml and rss.xml"
+	echo "[pre-commit] regenerating sitemap.xml, rss.xml and site.webmanifest"
 	node scripts/generate-sitemap.mjs
-	git add public/sitemap.xml public/rss.xml
+	git add public/sitemap.xml public/rss.xml public/site.webmanifest
 fi
 
 # ── Résumé PDF ──────────────────────────────────────────────────────────────
@@ -55,12 +58,22 @@ if staged '^src/pages/Resume\.tsx$|^src/styles/resume\.css$|^src/data/portfolio\
 	fi
 fi
 
-# ── Open Graph card ─────────────────────────────────────────────────────────
-# Cheap next to the résumé PDF — no site build, just one screenshot.
-if staged '^scripts/build-og-image\.mjs$'; then
-	echo "[pre-commit] regenerating og-image.png"
+# ── Open Graph cards ────────────────────────────────────────────────────────
+# The site card plus one per post, drawn from post frontmatter — so a new or
+# retitled post cannot ship pointing at a card that does not exist. No site
+# build needed, just a screenshot each.
+if staged '^src/content/posts/|^scripts/build-og-image\.mjs$|^scripts/lib/(monogram|chrome|posts)\.mjs$'; then
+	echo "[pre-commit] regenerating Open Graph cards"
 	node scripts/build-og-image.mjs
-	git add public/og-image.png
+	git add public/og-image.png public/og
+fi
+
+# ── App icons ───────────────────────────────────────────────────────────────
+# Four more screenshots, from the same path data as the card.
+if staged '^scripts/build-icons\.mjs$|^scripts/lib/(monogram|chrome)\.mjs$'; then
+	echo "[pre-commit] regenerating app icons"
+	node scripts/build-icons.mjs
+	git add public/apple-touch-icon.png public/icons
 fi
 
 exit 0

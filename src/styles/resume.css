@@ -30,6 +30,31 @@
 }
 
 /* ── Masthead ─────────────────────────────────────────────────────────────── */
+.rz-masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Sized here rather than through the component's `size` prop so print can
+   scale it: CSS width beats the SVG's width attribute. Takes `currentColor`,
+   so it flips to ink with the rest of the tokens. */
+.rz-mark {
+  flex: none;
+  width: 48px;
+  height: auto;
+  color: var(--rz-ink);
+}
+
+/* Below 40rem the mark would squeeze the name into a two-line wrap for no
+   gain — the masthead is the one place the mark is decorative. */
+@media (max-width: 40rem) {
+  .rz-mark {
+    display: none;
+  }
+}
+
 .rz-kicker {
   font-family: var(--rz-mono);
   font-size: 0.75rem;
@@ -402,6 +427,14 @@
 
   .rz-sheet {
     max-width: none;
+  }
+
+  /* Explicit, so the narrow-screen rule above can never reach the paper: the
+     A4 content box is ~700px, but that is close enough to the 40rem breakpoint
+     to be worth pinning rather than trusting. */
+  .rz-mark {
+    display: block;
+    width: 46pt;
   }
 
   .rz-name {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Download, Printer } from 'lucide-react'
+import { Monogram } from '../components/Monogram'
 import { portfolio } from '../data/portfolio'
 import { RESUME_FILENAME } from '../lib/resume'
 import { SITE_URL } from '../lib/site'
@@ -98,22 +99,29 @@ export function Resume() {
 
       <div className="resume">
         <article className="rz-sheet">
-          <header>
-            <p className="rz-kicker">
-              <span>$</span> cat resume.md
-            </p>
-            <h1 className="rz-name">{portfolio.name}</h1>
-            <p className="rz-role">{portfolio.role}</p>
-            <p className="rz-headline">{resume.headline}</p>
-            <ul className="rz-contacts">
-              {contacts.map(contact => (
-                <li key={contact.href}>
-                  <a href={contact.href} rel="me">
-                    {contact.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+          <header className="rz-masthead">
+            <div>
+              <p className="rz-kicker">
+                <span>$</span> cat resume.md
+              </p>
+              <h1 className="rz-name">{portfolio.name}</h1>
+              <p className="rz-role">{portfolio.role}</p>
+              <p className="rz-headline">{resume.headline}</p>
+              <ul className="rz-contacts">
+                {contacts.map(contact => (
+                  <li key={contact.href}>
+                    <a href={contact.href} rel="me">
+                      {contact.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Corner mark, the same placement the brand artifact uses for the
+                LinkedIn banner. Sitting to the side rather than above the name
+                leaves the masthead's left edge alone — every line below it
+                still starts at the same margin. */}
+            <Monogram size={48} className="rz-mark" />
           </header>
 
           <div className="rz-actions">

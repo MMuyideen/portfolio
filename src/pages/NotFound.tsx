@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import { Monogram } from '../components/Monogram'
 
 /** Catch-all 404 for unknown routes. */
 export function NotFound() {
@@ -11,6 +12,9 @@ export function NotFound() {
         <meta name="robots" content="noindex" />
       </Helmet>
       <div className="max-w-content mx-auto px-6 pt-32 pb-24">
+        {/* A 404 is the one page with no other signal that you are still in the
+            right place. The mark is that signal. */}
+        <Monogram size={40} className="text-white/70 mb-8" />
         <p className="font-mono text-xs text-accent tracking-widest mb-2" aria-hidden="true">
           $ cd {typeof window !== 'undefined' ? window.location.pathname : '/'}
         </p>

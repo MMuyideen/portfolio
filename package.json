@@ -14,7 +14,8 @@
     "og:image": "node scripts/build-og-image.mjs",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "icons": "node scripts/build-icons.mjs"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.0.0",

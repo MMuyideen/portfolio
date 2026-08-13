@@ -69,7 +69,8 @@ export function blogPostingSchema(post: {
     dateModified: post.date,
     url,
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    image: `${SITE_URL}/og-image.png`,
+    // The post's own card, not the site card — see scripts/build-og-image.mjs.
+    image: `${SITE_URL}/og/${post.slug}.png`,
     inLanguage: 'en',
     ...(post.tags.length > 0 ? { keywords: post.tags.join(', ') } : {}),
     author: { '@type': 'Person', name: portfolio.name, url: SITE_URL },

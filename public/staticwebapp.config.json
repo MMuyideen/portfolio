@@ -4,7 +4,7 @@
   },
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/api/*", "/assets/*", "*.{css,js,png,jpg,svg,ico,woff,woff2}"]
+    "exclude": ["/api/*", "/assets/*", "*.{css,js,png,jpg,svg,ico,woff,woff2,webmanifest}"]
   },
   "globalHeaders": {
     "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.credly.com; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
