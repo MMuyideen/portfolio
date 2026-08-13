@@ -190,15 +190,22 @@ function titleOf(html) {
 
 const chrome = findChrome()
 const routes = routesFromSitemap()
-const profile = await mkdtemp(join(tmpdir(), 'prerender-'))
+const profileRoot = await mkdtemp(join(tmpdir(), 'prerender-'))
 // Read before anything is written — see serve().
 const shell = readFileSync(join(DIST, 'index.html'))
 const { server, port } = await serve(shell)
 
 let failures = 0
 try {
-  for (const route of routes) {
+  for (const [index, route] of routes.entries()) {
     try {
+      // A profile per route. render() resolves the moment </html> arrives and
+      // kills the browser without awaiting its exit, so the next Chrome can
+      // start before the previous one has released SingletonLock — which fails
+      // that render outright ("File exists (17)", then an empty dump). Sharing
+      // one profile made every build a race; this removes the contention
+      // instead of sleeping and hoping.
+      const profile = join(profileRoot, `route-${index}`)
       const html = await render(chrome, `http://127.0.0.1:${port}${route}`, profile)
       writeFileSync(outputPath(route), html)
       const kb = Math.round(Buffer.byteLength(html) / 1024)
@@ -211,7 +218,7 @@ try {
 } finally {
   server.close()
   await sleep(500)
-  await rm(profile, { recursive: true, force: true, maxRetries: 5 }).catch(() => {})
+  await rm(profileRoot, { recursive: true, force: true, maxRetries: 5 }).catch(() => {})
 }
 
 if (failures > 0) {
