@@ -63,6 +63,9 @@ Thumbs.db
 ehthumbs.db
 desktop.ini
 
+# ── Local scratch copies ─────────────────────────────────────────────────────
+public/selfie-copy.png
+
 # ── Tooling / local ──────────────────────────────────────────────────────────
 CLAUDE.md
 DESIGN.md
