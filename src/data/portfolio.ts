@@ -700,6 +700,11 @@ export const portfolio: PortfolioData = {
     // voice on the home page runs long once flattened into a sentence.
     projects: [
       {
+        id: 'cloud-devops-labs',
+        summary:
+          '49 hands-on labs from a structured Darey.io bootcamp — Linux and shell scripting through AWS, Docker, Kubernetes, Terraform and Ansible — closing in a Terraform-provisioned WordPress stack on AWS and cluster monitoring with Prometheus.',
+      },
+      {
         id: 'terraform-modules-and-pipelines',
         summary:
           'Eighteen reusable Terraform modules across Azure, AWS and GCP, shipped with the composite actions and callable plan/apply/destroy workflows other repositories consume.',
@@ -713,11 +718,6 @@ export const portfolio: PortfolioData = {
         id: 'aks-terraform-argocd',
         summary:
           'AKS provisioned from Terraform modules, with CI that builds the image and commits the new tag for ArgoCD to apply — no imperative kubectl in the pipeline.',
-      },
-      {
-        id: 'azure-serverless-api',
-        summary:
-          'A Python Function App behind API Management and Front Door, provisioned with Terraform alongside its Application Insights and Event Hub diagnostics.',
       },
     ],
   },
