@@ -29,7 +29,7 @@ jobs:
   terraform:
     uses: MMuyideen/terraform-modules-and-pipelines/.github/workflows/terraform-apply.yml@main
     with:
-      working_directory: terraform/
+      working_directory: infra/
       cloud_provider: azure
       environment: production
     secrets:
