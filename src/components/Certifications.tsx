@@ -91,13 +91,13 @@ export function Certifications() {
                 href={cert.verifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full flex-col items-center gap-3 rounded border bg-surface p-4 transition-colors hover:border-[rgba(255,255,255,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="group flex h-full flex-col items-center gap-3 rounded border bg-surface p-4 transition-colors hover:border-[rgb(var(--border)/0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 aria-label={`${cert.title} — verify credential`}
               >
                 <BadgeImage cert={cert} size="lg" />
 
                 <div className="w-full space-y-0.5 text-center">
-                  <p className="font-mono text-xs leading-snug text-white">
+                  <p className="font-mono text-xs leading-snug text-fg">
                     {cert.shortTitle ?? cert.title}
                   </p>
                   <p className="truncate font-mono text-[10px] text-muted">
@@ -124,7 +124,7 @@ export function Certifications() {
               aria-expanded={showAll}
               aria-controls="additional-certs"
               onClick={() => setShowAll(prev => !prev)}
-              className="inline-flex items-center gap-2 rounded border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-[rgba(255,255,255,0.2)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="inline-flex items-center gap-2 rounded border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-[rgb(var(--border)/0.2)] hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               {showAll ? (
                 <ChevronUp size={13} aria-hidden="true" />
@@ -148,12 +148,12 @@ export function Certifications() {
                     href={cert.verifyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex h-full items-center gap-3 rounded border bg-surface px-4 py-3 transition-colors hover:border-[rgba(255,255,255,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    className="group flex h-full items-center gap-3 rounded border bg-surface px-4 py-3 transition-colors hover:border-[rgb(var(--border)/0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     aria-label={`${cert.title} — verify credential`}
                   >
                     <BadgeImage cert={cert} size="sm" />
                     <span className="min-w-0 flex-1">
-                      <span className="block font-mono text-xs leading-snug text-white">
+                      <span className="block font-mono text-xs leading-snug text-fg">
                         {cert.shortTitle ?? cert.title}
                       </span>
                       <span className="mt-0.5 block font-mono text-[10px] text-muted">

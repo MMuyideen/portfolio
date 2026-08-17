@@ -108,7 +108,7 @@ function NotFound() {
         <p className="font-mono text-xs text-accent tracking-widest mb-2">
           $ cat post.md
         </p>
-        <h1 className="font-mono text-2xl font-bold text-white">
+        <h1 className="font-mono text-2xl font-bold text-fg">
           404 · post not found
         </h1>
         <p className="mt-3 text-muted leading-relaxed">
@@ -203,7 +203,7 @@ export function BlogPost() {
               </span>
             </div>
 
-            <h1 className="mt-3 font-mono text-3xl sm:text-4xl font-bold leading-tight text-white text-balance">
+            <h1 className="mt-3 font-mono text-3xl sm:text-4xl font-bold leading-tight text-fg text-balance">
               {post.title}
             </h1>
 
@@ -219,7 +219,7 @@ export function BlogPost() {
             </div>
           </header>
 
-          <div className="mt-8 h-px bg-[rgba(255,255,255,0.07)]" />
+          <div className="mt-8 h-px bg-[rgb(var(--border)/0.07)]" />
         </motion.div>
 
         {html === null ? (

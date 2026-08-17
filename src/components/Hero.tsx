@@ -59,7 +59,7 @@ export function Hero() {
 
           {/* Name */}
           <motion.h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight mb-4"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-fg leading-[1.05] tracking-tight mb-4"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.55, ease: EASE }}
@@ -106,7 +106,7 @@ export function Hero() {
             {KEYWORDS.map(keyword => (
               <li
                 key={keyword}
-                className="font-mono text-[11px] text-muted border border-[rgba(255,255,255,0.1)] rounded px-2 py-1"
+                className="font-mono text-[11px] text-muted border border-[rgb(var(--border)/0.1)] rounded px-2 py-1"
               >
                 {keyword}
               </li>
@@ -122,7 +122,7 @@ export function Hero() {
           >
             <a
               href="#projects"
-              className="group inline-flex items-center gap-2 px-5 py-2.5 rounded font-mono text-sm font-semibold bg-accent text-bg hover:bg-accent/90 transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              className="group inline-flex items-center gap-2 px-5 py-2.5 rounded font-mono text-sm font-semibold bg-accent text-accent-contrast hover:bg-accent/90 transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
               View my work
               <ArrowRight
@@ -135,7 +135,7 @@ export function Hero() {
               href={portfolio.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded font-mono text-sm text-muted border hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded font-mono text-sm text-muted border hover:text-fg hover:border-[rgb(var(--border)/0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
               <GitHubIcon size={14} aria-hidden="true" />
               GitHub
@@ -143,7 +143,7 @@ export function Hero() {
             <a
               href="/resume.pdf"
               download={RESUME_FILENAME}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded font-mono text-sm text-muted border hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded font-mono text-sm text-muted border hover:text-fg hover:border-[rgb(var(--border)/0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
               <Download size={14} aria-hidden="true" />
               Résumé

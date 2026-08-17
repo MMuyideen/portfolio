@@ -54,7 +54,7 @@ export function SectionHeader({ command, title }: SectionHeaderProps) {
         {title}
       </motion.h2>
       <motion.div
-        className="mt-4 h-px bg-[rgba(255,255,255,0.07)] origin-left"
+        className="mt-4 h-px bg-[rgb(var(--border)/0.07)] origin-left"
         initial={{ scaleX: 0 }}
         animate={inView ? { scaleX: 1 } : undefined}
         transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}

@@ -32,7 +32,7 @@ export function Lightbox({ src, alt, onClose }: LightboxProps) {
           )}
           <Dialog.Close
             aria-label="Close image"
-            className="absolute top-4 right-4 inline-flex items-center justify-center h-9 w-9 rounded border bg-surface text-muted hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="absolute top-4 right-4 inline-flex items-center justify-center h-9 w-9 rounded border bg-surface text-muted hover:text-fg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <X size={16} aria-hidden="true" />
           </Dialog.Close>

@@ -3,6 +3,7 @@ import { BookOpen, Download, Menu, X } from 'lucide-react'
 import { motion, useScroll } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import { Monogram } from './Monogram'
+import { ThemeToggle } from './ThemeToggle'
 import { RESUME_FILENAME } from '../lib/resume'
 
 interface NavProps {
@@ -91,7 +92,7 @@ export function Nav({ onOpenPalette }: NavProps) {
             still belongs to interactive state. */}
         <Link
           to="/"
-          className="flex items-center text-white/90 transition-colors hover:text-accent rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
+          className="flex items-center text-fg/90 transition-colors hover:text-accent rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
           aria-label="Muyideen Morenigbade — home"
         >
           <Monogram size={26} />
@@ -106,7 +107,7 @@ export function Nav({ onOpenPalette }: NavProps) {
               aria-current={active === link.id ? 'true' : undefined}
               className={
                 'font-mono text-xs transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent ' +
-                (active === link.id ? 'text-accent' : 'text-muted hover:text-white')
+                (active === link.id ? 'text-accent' : 'text-muted hover:text-fg')
               }
             >
               {link.label}
@@ -114,7 +115,7 @@ export function Nav({ onOpenPalette }: NavProps) {
           ))}
           <Link
             to="/blog"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted hover:text-white transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted hover:text-fg transition-colors px-2.5 py-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
           >
             <BookOpen size={11} aria-hidden="true" />
             Writing
@@ -127,7 +128,7 @@ export function Nav({ onOpenPalette }: NavProps) {
           onClick={onOpenPalette}
           aria-label="Open command palette"
           aria-keyshortcuts="Meta+k Control+k"
-          className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 rounded border font-mono text-xs text-muted hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
+          className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 rounded border font-mono text-xs text-muted hover:text-fg hover:border-[rgb(var(--border)/0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
         >
           <span className="hidden sm:inline">Search</span>
           <kbd className="text-[10px] opacity-60 not-italic" aria-hidden="true">⌘K</kbd>
@@ -137,11 +138,13 @@ export function Nav({ onOpenPalette }: NavProps) {
         <a
           href="/resume.pdf"
           download={RESUME_FILENAME}
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-semibold bg-accent text-bg hover:bg-accent/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg shrink-0"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-semibold bg-accent text-accent-contrast hover:bg-accent/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg shrink-0"
         >
           <Download size={11} aria-hidden="true" />
           Résumé
         </a>
+
+        <ThemeToggle className="hidden sm:inline-flex" />
 
         {/* Mobile menu toggle */}
         <button
@@ -149,7 +152,7 @@ export function Nav({ onOpenPalette }: NavProps) {
           onClick={() => setMenuOpen(prev => !prev)}
           aria-expanded={menuOpen}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          className="lg:hidden inline-flex items-center justify-center h-8 w-8 rounded border text-muted hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
+          className="lg:hidden inline-flex items-center justify-center h-8 w-8 rounded border text-muted hover:text-fg hover:border-[rgb(var(--border)/0.2)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shrink-0"
         >
           {menuOpen ? <X size={15} aria-hidden="true" /> : <Menu size={15} aria-hidden="true" />}
         </button>
@@ -165,14 +168,18 @@ export function Nav({ onOpenPalette }: NavProps) {
           transition={{ duration: 0.18, ease: 'easeOut' }}
         >
           <div className="max-w-content mx-auto px-6 py-3 flex flex-col">
+            <div className="flex items-center justify-between border-b border-[rgb(var(--border)/0.05)] pb-2.5">
+              <span className="font-mono text-xs text-muted">Appearance</span>
+              <ThemeToggle />
+            </div>
             {NAV_LINKS.map(link => (
               <a
                 key={link.id}
                 href={sectionHref(link.id)}
                 onClick={() => setMenuOpen(false)}
                 className={
-                  'font-mono text-sm py-2.5 border-b border-[rgba(255,255,255,0.05)] last:border-b-0 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent ' +
-                  (active === link.id ? 'text-accent' : 'text-muted hover:text-white')
+                  'font-mono text-sm py-2.5 border-b border-[rgb(var(--border)/0.05)] last:border-b-0 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent ' +
+                  (active === link.id ? 'text-accent' : 'text-muted hover:text-fg')
                 }
               >
                 {link.label}
@@ -181,7 +188,7 @@ export function Nav({ onOpenPalette }: NavProps) {
             <Link
               to="/blog"
               onClick={() => setMenuOpen(false)}
-              className="inline-flex items-center gap-2 border-b border-[rgba(255,255,255,0.05)] py-2.5 font-mono text-sm text-muted transition-colors hover:text-white rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+              className="inline-flex items-center gap-2 border-b border-[rgb(var(--border)/0.05)] py-2.5 font-mono text-sm text-muted transition-colors hover:text-fg rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               <BookOpen size={13} aria-hidden="true" />
               Writing
@@ -191,7 +198,7 @@ export function Nav({ onOpenPalette }: NavProps) {
               href="/resume.pdf"
               download={RESUME_FILENAME}
               onClick={() => setMenuOpen(false)}
-              className="mt-3 inline-flex items-center justify-center gap-2 rounded bg-accent px-4 py-2.5 font-mono text-sm font-semibold text-bg transition-colors hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              className="mt-3 inline-flex items-center justify-center gap-2 rounded bg-accent px-4 py-2.5 font-mono text-sm font-semibold text-accent-contrast transition-colors hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
               <Download size={13} aria-hidden="true" />
               Résumé

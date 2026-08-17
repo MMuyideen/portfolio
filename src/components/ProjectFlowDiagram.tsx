@@ -51,10 +51,10 @@ function Node({ children, emphasis }: { children: string; emphasis?: boolean }) 
   return (
     <span
       className={
-        'rounded border bg-[#0d1219] px-3 py-1.5 text-center ' +
+        'rounded border bg-[rgb(var(--code-bg))] px-3 py-1.5 text-center ' +
         (emphasis
           ? 'border-accent/40 text-accent'
-          : 'border-[rgba(255,255,255,0.12)] text-muted')
+          : 'border-[rgb(var(--border)/0.12)] text-muted')
       }
     >
       {children}

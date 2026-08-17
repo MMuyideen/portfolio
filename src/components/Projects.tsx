@@ -75,14 +75,14 @@ function CaseStudy({ project, index }: { project: Project; index: number }) {
       aria-labelledby={`${project.id}-title`}
     >
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 border-b border-[rgba(255,255,255,0.07)] px-6 py-5 sm:px-8">
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 border-b border-[rgb(var(--border)/0.07)] px-6 py-5 sm:px-8">
         <div className="min-w-0">
           <p className="mb-1.5 font-mono text-[11px] uppercase tracking-widest text-accent">
             Case study {String(index + 1).padStart(2, '0')}
           </p>
           <h3
             id={`${project.id}-title`}
-            className="text-xl font-bold leading-tight text-white sm:text-2xl"
+            className="text-xl font-bold leading-tight text-fg sm:text-2xl"
           >
             {project.title}
           </h3>
@@ -92,7 +92,7 @@ function CaseStudy({ project, index }: { project: Project; index: number }) {
             href={github}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex shrink-0 items-center gap-2 rounded border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-[rgba(255,255,255,0.22)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="group inline-flex shrink-0 items-center gap-2 rounded border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-[rgb(var(--border)/0.22)] hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <GitHubIcon size={13} aria-hidden="true" />
             Source
@@ -123,7 +123,7 @@ function CaseStudy({ project, index }: { project: Project; index: number }) {
 
       {/* Engineering decisions */}
       {study && (
-        <div className="border-t border-[rgba(255,255,255,0.07)] px-6 py-6 sm:px-8">
+        <div className="border-t border-[rgb(var(--border)/0.07)] px-6 py-6 sm:px-8">
           <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted">
             Engineering decisions
           </p>
@@ -147,7 +147,7 @@ function CaseStudy({ project, index }: { project: Project; index: number }) {
       )}
 
       {/* Stack */}
-      <div className="flex flex-wrap gap-2 border-t border-[rgba(255,255,255,0.07)] bg-surface-2/50 px-6 py-4 sm:px-8">
+      <div className="flex flex-wrap gap-2 border-t border-[rgb(var(--border)/0.07)] bg-surface-2/50 px-6 py-4 sm:px-8">
         {project.stack.map(tool => (
           <span
             key={tool}
@@ -185,7 +185,7 @@ function SupportingCard({ project, index }: { project: Project; index: number })
 
   const card = (
     <>
-      <h3 className="font-mono text-base font-semibold leading-snug text-white transition-colors group-hover:text-accent">
+      <h3 className="font-mono text-base font-semibold leading-snug text-fg transition-colors group-hover:text-accent">
         {project.title}
       </h3>
       <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
@@ -195,7 +195,7 @@ function SupportingCard({ project, index }: { project: Project; index: number })
         {shown.map(tool => (
           <span
             key={tool}
-            className="rounded border border-[rgba(255,255,255,0.12)] px-1.5 py-0.5 font-mono text-[10px] text-muted"
+            className="rounded border border-[rgb(var(--border)/0.12)] px-1.5 py-0.5 font-mono text-[10px] text-muted"
           >
             {tool}
           </span>
@@ -279,7 +279,7 @@ export function Projects() {
                 {supporting.length} repositories
               </p>
             </div>
-            <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
+            <div className="mt-4 h-px bg-[rgb(var(--border)/0.07)]" />
 
             <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {supporting.map((project, i) => (

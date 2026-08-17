@@ -18,7 +18,7 @@ export function Impact({ impact }: { impact: ImpactOutcome[] }) {
   return (
     <section
       id="impact"
-      className="border-y border-[rgba(255,255,255,0.07)] bg-surface/40 px-6 py-16 sm:py-20"
+      className="border-y border-[rgb(var(--border)/0.07)] bg-surface/40 px-6 py-16 sm:py-20"
       aria-labelledby="impact-heading"
     >
       <div className="mx-auto max-w-content">
@@ -46,7 +46,7 @@ export function Impact({ impact }: { impact: ImpactOutcome[] }) {
               viewport={VIEWPORT}
               transition={{ duration: 0.5, ease: EASE, delay: 0.08 + i * 0.07 }}
             >
-              <dt className="font-mono text-base font-semibold leading-snug text-white">
+              <dt className="font-mono text-base font-semibold leading-snug text-fg">
                 {item.outcome}
               </dt>
               <dd className="mt-2.5 text-sm leading-relaxed text-muted">

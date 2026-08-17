@@ -39,7 +39,7 @@ export function BlogIndex() {
           <p className="font-mono text-xs text-accent tracking-widest mb-2">
             $ ls -la posts/
           </p>
-          <h1 className="font-mono text-3xl sm:text-4xl font-bold text-white">
+          <h1 className="font-mono text-3xl sm:text-4xl font-bold text-fg">
             Blog
           </h1>
           <p className="mt-3 max-w-xl text-muted leading-relaxed">
@@ -47,7 +47,7 @@ export function BlogIndex() {
             pipelines. Mostly Azure, Terraform and OpenShift, written down while
             they are still fresh.
           </p>
-          <div className="mt-6 h-px bg-[rgba(255,255,255,0.07)]" />
+          <div className="mt-6 h-px bg-[rgb(var(--border)/0.07)]" />
         </motion.header>
 
         {posts.length === 0 ? (
@@ -75,7 +75,7 @@ export function BlogIndex() {
                   </time>
 
                   <div>
-                    <h2 className="flex items-start gap-1.5 font-mono text-lg font-semibold leading-snug text-white transition-colors group-hover:text-accent">
+                    <h2 className="flex items-start gap-1.5 font-mono text-lg font-semibold leading-snug text-fg transition-colors group-hover:text-accent">
                       {post.title}
                       <ArrowUpRight
                         size={16}
@@ -89,14 +89,14 @@ export function BlogIndex() {
                         <Clock size={11} aria-hidden="true" />
                         {post.readingTime} min read
                       </span>
-                      <span className="text-[rgba(255,255,255,0.15)]" aria-hidden="true">
+                      <span className="text-[rgb(var(--border)/0.15)]" aria-hidden="true">
                         |
                       </span>
                       <span className="flex flex-wrap gap-1.5">
                         {post.tags.map(tag => (
                           <span
                             key={tag}
-                            className="font-mono text-[10px] text-muted border border-[rgba(255,255,255,0.12)] rounded px-1.5 py-0.5"
+                            className="font-mono text-[10px] text-muted border border-[rgb(var(--border)/0.12)] rounded px-1.5 py-0.5"
                           >
                             {tag}
                           </span>

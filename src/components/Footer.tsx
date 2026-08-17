@@ -16,7 +16,7 @@ export function Footer({ name }: { name: string }) {
           <span>
             <span className="text-accent">$</span> git rev-parse --short HEAD
           </span>
-          <span className="text-white">{__COMMIT_HASH__}</span>
+          <span className="text-fg">{__COMMIT_HASH__}</span>
           <span
             aria-hidden="true"
             className="inline-block w-[0.5ch] h-[0.85em] bg-muted/30 align-text-bottom animate-blink motion-reduce:animate-none"

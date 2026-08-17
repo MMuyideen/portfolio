@@ -29,7 +29,7 @@ function CopyEmail({ email }: { email: string }) {
     <button
       type="button"
       onClick={() => navigator.clipboard.writeText(email).then(() => setCopied(true))}
-      className="group inline-flex max-w-full items-center gap-2.5 rounded border bg-surface-2 px-4 py-2.5 font-mono text-sm text-muted transition-colors hover:border-[rgba(255,255,255,0.22)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+      className="group inline-flex max-w-full items-center gap-2.5 rounded border bg-surface-2 px-4 py-2.5 font-mono text-sm text-muted transition-colors hover:border-[rgb(var(--border)/0.22)] hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
     >
       <span className="truncate" aria-hidden="true">{email}</span>
       <span className="sr-only">Copy email address {email} to clipboard</span>
@@ -48,7 +48,7 @@ function CopyEmail({ email }: { email: string }) {
 }
 
 const QUIET_LINK =
-  'inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-white rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent'
+  'inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-fg rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent'
 
 /**
  * One thing to do, then the ways to check him out first.
@@ -66,10 +66,10 @@ export function Contact({ email, github, linkedin }: ContactProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT}
           transition={{ duration: 0.55, ease: EASE }}
-          className="overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+          className="overflow-hidden rounded-lg border bg-surface shadow-[inset_0_1px_0_rgb(var(--border)/0.04)]"
         >
           {/* The one terminal window left on the page — the closing session. */}
-          <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.07)] px-6 py-3 sm:px-8">
+          <div className="flex items-center gap-3 border-b border-[rgb(var(--border)/0.07)] px-6 py-3 sm:px-8">
             <span className="font-mono text-xs text-muted">
               ~/muyideen · contact
             </span>
@@ -85,7 +85,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
           <div className="p-8 sm:p-10">
             <h2
               id="contact-heading"
-              className="max-w-[20ch] text-2xl font-bold leading-tight text-white sm:text-3xl"
+              className="max-w-[20ch] text-2xl font-bold leading-tight text-fg sm:text-3xl"
             >
               Let’s build reliable infrastructure.
             </h2>
@@ -97,7 +97,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${email}`}
-                className="inline-flex items-center gap-2 rounded bg-accent px-5 py-2.5 font-mono text-sm font-semibold text-bg transition duration-200 hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                className="inline-flex items-center gap-2 rounded bg-accent px-5 py-2.5 font-mono text-sm font-semibold text-accent-contrast transition duration-200 hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               >
                 <Mail size={14} aria-hidden="true" />
                 Get in touch
@@ -105,7 +105,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
               <CopyEmail email={email} />
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[rgba(255,255,255,0.07)] pt-6">
+            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[rgb(var(--border)/0.07)] pt-6">
               <a
                 href={github}
                 target="_blank"
@@ -137,7 +137,7 @@ export function Contact({ email, github, linkedin }: ContactProps) {
 
           {/* Session sign-off */}
           <div
-            className="select-none border-t border-[rgba(255,255,255,0.07)] px-6 py-3 font-mono text-xs text-muted sm:px-8"
+            className="select-none border-t border-[rgb(var(--border)/0.07)] px-6 py-3 font-mono text-xs text-muted sm:px-8"
             aria-hidden="true"
           >
             <span className="text-accent">$</span> exit 0{' '}

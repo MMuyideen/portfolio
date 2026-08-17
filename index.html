@@ -13,6 +13,13 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0e14" />
+    <script>
+      // Applies a remembered light-mode choice before first paint, so there's no dark-then-light flash. Dark is the unconditional default — no prefers-color-scheme check.
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light')
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f7f8fa')
+      }
+    </script>
     <!--
       Only the title is kept here, as the pre-boot fallback. Every descriptive
       tag (description, og:*, twitter:*) is owned by react-helmet-async per

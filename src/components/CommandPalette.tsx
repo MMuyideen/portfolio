@@ -1,11 +1,12 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { Command } from 'cmdk'
-import { ArrowRight, BookOpen, Copy, Download, FileText, Linkedin, Mail, Search } from 'lucide-react'
+import { ArrowRight, BookOpen, Copy, Download, FileText, Linkedin, Mail, Moon, Search, Sun } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { GitHubIcon } from './GitHubIcon'
 import { getAllPosts } from '../lib/posts'
 import { portfolio } from '../data/portfolio'
 import { RESUME_FILENAME } from '../lib/resume'
+import { useTheme } from '../hooks/useTheme'
 
 interface CommandPaletteProps {
   open: boolean
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const { theme, toggleTheme } = useTheme()
 
   function select(href: string) {
     onOpenChange(false)
@@ -83,7 +85,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     key={item.href}
                     value={item.label}
                     onSelect={() => select(item.href)}
-                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                   >
                     <ArrowRight size={11} className="text-accent shrink-0" aria-hidden="true" />
                     {item.label}
@@ -97,7 +99,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     key={post.slug}
                     value={`post ${post.title}`}
                     onSelect={() => select(`/blog/${post.slug}`)}
-                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                   >
                     <FileText size={11} className="shrink-0" aria-hidden="true" />
                     <span className="truncate">{post.title}</span>
@@ -112,7 +114,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     navigator.clipboard.writeText(portfolio.email)
                     onOpenChange(false)
                   }}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                 >
                   <Copy size={11} className="shrink-0" aria-hidden="true" />
                   Copy email address
@@ -126,10 +128,25 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     link.click()
                     onOpenChange(false)
                   }}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                 >
                   <Download size={11} className="shrink-0" aria-hidden="true" />
                   Download résumé (PDF)
+                </Command.Item>
+                <Command.Item
+                  value={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                  onSelect={() => {
+                    toggleTheme()
+                    onOpenChange(false)
+                  }}
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
+                >
+                  {theme === 'light' ? (
+                    <Moon size={11} className="shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Sun size={11} className="shrink-0" aria-hidden="true" />
+                  )}
+                  {theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
                 </Command.Item>
               </Command.Group>
 
@@ -137,7 +154,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <Command.Item
                   value="Blog"
                   onSelect={() => select('/blog')}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                 >
                   <BookOpen size={11} className="shrink-0" aria-hidden="true" />
                   Blog
@@ -145,7 +162,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <Command.Item
                   value="GitHub"
                   onSelect={() => select(portfolio.github)}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                 >
                   <GitHubIcon size={11} className="shrink-0" aria-hidden="true" />
                   GitHub
@@ -153,7 +170,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <Command.Item
                   value="LinkedIn"
                   onSelect={() => select(portfolio.linkedin)}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                 >
                   <Linkedin size={11} className="shrink-0" aria-hidden="true" />
                   LinkedIn
@@ -161,7 +178,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <Command.Item
                   value="Email"
                   onSelect={() => select(`mailto:${portfolio.email}`)}
-                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2 cursor-pointer text-muted aria-selected:bg-surface-2 aria-selected:text-fg transition-colors"
                 >
                   <Mail size={11} className="shrink-0" aria-hidden="true" />
                   Email

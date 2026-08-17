@@ -11,7 +11,7 @@ function EducationRow({ entry, index }: { entry: EducationEntry; index: number }
     <>
       <Icon size={16} className="text-accent shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
-        <h3 className="font-mono text-base font-semibold text-white leading-snug">
+        <h3 className="font-mono text-base font-semibold text-fg leading-snug">
           {entry.degree}
         </h3>
         <p className="mt-0.5 text-sm text-muted">{entry.institution}</p>
@@ -31,7 +31,7 @@ function EducationRow({ entry, index }: { entry: EducationEntry; index: number }
 
   const rowClass =
     'flex items-center gap-4 px-6 sm:px-8 py-5 ' +
-    (index > 0 ? 'border-t border-[rgba(255,255,255,0.06)] ' : '')
+    (index > 0 ? 'border-t border-[rgb(var(--border)/0.06)] ' : '')
 
   return (
     <motion.li
@@ -66,7 +66,7 @@ export function Education({ education }: { education: EducationEntry[] }) {
       <div className="max-w-content mx-auto">
         <SectionHeader command="cat education/" title="Education" />
 
-        <ul className="mt-10 rounded-lg border bg-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <ul className="mt-10 rounded-lg border bg-surface shadow-[inset_0_1px_0_rgb(var(--border)/0.04)]">
           {education.map((entry, i) => (
             <EducationRow key={entry.degree} entry={entry} index={i} />
           ))}

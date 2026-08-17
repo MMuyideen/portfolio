@@ -39,7 +39,7 @@ export function Experience({ experience }: { experience: ExperienceEntry[] }) {
                 />
                 {i < experience.length - 1 && (
                   <motion.div
-                    className="mt-2 w-px flex-1 origin-top bg-[rgba(255,255,255,0.09)]"
+                    className="mt-2 w-px flex-1 origin-top bg-[rgb(var(--border)/0.09)]"
                     initial={{ scaleY: 0 }}
                     whileInView={{ scaleY: 1 }}
                     viewport={VIEWPORT}
@@ -51,7 +51,7 @@ export function Experience({ experience }: { experience: ExperienceEntry[] }) {
 
               <div className="min-w-0 flex-1 pb-2">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 className="font-mono text-base font-semibold text-white">
+                  <h3 className="font-mono text-base font-semibold text-fg">
                     {entry.role}
                   </h3>
                   <span className="font-mono text-sm text-accent">

@@ -38,7 +38,7 @@ export function LatestPosts() {
           </Link>
         </motion.div>
 
-        <div className="mt-4 h-px bg-[rgba(255,255,255,0.07)]" />
+        <div className="mt-4 h-px bg-[rgb(var(--border)/0.07)]" />
 
         <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {posts.map((post, i) => (
@@ -62,7 +62,7 @@ export function LatestPosts() {
                   </span>
                 </div>
 
-                <h3 className="mt-3 font-mono text-base font-semibold leading-snug text-white transition-colors group-hover:text-accent">
+                <h3 className="mt-3 font-mono text-base font-semibold leading-snug text-fg transition-colors group-hover:text-accent">
                   {post.title}
                 </h3>
 
@@ -74,7 +74,7 @@ export function LatestPosts() {
                   {post.tags.map(tag => (
                     <span
                       key={tag}
-                      className="font-mono text-[10px] text-muted border border-[rgba(255,255,255,0.12)] rounded px-1.5 py-0.5"
+                      className="font-mono text-[10px] text-muted border border-[rgb(var(--border)/0.12)] rounded px-1.5 py-0.5"
                     >
                       {tag}
                     </span>

@@ -14,11 +14,11 @@ export function NotFound() {
       <div className="max-w-content mx-auto px-6 pt-32 pb-24">
         {/* A 404 is the one page with no other signal that you are still in the
             right place. The mark is that signal. */}
-        <Monogram size={40} className="text-white/70 mb-8" />
+        <Monogram size={40} className="text-fg/70 mb-8" />
         <p className="font-mono text-xs text-accent tracking-widest mb-2" aria-hidden="true">
           $ cd {typeof window !== 'undefined' ? window.location.pathname : '/'}
         </p>
-        <h1 className="font-mono text-2xl font-bold text-white">
+        <h1 className="font-mono text-2xl font-bold text-fg">
           404 · no such file or directory
         </h1>
         <p className="mt-3 text-muted leading-relaxed max-w-md">

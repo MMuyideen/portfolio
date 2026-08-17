@@ -48,7 +48,7 @@ export function SiteArchitecture() {
   return (
     <section
       id="architecture"
-      className="border-y border-[rgba(255,255,255,0.07)] bg-surface/40 px-6 py-24"
+      className="border-y border-[rgb(var(--border)/0.07)] bg-surface/40 px-6 py-24"
       aria-labelledby="architecture-heading"
     >
       <div className="mx-auto max-w-content">
@@ -63,7 +63,7 @@ export function SiteArchitecture() {
           </p>
           <h2
             id="architecture-heading"
-            className="max-w-[22ch] text-2xl font-bold leading-tight text-white sm:text-3xl"
+            className="max-w-[22ch] text-2xl font-bold leading-tight text-fg sm:text-3xl"
           >
             This portfolio is infrastructure too.
           </h2>
@@ -109,7 +109,7 @@ export function SiteArchitecture() {
             {LAYERS.map(layer => (
               <div
                 key={layer.name}
-                className="border-l border-[rgba(255,255,255,0.1)] pl-4"
+                className="border-l border-[rgb(var(--border)/0.1)] pl-4"
               >
                 <dt className="font-mono text-xs text-accent">{layer.name}</dt>
                 <dd className="mt-1 text-sm leading-relaxed text-muted">
@@ -135,7 +135,7 @@ export function SiteArchitecture() {
         >
           <Link
             to="/blog/how-this-site-works"
-            className="group inline-flex items-center gap-2 rounded border px-4 py-2.5 font-mono text-sm text-muted transition-colors hover:border-[rgba(255,255,255,0.22)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="group inline-flex items-center gap-2 rounded border px-4 py-2.5 font-mono text-sm text-muted transition-colors hover:border-[rgb(var(--border)/0.22)] hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             Read the architecture
             <ArrowRight

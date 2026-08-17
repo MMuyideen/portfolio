@@ -42,7 +42,7 @@ function ToolPill({ tool }: { tool: string }) {
   const icon = TOOL_ICONS[tool]
 
   return (
-    <span className="inline-flex items-center gap-1.5 bg-surface-2 border border-[rgba(255,255,255,0.06)] text-muted text-xs px-2.5 py-1 rounded font-mono hover:text-white hover:border-[rgba(255,255,255,0.16)] transition-colors">
+    <span className="inline-flex items-center gap-1.5 bg-surface-2 border border-[rgb(var(--border)/0.06)] text-muted text-xs px-2.5 py-1 rounded font-mono hover:text-fg hover:border-[rgb(var(--border)/0.16)] transition-colors">
       {icon ? (
         <svg
           role="img"
@@ -78,7 +78,7 @@ export function TechStack({ skills }: { skills: SkillCategory[] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT}
           transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
-          className="mt-10 rounded-lg border bg-surface p-6 sm:p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+          className="mt-10 rounded-lg border bg-surface p-6 sm:p-8 shadow-[inset_0_1px_0_rgb(var(--border)/0.04)]"
         >
           <div className="grid gap-x-12 gap-y-7 md:grid-cols-2">
             {skills.map((category, i) => (
@@ -95,7 +95,7 @@ export function TechStack({ skills }: { skills: SkillCategory[] }) {
                   <span className="text-muted">:</span>
                   <span className="sr-only"> {category.name}</span>
                 </p>
-                <div className="flex flex-wrap gap-2 pl-4 border-l border-[rgba(255,255,255,0.06)]">
+                <div className="flex flex-wrap gap-2 pl-4 border-l border-[rgb(var(--border)/0.06)]">
                   {category.tools.map(tool => (
                     <ToolPill key={tool} tool={tool} />
                   ))}
