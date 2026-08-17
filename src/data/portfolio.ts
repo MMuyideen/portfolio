@@ -177,16 +177,65 @@ export const portfolio: PortfolioData = {
   ],
 
   /**
-   * Ordered by engineering depth, most involved first. The four `featured`
-   * entries lead the section as full case studies; the rest render as compact
-   * cards below them, so the ranking decides prominence rather than presence —
-   * every project is in the markup for crawlers either way.
+   * The five `featured` entries lead the section as full case studies; the
+   * rest render as compact cards below them, so the ranking decides
+   * prominence rather than presence — every project is in the markup for
+   * crawlers either way. The bootcamp labs lead first as the origin story,
+   * then the rest follow by engineering depth, most involved first.
    *
    * Every entry was checked against the repository it links to: the title
    * describes what the code does, `stack` lists only technologies that appear
    * in that repo, and each `caseStudy` is written from what is in the code.
    */
   projects: [
+    // Darey.io bootcamp: Linux through Terraform/Ansible, closing in two capstones
+    {
+      id: 'cloud-devops-labs',
+      title: 'Darey.io Cloud & DevOps Labs',
+      command: 'run bootcamp-labs',
+      description: [
+        '# 49 numbered labs from the Darey.io bootcamp, grouped by domain —',
+        '# Linux and shell scripting through AWS, Docker, Jenkins, Kubernetes,',
+        '# Terraform and Ansible — each one a working repository, closing in',
+        '# a Terraform WordPress stack on AWS and a monitored cluster.',
+      ],
+      stack: [
+        'Linux',
+        'Bash',
+        'AWS',
+        'Docker',
+        'Kubernetes',
+        'Terraform',
+        'Ansible',
+        'Prometheus',
+        'GitHub Actions',
+      ],
+      links: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/MMuyideen/cloud-devops-labs',
+          external: true,
+        },
+      ],
+      tier: 'featured',
+      flow: {
+        source: 'Linux & shell scripting',
+        via: 'AWS · Docker · Kubernetes · Terraform · Ansible',
+        targets: ['WordPress on AWS (Terraform)', 'Cluster monitoring (Prometheus + Gatus)'],
+      },
+      caseStudy: {
+        problem:
+          'Bootcamp work usually leaves a portfolio with either a wall of disconnected exercises or one polished project that hides how the fundamentals underneath it were actually learned — no way for a reviewer to see the progression from a Linux shell to a deployed system.',
+        approach:
+          "49 numbered labs, grouped by domain in the repository's own learning path — Linux and shell scripting, then core AWS services, Docker, Jenkins/GitHub Actions CI, Kubernetes fundamentals, Terraform and Ansible — closing in two capstones: a Terraform-provisioned WordPress stack on AWS (VPC, RDS, EFS, ALB, ASG) and cluster observability via Prometheus.",
+        decisions: [
+          'Each lab is its own directory with its own working code, not a written summary of what was done — the shell scripts, Terraform configs and Ansible playbooks run as committed.',
+          'The AWS capstone splits infrastructure into a dedicated VPC, RDS and EFS rather than one flat template — the same separation of concerns that shows up in the projects below.',
+          'Terraform work builds toward a reusable EC2 and security-group module rather than stopping at one-off resource blocks.',
+          'Monitoring is set up twice — Node Exporter on a bare Linux host, then as a Kubernetes DaemonSet — so the same tool is exercised in both environments it actually runs in.',
+        ],
+      },
+    },
     // Reusable Terraform modules + callable GitHub Actions workflows
     {
       id: 'terraform-modules-and-pipelines',
@@ -577,18 +626,18 @@ export const portfolio: PortfolioData = {
       type: 'degree' as const,
     },
     {
-      degree: 'Cloud Engineering',
-      institution: 'AltSchool Africa',
-      period: '2024 – 2025',
-      type: 'bootcamp' as const,
-      url: 'https://altschoolafrica.com/',
-    },
-    {
       degree: 'Cloud & DevOps Engineering',
       institution: 'Darey.io',
       period: '2025 – 2026',
       type: 'bootcamp' as const,
       url: 'https://darey.io/',
+    },
+    {
+      degree: 'Cloud Engineering',
+      institution: 'ALX',
+      period: '2023 – 2024',
+      type: 'bootcamp' as const,
+      url: 'https://www.alxafrica.com/',
     },
   ],
 
