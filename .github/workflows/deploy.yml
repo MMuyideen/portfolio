@@ -31,7 +31,6 @@ jobs:
     with:
       working_directory: infra/
       cloud_provider: azure
-      environment: production
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
