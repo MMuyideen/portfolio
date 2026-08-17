@@ -2,7 +2,7 @@
 # /api/visitors managed Function increments it with optimistic concurrency.
 
 resource "random_string" "storage_suffix" {
-  length  = 5
+  length  = 6
   upper   = false
   special = false
   numeric = true
